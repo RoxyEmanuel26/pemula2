@@ -1,14 +1,14 @@
 /**
  * =============================================
- *  ADS LOADER - File Terpisah untuk Iklan
+ *  ADS.JS — Script Iklan Eksternal
  * =============================================
- *  Semua script iklan dikelola di sini supaya
- *  rapi dan mudah ditambah/dihapus nantinya.
+ *  File ini khusus memuat jenis iklan script:
+ *  1. Popunder Ads (script eksternal)
+ *  2. Social Bar Ads (script eksternal)
  *
- *  CARA MENAMBAH IKLAN BARU:
- *  - Popunder : tambahkan URL ke array POPUNDER_SCRIPTS
- *  - Social Bar: tambahkan URL ke array SOCIALBAR_SCRIPTS
- *  - Lainnya  : buat array baru dan panggil loadScripts()
+ *  Catatan: Iklan Banner ditempatkan langsung
+ *  di index.html agar Adsterra script bekerja normal
+ *  dan tidak bentrok satu sama lain.
  * =============================================
  */
 
@@ -17,18 +17,13 @@
 
     // ==========================================
     //  DAFTAR SCRIPT POPUNDER
-    //  (Tambahkan URL baru di bawah ini)
     // ==========================================
     const POPUNDER_SCRIPTS = [
         'https://pl28946621.profitablecpmratenetwork.com/26/f3/43/26f3431d773087c3b794dc01acff540f.js'
-        // Tambahkan popunder baru di sini:
-        // 'https://example.com/popunder3.js',
-        // 'https://example.com/popunder4.js',
     ];
 
     // ==========================================
     //  DAFTAR SCRIPT SOCIAL BAR
-    //  (Tambahkan URL baru di bawah ini)
     // ==========================================
     const SOCIALBAR_SCRIPTS = [
         'https://pl28946633.profitablecpmratenetwork.com/03/8e/5d/038e5d0c9a177bcd903ad960773ffd1f.js'
@@ -37,8 +32,7 @@
     ];
 
     // ==========================================
-    //  FUNGSI PEMUAT SCRIPT
-    //  Memuat semua script dari array secara async
+    //  FUNGSI: Muat Script Eksternal (async)
     // ==========================================
     function loadScripts(scriptUrls) {
         scriptUrls.forEach(function (url) {
@@ -51,15 +45,17 @@
         });
     }
 
-    // Muat semua iklan setelah halaman selesai load
-    // agar tidak menghambat render utama
-    if (document.readyState === 'complete') {
+    // ==========================================
+    //  INIT — Muat popunder & social bar
+    // ==========================================
+    function initAds() {
         loadScripts(POPUNDER_SCRIPTS);
         loadScripts(SOCIALBAR_SCRIPTS);
+    }
+
+    if (document.readyState === 'complete') {
+        initAds();
     } else {
-        window.addEventListener('load', function () {
-            loadScripts(POPUNDER_SCRIPTS);
-            loadScripts(SOCIALBAR_SCRIPTS);
-        });
+        window.addEventListener('load', initAds);
     }
 })();

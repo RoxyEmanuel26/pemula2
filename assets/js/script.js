@@ -1,6 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
+    //  CEK ADMIN — Jangan jalankan monetisasi di halaman admin
+    //  Samakan nilai ini dengan ADMIN_SECRET di .env
+    // ==========================================
+    const ADMIN_SECRET = 'editadmin';
+    const currentPath = window.location.pathname.replace(/^\/|\/$/g, '');
+    if (currentPath === ADMIN_SECRET) {
+        console.log('[script.js] Admin mode detected — monetization disabled.');
+        return; // Keluar, jangan inject modal atau jalankan monetisasi
+    }
+
+    // ==========================================
     //  INJEKSI HTML KOTAK KONTEN UTAMA (MODAL)
     // ==========================================
     const modalHTML = `
@@ -82,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Masukkan HTML ke dalam body halaman
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-
     // ==========================================
     //  KONFIGURASI URL TARGET
     //  Ganti URL di bawah sesuai kebutuhan
@@ -92,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gallerySwipe: 'https://kumpulan3.vercel.app/',      // Tab dibuka saat swipe/klik gallery pertama kali
         download: 'https://omg10.com/4/10806719',   // Tab dibuka saat klik DOWNLOAD
         watch: 'https://omg10.com/4/10806723',        // Tab dibuka saat klik WATCH NOW
-        dismiss: 'https://kumpulan4.vercel.app/',      // Tab dibuka saat klik tombol tutup modal
+        dismiss: '',      // Tab dibuka saat klik tombol tutup modal
     };
 
     // URL tujuan setelah redirect (halaman saat ini pindah ke sini)
@@ -332,7 +342,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mulai auto-slide saat halaman dimuat
     startAutoSlide();
-
 
     // ==========================================
     //  RANDOM LINK UNTUK TOMBOL VERIFYING

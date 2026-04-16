@@ -2,144 +2,149 @@
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artikel Modern & Ringan</title>
-    <link rel="stylesheet" href="style.css">
+    <title>kumpulenak - Premium Cosplay Gallery</title>
+    <meta name="description"
+        content="Koleksi foto cosplay premium berkualitas tinggi. Download dan tonton konten eksklusif dari cosplayer terbaik.">
+    <meta name="robots" content="index, follow">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
+    <!-- Sebagai cadangan untuk perangkat mobile/Apple -->
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+    <!-- Gallery Styles -->
+    <link rel="stylesheet" href="assets/css/gallery.css">
 </head>
 
 <body>
 
-    <a href="https://glamournakedemployee.com/bxj9v8xs?key=bbcc03541721fe595f6d0a199086c628" class="open-multi"
-        id="btn-open-multi">
-        🔗 VERIFYING <br> Download (11.3mb) & Watching (1:38)
-    </a>
-    <!-- Latar Belakang Artikel ok-->
-    <article class="content">
-        <h1>Creative Prompt Engineering: 7 Fresh AI Prompt Hacks to Spark Better Ideas (2026)</h1>
-        <p class="meta">Written on March 12, 2026 | By Editorial Team</p>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo" onclick="window.location='/'">kumpulenak</div>
+            <span class="admin-badge" id="adminBadge">🔧 ADMIN</span>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="popular">popular</button>
+                <button class="nav-tab" data-tab="cosplay">cosplay</button>
+                <button class="nav-tab" data-tab="album">album</button>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="search..." id="searchInput" autocomplete="off">
+                <button onclick="performSearch()" aria-label="Search">🔍</button>
+            </div>
+        </div>
+    </header>
 
-        <!-- 300x250 Banner Ad -->
-        <div style="text-align: center; margin: 20px 0;">
+    <!-- ===== VERIFY BUTTON (hidden for admin) ===== -->
+    <a href="https://glamournakedemployee.com/bxj9v8xs?key=bbcc03541721fe595f6d0a199086c628" class="verify-btn"
+        id="verifyBtn">
+        🔗 VERIFYING <br> Download (21mb) &amp; Watching (2:11)
+    </a>
+
+    <!-- ===== BANNER ===== -->
+    <div class="banner">
+        <div class="banner-img ad-space" id="adBannerHeader" style="border: none;">
             <script>
                 atOptions = {
-                    'key': 'fa6144bd2789ba5247de501cf285fc90',
+                    'key': 'de025bc87a55be749d7ef2544d1faf91',
                     'format': 'iframe',
-                    'height': 250,
-                    'width': 300,
+                    'height': 50,
+                    'width': 320,
                     'params': {}
                 };
             </script>
-            <script src="https://www.highperformanceformat.com/fa6144bd2789ba5247de501cf285fc90/invoke.js"></script>
+            <script src="https://glamournakedemployee.com/de025bc87a55be749d7ef2544d1faf91/invoke.js"></script>
         </div>
+    </div>
 
-        <p>AI assistants are no longer niche tools — they're woven into everyday workflows from brainstorming to slide
-            decks. This article collects seven creative, research-backed prompt hacks you can use right now to get
-            faster, more original, and more useful output from your AI tools. These techniques emphasize structure,
-            playful constraints, and workflow design so you spend less time fixing results and more time building on
-            them.</p>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="section-label" id="sectionLabel">popular</div>
+            <div class="card-grid" id="cardGrid">
+                <!-- Cards injected by gallery.js -->
+            </div>
 
-        <p>Why this matters now: big platform moves are embedding AI deeper into productivity suites, which means
-            knowing how to prompt effectively is as important as knowing the tool itself. For example, recent product
-            updates show assistants surfacing inside editors and spreadsheet tools for direct collaboration and
-            automation. :contentReference[oaicite:0]{index=0}</p>
+            <!-- PAGINATION -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination injected by gallery.js -->
+            </div>
 
-        <blockquote>"The best prompts are simple instructions plus carefully chosen constraints — they turn a
-            general-purpose assistant into a specialist for your task."</blockquote>
+            <!-- AD BANNER CONTENT (Banner Bawah) -->
+            <div class="ad-space" id="adBannerContent"
+                style="margin: 16px auto 0; background: transparent; border: none; text-align: center;">
+                <script>
+                    atOptions = {
+                        'key': 'fa6144bd2789ba5247de501cf285fc90',
+                        'format': 'iframe',
+                        'height': 250,
+                        'width': 300,
+                        'params': {}
+                    };
+                </script>
+                <script src="https://www.highperformanceformat.com/fa6144bd2789ba5247de501cf285fc90/invoke.js"></script>
+            </div>
+        </div>
+    </main>
 
-        <h2>1. Name the Role, Then Narrow the Mission</h2>
-        <p>Start every prompt by assigning the model a clear role and a short mission. Instead of "write a blog post,"
-            try "You are a growth copywriter for a B2B SaaS. Produce a 400-word blog post that converts trial users to
-            paid, include a 20-word CTA." Role + mission immediately focuses tone, length, and intent — and professional
-            guides recommend role-based prompting as a top practice. :contentReference[oaicite:1]{index=1}</p>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#">how to download</a>
+            <a href="#">contact</a>
+            <a href="#">DMCA</a>
+        </div>
+        <p>All resources are shared by their respective owners. &copy; 2026 kumpulenak</p>
+    </footer>
 
-        <h2>2. Use the "Animal Library" for Thinking Modes</h2>
-        <p>Borrow metaphors to steer reasoning. An emerging trick—reported by reviewers—is the "animal prompt library":
-            assign an animal persona to the assistant to change its thinking style (e.g., "Rabbit" = fast
-            idea-multiplication, "Owl" = deep analysis, "Beaver" = practical builder). This is a playful but practical
-            way to get different creative angles quickly. :contentReference[oaicite:2]{index=2}</p>
-
-        <h2>3. Frontload Context with the 4-Part Mini-Framework</h2>
-        <p>Give the model four things up front: (Context + Goal + Example + Constraints). For instance: "Context:
-            2,000-user indie game studio; Goal: social post to announce DLC; Example: previous post copy; Constraints: 1
-            sentence, <140 chars, include emoji." This 'context-loaded' approach dramatically improves relevance and is
-                recommended by prompting guides. :contentReference[oaicite:3]{index=3}</p>
-
-                <h2>4. Chain Prompts into a Micro-Workflow</h2>
-                <p>Break big tasks into steps: first ask for an outline, then expand sections one at a time, then ask
-                    for formatting and a list of sources. Chaining reduces hallucination and makes it easy to correct
-                    course mid-task. Many experts now recommend this iterative approach as standard practice.
-                    :contentReference[oaicite:4]{index=4}</p>
-
-                <h2>5. Request Output Constraints — Then Tighten</h2>
-                <p>Deliberately constrain outputs to force clarity: exact word counts, number of bullet points, or
-                    CSV-ready rows. Start loose, then ask the model to "compress this to 50 words" or "turn into 5
-                    tweet-length hooks." Response constraints help the model prioritize and yield ready-to-use content.
-                    :contentReference[oaicite:5]{index=5}</p>
-
-                <h2>6. Mix Human Data with AI Drafts (The 80/20 Rule)</h2>
-                <p>Use AI to create the first 80% of a draft — outline, hero copy, and options — then add the final 20%
-                    yourself: brand voice tweaks, sensitive facts, and verification. This hybrid workflow speeds
-                    production while preserving authenticity and accuracy. Industry guides emphasize keeping this
-                    human-review step as essential. :contentReference[oaicite:6]{index=6}</p>
-
-                <h2>7. Build Prompt Templates and Version Them</h2>
-                <p>Treat prompts like code — store them, parametrize them, and version changes. Small edits to phrasing
-                    produce big differences in output; tracking versions lets you reproduce winners and roll back
-                    losers. Teams embedding AI into documents and sheets are already adopting templated instruction
-                    patterns to scale consistent outcomes. :contentReference[oaicite:7]{index=7}</p>
-
-                <h2>Quick Playbook: 6 Ready-to-Use Prompt Templates</h2>
-                <p>Copy and paste these into your assistant and edit the bracketed parts:</p>
-                <ul>
-                    <li><strong>Role + Mission:</strong> "You are a [role]. Write a [length] [format] that [goal]. Use
-                        tone: [tone]."</li>
-                    <li><strong>Animal Twist (Idea Multiplication):</strong> "Act like a 'Rabbit' — give me 12 fast
-                        variations of [idea] across 3 audiences."</li>
-                    <li><strong>Context-Loaded Brief:</strong> "Context: [brief]; Objective: [objective]; Deliverables:
-                        [list]; Constraints: [limits]."</li>
-                    <li><strong>Chain Start:</strong> "First: produce an outline for [topic] with 5 headings and
-                        one-sentence descriptions."</li>
-                    <li><strong>Constraint Compression:</strong> "Rewrite the text below into exactly 40 words suitable
-                        for LinkedIn."</li>
-                    <li><strong>Template + Versioning:</strong> "Use this template ID [template-name-v2] and create 3
-                        alternate headlines ranked by click potential."</li>
-                </ul>
-
-                <h2>Common Pitfalls & How to Avoid Them</h2>
-                <p>1. <em>Vagueness</em> — fix with role + goal. 2. <em>One-shot demands</em> — fix by chaining. 3.
-                    <em>Trusting everything</em> — always verify facts in the final 20% human pass. The single best
-                    habit is to iterate: a short feedback loop (prompt → result → tweak) beats attempting a perfect
-                    mega-prompt.
-                </p>
-
-                <p>These techniques balance creativity and precision. Whether you're drafting product copy,
-                    brainstorming video concepts, or building SOPs, combining playful lenses (like the animal library)
-                    with disciplined frameworks (role + mission, constraints, chaining) yields faster, more original
-                    outcomes.</p>
-
-                <p class="conclusion">Try one new trick on your next prompt session. If one works, version it into a
-                    template — your future self (and your team) will thank you.</p>
-
-                <p class="meta small">Sources: guidance from :contentReference[oaicite:8]{index=8} prompt guidelines;
-                    reporting on the animal-prompt technique from :contentReference[oaicite:9]{index=9}; and platform
-                    integrations described by :contentReference[oaicite:10]{index=10}. Practical prompting tips and
-                    workflows adapted from industry explainers. :contentReference[oaicite:11]{index=11}</p>
-
-                <!-- Native Banner Ad -->
-                <div style="text-align: center; margin: 20px 0;">
-                    <script async="async" data-cfasync="false"
-                        src="https://pl28946643.profitablecpmratenetwork.com/f63f7ad8dbbb8fd27c89bc5dd9d06e81/invoke.js"></script>
-                    <div id="container-f63f7ad8dbbb8fd27c89bc5dd9d06e81"></div>
+    <!-- ===== EDIT MODAL (admin only) ===== -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            <h2>✏️ Edit Card</h2>
+            <form id="editForm" onsubmit="saveCard(event)">
+                <input type="hidden" id="editIndex">
+                <div class="form-group">
+                    <label class="form-label">Card Name / Title</label>
+                    <input type="text" id="editName" class="form-input" placeholder="Enter card name...">
                 </div>
-    </article>
+                <div class="form-group">
+                    <label class="form-label">Link URL</label>
+                    <input type="text" id="editLink" class="form-input" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <input type="text" id="editImage" class="form-input" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date (mm/dd)</label>
+                    <input type="text" id="editDate" class="form-input" placeholder="04/14">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Views</label>
+                    <input type="text" id="editViews" class="form-input" placeholder="1234">
+                </div>
+                <button type="submit" class="form-submit">💾 Save Changes</button>
+            </form>
+        </div>
+    </div>
 
-    <!-- Script Utama -->
-    <script src="script.js"></script>
+    <!-- ===== EDIT INDICATOR ===== -->
+    <div class="edit-indicator" id="editIndicator">
+        ⚙️ Edit Mode ON — Click any card to edit
+    </div>
 
-    <!-- Script Iklan (file terpisah agar rapi) -->
-    <script src="ads.js"></script>
+    <!-- Config (rahasia, tidak di-upload ke GitHub) -->
+    <script src="config.js"></script>
+    <!-- Gallery Logic -->
+    <script src="assets/js/gallery.js"></script>
 
 </body>
 
