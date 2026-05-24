@@ -14,21 +14,18 @@
 (function () {
     'use strict';
 
-    // ==========================================
-    //  KONFIGURASI BANNER ADS (Adsterra)
-    //  Inject ke div container yang sudah ada di HTML
-    // ==========================================
+    var isMobile = window.innerWidth < 768;
     var BANNER_ADS = [
         {
             containerId: 'adBannerHeader',
-            key: 'cffac27f60f026f84e02386788c1a06b',
+            key: isMobile ? 'de025bc87a55be749d7ef2544d1faf91' : '02b729dc959969b1e89fa0769c27cee3',
             format: 'iframe',
-            height: 90,
-            width: 728
+            height: isMobile ? 50 : 90,
+            width: isMobile ? 320 : 728
         },
         {
             containerId: 'adBannerContent',
-            key: 'ac030fa023c7db2ca8b74d28f66aaccb',
+            key: 'fa6144bd2789ba5247de501cf285fc90',
             format: 'iframe',
             height: 250,
             width: 300
@@ -48,11 +45,8 @@
         }
     ];
 
-    // ==========================================
-    //  DAFTAR SCRIPT POPUNDER
-    // ==========================================
     var POPUNDER_SCRIPTS = [
-        'https://pl28946619.profitablecpmratenetwork.com/7f/f1/b3/7ff1b3565d09822b19426419f6d92922.js',
+        'https://glamournakedemployee.com/26/f3/43/26f3431d773087c3b794dc01acff540f.js',
     ];
 
     // ==========================================

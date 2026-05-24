@@ -35,18 +35,18 @@
 
     var _invokeDomain = _d('Z2xhbW91cm5ha2VkZW1wbG95ZWUuY29t');
 
-    // Adsterra banner keys (untuk mode tanpa adblock)
+    var _isMobile = window.innerWidth < 768;
     var _bannerConfigs = [
         {
             containerId: 'adBannerHeader',
-            key: _d('Y2ZmYWMyN2Y2MGYwMjZmODRlMDIzODY3ODhjMWEwNmI='),
+            key: _isMobile ? _d('ZGUwMjViYzg3YTU1YmU3NDlkN2VmMjU0NGQxZmFmOTE=') : _d('MDJiNzI5ZGM5NTk5NjliMWU4OWZhMDc2OWMyN2NlZTM='),
             format: 'iframe',
-            height: 90,
-            width: 728
+            height: _isMobile ? 50 : 90,
+            width: _isMobile ? 320 : 728
         },
         {
             containerId: 'adBannerContent',
-            key: _d('YWMwMzBmYTAyM2M3ZGIyY2E4Yjc0ZDI4ZjY2YWFjY2I='),
+            key: _d('ZmE2MTQ0YmQyNzg5YmE1MjQ3ZGU1MDFjZjI4NWZjOTA='),
             format: 'iframe',
             height: 250,
             width: 300
@@ -65,7 +65,7 @@
 
     // Popunder script URLs (obfuscated)
     var _popunderUrls = [
-        _d('aHR0cHM6Ly9wbDI4OTQ2NjE5LnByb2ZpdGFibGVjcG1yYXRlbmV0d29yay5jb20vN2YvZjEvYjMvN2ZmMWIzNTY1ZDA5ODIyYjE5NDI2NDE5ZjZkOTI5MjIuanM=')
+        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vMjYvZjMvNDMvMjZmMzQzMWQ3NzMwODdjM2I3OTRkYzAxYWNmZjU0MGYuanM=')
     ];
 
     // Monetag popunder (obfuscated)
