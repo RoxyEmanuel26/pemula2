@@ -27,10 +27,11 @@
     <link rel="preconnect" href="https://www.eporner.com">
     <link rel="preconnect" href="https://static-ca-cdn.eporner.com">
     
-    <!-- Fonts -->
+    <!-- Fonts (non-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"></noscript>
 
     <!-- Favicon -->
     <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
@@ -71,10 +72,10 @@
     <link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/">
 
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="assets/css/gallery.css?v=2.0" as="style" fetchpriority="high">
-    <link rel="preload" href="assets/js/gallery.js?v=2.0" as="script">
+    <link rel="preload" href="assets/css/gallery.css?v=2.1" as="style" fetchpriority="high">
+    <link rel="preload" href="assets/js/gallery.js?v=2.1" as="script">
     <link rel="preconnect" href="https://www.eporner.com" crossorigin>
-    <link rel="dns-prefetch" href="https://www.eporner.com">
+    <link rel="dns-prefetch" href="https://static-ca-cdn.eporner.com">
     <link rel="dns-prefetch" href="https://images2.imgbox.com">
     <link rel="dns-prefetch" href="https://al5sm.com">
 
@@ -85,7 +86,7 @@
         "@type": "WebSite",
         "name": "kumpulenak",
         "alternateName": "kumpulenak Gallery",
-        "url": "https://www.kumpulenak.web.id",
+        "url": "https://www.kumpulenak.my.id",
         "description": "Premium 18+ NSFW Gallery — Trending viral videos and leaked adult photos.",
         "inLanguage": ["en", "id"],
         "potentialAction": {
@@ -105,7 +106,7 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "kumpulenak",
-        "url": "https://www.kumpulenak.web.id",
+        "url": "https://www.kumpulenak.my.id",
         "logo": "https://www.kumpulenak.my.id/assets/icons/android-chrome-512x512.png",
         "description": "The largest premium 18+ adult gallery platform.",
         "foundingDate": "2026",
@@ -135,7 +136,18 @@
     </script>
 
     <!-- Gallery Styles -->
-    <link rel="stylesheet" href="assets/css/gallery.css?v=2.0">
+    <link rel="stylesheet" href="assets/css/gallery.css?v=2.1">
+
+    <!-- Critical inline CSS for instant first paint -->
+    <style>
+        body{background-color:#06070b;color:#f0f2f5;font-family:'Inter',system-ui,-apple-system,sans-serif;margin:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+        .header{background:rgba(6,7,11,0.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:14px 24px;position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(255,255,255,0.06)}
+        .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+        .logo{font-size:25px;font-weight:900;background:linear-gradient(135deg,#ff2a5f 0%,#7d12ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;letter-spacing:-1.2px}
+        .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;min-height:200px}
+        .img-skeleton{position:absolute;inset:0;background:linear-gradient(90deg,#13151f 25%,#1f2235 50%,#13151f 75%);background-size:200% 100%;animation:skeletonShimmer 1.6s infinite linear}
+        @keyframes skeletonShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    </style>
 
     <!-- Noscript Fallback -->
     <noscript>
@@ -271,7 +283,7 @@
             <button class="player-close" id="playerCloseBtn">&times;</button>
             <div class="player-iframe-wrapper">
                 <iframe id="playerIframe" src="" width="100%" height="400" frameborder="0" allowfullscreen
-                    allow="autoplay; encrypted-media"></iframe>
+                    allow="autoplay; encrypted-media" loading="lazy"></iframe>
             </div>
             <div class="player-info">
                 <h3 class="player-title" id="playerTitle"></h3>
@@ -296,7 +308,7 @@
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()" title="Back to Top">⬆</button>
 
     <!-- Gallery Logic -->
-    <script src="assets/js/gallery.js?v=2.0"></script>
+    <script src="assets/js/gallery.js?v=2.1"></script>
 
 </body>
 

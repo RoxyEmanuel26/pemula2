@@ -474,6 +474,7 @@ body {
     color: inherit;
     display: flex;
     flex-direction: column;
+    contain: content;
     opacity: 0;
     animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
@@ -1339,6 +1340,24 @@ body {
     .card-grid {
         gap: 16px;
     }
+
+    /* Disable expensive backdrop-filter on mobile for performance */
+    .header {
+        background: rgba(6, 7, 11, 0.92);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    [data-theme="light"] .header {
+        background: rgba(255, 255, 255, 0.95);
+    }
+}
+
+/* 2-Column Tablet Layout */
+@media (min-width: 481px) and (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* Full-Screen Player on Mobile Devices */
@@ -1391,5 +1410,27 @@ body {
 
     .footer {
         padding: 30px 16px;
+    }
+}
+
+/* ===== ACCESSIBILITY: FOCUS-VISIBLE OUTLINES ===== */
+.nav-tab:focus-visible,
+.search-box input:focus-visible,
+.theme-toggle:focus-visible,
+.page-btn:focus-visible,
+.sort-btn:focus-visible,
+.viral-filter-btn:focus-visible,
+.kategori-card-btn:focus-visible,
+.back-to-top:focus-visible,
+.player-close:focus-visible,
+.card-tag:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ===== PRINT: HIDE NON-ESSENTIAL ELEMENTS ===== */
+@media print {
+    .header, .footer, .back-to-top, .player-overlay, .ad-space, .banner, .ingrid-banner-ad {
+        display: none !important;
     }
 }

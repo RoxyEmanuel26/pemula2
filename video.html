@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kumpulenak — Watch Trending Viral Video</title>
+    <title>kumpulenak â€” Watch Trending Viral Video</title>
     <meta name="description" content="Watch trending viral adult videos in full HD for free on kumpulenak. Fast streaming with no download required.">
     <meta name="robots" content="index, follow">
     <meta name="rating" content="adult">
@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
 
     <!-- CSS UTAMA -->
-    <link rel="stylesheet" href="/assets/css/gallery.css?v=2.0">
+    <link rel="stylesheet" href="/assets/css/gallery.css?v=2.1">
 
     <!-- SEO Meta Tags -->
     <meta property="og:type" content="video.other">
@@ -171,7 +171,7 @@
         <div class="header-inner">
             <div class="logo" onclick="window.location='/'">kumpul<span>enak</span></div>
             <nav class="page-nav" aria-label="Breadcrumb">
-                <a href="/" class="nav-back">← Home</a>
+                <a href="/" class="nav-back">â† Home</a>
             </nav>
         </div>
     </header>
@@ -261,7 +261,7 @@
             const backBtn = document.createElement('a');
             backBtn.href = '/';
             backBtn.className = 'back-btn';
-            backBtn.textContent = '← Back to Home';
+            backBtn.textContent = 'â† Back to Home';
             container.appendChild(backBtn);
 
             if (video.embed && isSafeUrl(video.embed)) {
@@ -298,15 +298,15 @@
             meta.className = 'video-meta';
             
             const duration = document.createElement('span');
-            duration.textContent = '⏱ ' + (video.length_min || '0:00');
+            duration.textContent = 'â± ' + (video.length_min || '0:00');
             meta.appendChild(duration);
 
             const views = document.createElement('span');
-            views.textContent = '👁 ' + (video.views ? video.views.toLocaleString('en-US') : '0') + ' views';
+            views.textContent = 'ðŸ‘ ' + (video.views ? video.views.toLocaleString('en-US') : '0') + ' views';
             meta.appendChild(views);
 
             const rating = document.createElement('span');
-            rating.textContent = '⭐ ' + (video.rate || '0') + ' rating';
+            rating.textContent = 'â­ ' + (video.rate || '0') + ' rating';
             meta.appendChild(rating);
 
             details.appendChild(meta);
@@ -336,7 +336,7 @@
         }
 
         function updateSEO(video) {
-            document.title = video.title + ' — kumpulenak';
+            document.title = video.title + ' â€” kumpulenak';
             
             const desc = 'Watch ' + video.title + ' in full HD resolution for free on kumpulenak.';
             document.querySelector('meta[name="description"]').setAttribute('content', desc);
@@ -409,13 +409,13 @@
                         a.innerHTML = 
                             '<div class="card-img-wrapper">' +
                                 (v.length_min ? '<span class="badge-duration">' + v.length_min + '</span>' : '') +
-                                (v.rate ? '<span class="badge-rating">⭐ ' + v.rate + '</span>' : '') +
+                                (v.rate ? '<span class="badge-rating">â­ ' + v.rate + '</span>' : '') +
                                 '<img src="' + thumb + '" alt="Thumbnail" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\'); this.style.background=\'#333\';">' +
                             '</div>' +
                             '<div class="card-meta">' +
                                 '<div class="card-date-views">' +
-                                    '<span style="color:var(--text-secondary);">📅 ' + added + '</span>' +
-                                    '<span style="color:var(--text-secondary);">👁 ' + views + '</span>' +
+                                    '<span style="color:var(--text-secondary);">ðŸ“… ' + added + '</span>' +
+                                    '<span style="color:var(--text-secondary);">ðŸ‘ ' + views + '</span>' +
                                 '</div>' +
                                 '<div class="card-title" style="color:#fff;">' + title + '</div>' +
                             '</div>';
@@ -447,7 +447,7 @@
             backBtn.href = '/';
             backBtn.className = 'back-btn';
             backBtn.style.marginTop = '20px';
-            backBtn.textContent = '← Back to Home';
+            backBtn.textContent = 'â† Back to Home';
             errDiv.appendChild(backBtn);
             
             container.appendChild(errDiv);
@@ -455,6 +455,6 @@
     </script>
     
     <!-- Load Ads Script -->
-    <script src="/assets/js/loader.js?v=2.0" defer></script>
+    <script src="/assets/js/loader.js?v=2.1" defer></script>
 </body>
 </html>

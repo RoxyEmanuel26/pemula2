@@ -125,9 +125,12 @@ let currentAbortController = null;
  */
 function escapeHTML(str) {
     if (!str) return '';
-    const div = document.createElement('div');
-    div.appendChild(document.createTextNode(String(str)));
-    return div.innerHTML;
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 /**
@@ -467,6 +470,7 @@ function mapAPIVideoToCard(video) {
 function renderSkeletons(count) {
     const grid = document.getElementById('cardGrid');
     grid.innerHTML = '';
+    const frag = document.createDocumentFragment();
 
     for (let i = 0; i < count; i++) {
         const skeleton = document.createElement('div');
@@ -484,8 +488,9 @@ function renderSkeletons(count) {
             '<div class="skeleton-text" style="width:100%;height:14px;margin-top:4px;"></div>' +
             '<div class="skeleton-text" style="width:70%;height:14px;margin-top:4px;"></div>' +
             '</div>';
-        grid.appendChild(skeleton);
+        frag.appendChild(skeleton);
     }
+    grid.appendChild(frag);
 }
 
 // =====================================================
@@ -582,6 +587,7 @@ function renderViralTags(activeQuery) {
         var allBtn = document.createElement('button');
         allBtn.className = 'viral-filter-btn' + (!activeQuery || activeQuery === 'all' ? ' active' : '');
         allBtn.textContent = '🌐 All';
+        allBtn.dataset.query = 'all';
         allBtn.addEventListener('click', function() { filterViralTab('all'); });
         filterBar.appendChild(allBtn);
 
@@ -590,6 +596,7 @@ function renderViralTags(activeQuery) {
             var btn = document.createElement('button');
             btn.className = 'viral-filter-btn' + (isActive ? ' active' : '');
             btn.textContent = tag.label;
+            btn.dataset.query = tag.query;
             btn.addEventListener('click', function() { filterViralTab(tag.query); });
             filterBar.appendChild(btn);
         });
@@ -601,8 +608,7 @@ function renderViralTags(activeQuery) {
         var targetQuery = activeQuery || 'all';
         existingBar.querySelectorAll('.viral-filter-btn').forEach(function (btn) {
             btn.classList.remove('active');
-            var match = btn.getAttribute('onclick').match(/'([^']+)'/);
-            if (match && match[1] === targetQuery) {
+            if (btn.dataset.query === targetQuery) {
                 btn.classList.add('active');
             }
         });
@@ -800,7 +806,8 @@ function renderCardsToGrid(cardsToRender) {
         return;
     }
 
-    // Tentukan posisi tengah untuk inject banner
+    // Use DocumentFragment for batch DOM insertion (1 reflow instead of 24+)
+    var frag = document.createDocumentFragment();
     var midIndex = Math.floor(cardsToRender.length / 2);
 
     // Helper: buat in-grid banner element
@@ -812,30 +819,21 @@ function renderCardsToGrid(cardsToRender) {
             '<img src="https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png" alt="Download Terabox" class="ingrid-banner-img" ' +
             'onerror="this.parentElement.parentElement.style.display=\'none\'">' +
             '</a>';
-
-        // Mencegah popunder terpicu saat klik banner
         bannerWrapper.addEventListener('click', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
         }, true);
-
         return bannerWrapper;
     }
 
     cardsToRender.forEach(function (card, idx) {
-        // Inject in-grid banner di awal card
-        if (idx === 0) {
-            grid.appendChild(createIngridBanner());
-        }
-
-        // Inject in-grid banner di tengah-tengah card
-        if (idx === midIndex) {
-            grid.appendChild(createIngridBanner());
-        }
-
-        var cardEl = createCardElement(card, idx);
-        grid.appendChild(cardEl);
+        if (idx === 0) frag.appendChild(createIngridBanner());
+        if (idx === midIndex) frag.appendChild(createIngridBanner());
+        frag.appendChild(createCardElement(card, idx));
     });
+
+    // Single DOM insert — triggers only 1 reflow
+    grid.appendChild(frag);
 
     // Inisialisasi IntersectionObserver untuk animasi view counter
     initViewCounterAnimation();
@@ -1378,12 +1376,19 @@ document.addEventListener('keydown', function (e) {
 function initBackToTop() {
     var btn = document.getElementById('backToTop');
     if (!btn) return;
+    var _scrollTicking = false;
 
     window.addEventListener('scroll', function () {
-        if (window.scrollY > 300) {
-            btn.classList.add('show');
-        } else {
-            btn.classList.remove('show');
+        if (!_scrollTicking) {
+            requestAnimationFrame(function () {
+                if (window.scrollY > 300) {
+                    btn.classList.add('show');
+                } else {
+                    btn.classList.remove('show');
+                }
+                _scrollTicking = false;
+            });
+            _scrollTicking = true;
         }
     }, { passive: true });
 }
@@ -1932,10 +1937,16 @@ function injectVideoSchema(cardsToRender) {
 // =====================================================
 //  RESIZE HANDLER — Update tab indicator saat resize
 // =====================================================
-window.addEventListener('resize', function () {
-    var activeTab = document.querySelector('.nav-tab.active');
-    if (activeTab) updateTabIndicator(activeTab);
-}, { passive: true });
+(function () {
+    var _resizeTimer = null;
+    window.addEventListener('resize', function () {
+        if (_resizeTimer) clearTimeout(_resizeTimer);
+        _resizeTimer = setTimeout(function () {
+            var activeTab = document.querySelector('.nav-tab.active');
+            if (activeTab) updateTabIndicator(activeTab);
+        }, 150);
+    }, { passive: true });
+})();
 
 
 
@@ -1946,7 +1957,7 @@ window.addEventListener('resize', function () {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = 'assets/js/loader.js';
+    scriptLoader.src = 'assets/js/loader.js?v=2.1';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
