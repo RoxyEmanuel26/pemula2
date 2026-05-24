@@ -183,6 +183,137 @@ function kLog(message, data) {
     }
 }
 
+/**
+ * Membersihkan teks dari Mathematical Alphanumeric Symbols dan mojibake
+ * @param {string} text - Teks yang akan dibersihkan
+ * @returns {string} Teks yang sudah bersih dan terbaca dalam ASCII standar
+ */
+function cleanFancyText(text) {
+    if (!text || typeof text !== 'string') return text || '';
+
+    // 1. Dekode Mathematical Alphanumeric Symbols yang masih utuh (U+1D400 - U+1D7FF)
+    let clean = text.replace(/[\uD835][\uDC00-\uDFFF]/g, function(char) {
+        const cp = char.codePointAt(0);
+        
+        // Sans-Serif Bold Italic (U+1D63C to U+1D66F)
+        if (cp >= 0x1D63C && cp <= 0x1D655) return String.fromCharCode(cp - 0x1D63C + 65); // A-Z
+        if (cp >= 0x1D656 && cp <= 0x1D66F) return String.fromCharCode(cp - 0x1D656 + 97); // a-z
+        
+        // Sans-Serif Bold (U+1D5D4 to U+1D607)
+        if (cp >= 0x1D5D4 && cp <= 0x1D5ED) return String.fromCharCode(cp - 0x1D5D4 + 65); // A-Z
+        if (cp >= 0x1D5EE && cp <= 0x1D607) return String.fromCharCode(cp - 0x1D5EE + 97); // a-z
+
+        // Sans-Serif Italic (U+1D608 to U+1D63B)
+        if (cp >= 0x1D608 && cp <= 0x1D621) return String.fromCharCode(cp - 0x1D608 + 65); // A-Z
+        if (cp >= 0x1D622 && cp <= 0x1D63B) return String.fromCharCode(cp - 0x1D622 + 97); // a-z
+
+        // Sans-Serif (U+1D5A0 to U+1D5D3)
+        if (cp >= 0x1D5A0 && cp <= 0x1D5B9) return String.fromCharCode(cp - 0x1D5A0 + 65); // A-Z
+        if (cp >= 0x1D5BA && cp <= 0x1D5D3) return String.fromCharCode(cp - 0x1D5BA + 97); // a-z
+
+        // Bold (U+1D400 to U+1D433)
+        if (cp >= 0x1D400 && cp <= 0x1D419) return String.fromCharCode(cp - 0x1D400 + 65); // A-Z
+        if (cp >= 0x1D41A && cp <= 0x1D433) return String.fromCharCode(cp - 0x1D41A + 97); // a-z
+
+        // Italic (U+1D434 to U+1D467)
+        if (cp >= 0x1D434 && cp <= 0x1D44D) return String.fromCharCode(cp - 0x1D434 + 65); // A-Z
+        if (cp >= 0x1D44E && cp <= 0x1D467) return String.fromCharCode(cp - 0x1D44E + 97); // a-z
+
+        // Bold Italic (U+1D468 to U+1D49B)
+        if (cp >= 0x1D468 && cp <= 0x1D481) return String.fromCharCode(cp - 0x1D468 + 65); // A-Z
+        if (cp >= 0x1D482 && cp <= 0x1D49B) return String.fromCharCode(cp - 0x1D482 + 97); // a-z
+
+        // Double-Struck (U+1D538 to U+1D56B)
+        if (cp >= 0x1D538 && cp <= 0x1D551) return String.fromCharCode(cp - 0x1D538 + 65); // A-Z
+        if (cp >= 0x1D552 && cp <= 0x1D56B) return String.fromCharCode(cp - 0x1D552 + 97); // a-z
+
+        // Monospace (U+1D670 to U+1D6A3)
+        if (cp >= 0x1D670 && cp <= 0x1D689) return String.fromCharCode(cp - 0x1D670 + 65); // A-Z
+        if (cp >= 0x1D68A && cp <= 0x1D6A3) return String.fromCharCode(cp - 0x1D68A + 97); // a-z
+
+        return char;
+    });
+
+    // 2. Dekode Mojibake penuh (dimana karakter diubah ke CP1252/Latin-1 dan disisipkan spasi/tanda kontrol)
+    const fullMojibakeMap = {
+        'ð ™„': 'I', 'ð ™ ': 'K', 'ð ™…': 'J', 'ð ™†': 'K', 'ð ™‡': 'L', 'ð ™': 'M', 'ð ™': 'N', 'ð ™': 'O',
+        'ð ™': 'P', 'ð ™': 'Q', 'ð ™\u008d': 'R', 'ð ™\u008e': 'S', 'ð ™\u008f': 'T', 'ð ™\u0090': 'U', 'ð ™': 'V', 'ð ™\u0092': 'W',
+        'ð ™': 'X', 'ð ™': 'Y', 'ð ™': 'Z',
+        'ð ™–': 'a', 'ð ™—': 'b', 'ð ™\u0098': 'c', 'ð ™\u0099': 'd', 'ð ™\u009a': 'e', 'ð ™\u009b': 'f', 'ð ™': 'g', 'ð ™\u009d': 'h',
+        'ð ™': 'i', 'ð ™\u009f': 'j', 'ð ™\u00a0': 'k', 'ð ™': 'l', 'ð ™¢': 'm', 'ð ™£': 'n', 'ð ™': 'o', 'ð ™': 'p',
+        'ð ™': 'q', 'ð ™': 'r', 'ð ™': 's', 'ð ™': 't', 'ð ™ª': 'u', 'ð ™': 'v', 'ð ™': 'w', 'ð ™': 'x',
+        'ð ™': 'y', 'ð ™': 'z'
+    };
+
+    for (let key in fullMojibakeMap) {
+        if (fullMojibakeMap.hasOwnProperty(key)) {
+            clean = clean.split(key).join(fullMojibakeMap[key]);
+        }
+    }
+
+    // 3. Dekode Mojibake dengan byte yang terpotong (misal 0x9D / 0x99 hilang)
+    const strippedMap = {
+        'ð–': 'a', 'ð—': 'b', 'ð': 'c', 'ð': 'd', 'ð': 'i', 'ð': 'j', 'ð ': 'k', 'ð¡': 'l',
+        'ð¢': 'm', 'ð£': 'n', 'ð¤': 'o', 'ð¥': 'p', 'ð¦': 'q', 'ð§': 'r', 'ð¨': 's', 'ð©': 't',
+        'ðª': 'u', 'ð«': 'v', 'ð¬': 'w', 'ð­': 'x', 'ð®': 'y', 'ð¯': 'z'
+    };
+
+    for (let key in strippedMap) {
+        if (strippedMap.hasOwnProperty(key)) {
+            clean = clean.split(key).join(strippedMap[key]);
+        }
+    }
+
+    // 4. Perbaikan spesifik byte Latin-1 control character yang tersisa
+    const specificMap = {
+        'ð\u009a': 'e', 'ðš': 'e',
+        'ð\u009b': 'f', 'ð›': 'f',
+        'ð\u009c': 'g', 'ðœ': 'g',
+        'ð\u009d': 'h', 'ð': 'h',
+        'ð\u009e': 'i', 'ðž': 'i',
+        'ð\u009f': 'j', 'ðŸ': 'j',
+        'ð\u0096': 'a', 'ð–': 'a',
+        'ð\u0097': 'b', 'ð—': 'b',
+        'ð\u0098': 'c', 'ð': 'c',
+        'ð\u0099': 'd', 'ð': 'd',
+        'ð\u00ad': 'x',
+        'ð\u0084': 'I', 'ð„': 'I',
+        'ð\u0086': 'K', 'ð†': 'K',
+        'ð\u008f': 'T', 'ð': 'T',
+        'ð\u00a2': 'm', 'ð\u00a3': 'n', 'ð\u00a4': 'o', 'ð\u00a5': 'p', 'ð\u00a7': 'r',
+        'ð\u00a8': 's', 'ð\u00a9': 't', 'ð\u00aa': 'u', 'ð\u00ae': 'y', 'ð\u00af': 'z'
+    };
+
+    for (let key in specificMap) {
+        if (specificMap.hasOwnProperty(key)) {
+            clean = clean.split(key).join(specificMap[key]);
+        }
+    }
+
+    // 5. Perbaikan kata & residu
+    clean = clean.split("ð'").join("I'");
+    
+    // Perbaiki sisa kata populer
+    clean = clean.replace(/\bð\b/g, 'I');
+    
+    // Konversi pattern "ðor" -> "for", "olð" -> "old", "ðree" -> "free"
+    clean = clean.replace(/\bolð\b/gi, 'old');
+    clean = clean.replace(/\bðor\b/gi, 'for');
+    clean = clean.replace(/\bðree\b/gi, 'free');
+    clean = clean.replace(/\bðrom\b/gi, 'from');
+    clean = clean.replace(/\bðriend\b/gi, 'friend');
+    clean = clean.replace(/\bðull\b/gi, 'full');
+    clean = clean.replace(/4ð/g, '4K');
+    clean = clean.replace(/ðð¥ð¨/g, 'fps');
+    clean = clean.replace(/ðð£ð©ðð§ð¥ð¤ð¡ðð©ðð/gi, 'Interpolated');
+
+    // Rapikan spasi
+    clean = clean.replace(/\s+/g, ' ').trim();
+
+    return clean;
+}
+
+
 // =====================================================
 //  DARK/LIGHT MODE — Toggle tema gelap dan terang
 // =====================================================
@@ -443,7 +574,7 @@ function mapAPIVideoToCard(video) {
         thumbsArr = video.thumbs.map(function (t) { return t.src; });
     }
     return {
-        name: video.title || 'Untitled',
+        name: cleanFancyText(video.title || 'Untitled'),
         image: (video.default_thumb && isSafeUrl(video.default_thumb.src)) ? video.default_thumb.src : '',
         link: isSafeUrl(video.url) ? video.url : '#',
         date: video.added ? video.added.slice(0, 10) : '',
@@ -1957,7 +2088,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = 'assets/js/loader.js?v=2.1';
+    scriptLoader.src = 'assets/js/loader.js?v=2.2';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
