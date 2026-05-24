@@ -41,7 +41,7 @@
             containerId: 'adBannerCustom',
             imageUrl: 'https://i.ibb.co/PvhvpsJM/ezgif-com-animated-gif-maker.gif',
             linkUrl: 'https://www.missav-j.web.id/',
-            alt: 'Download Terabox'
+            alt: 'MissAV'
         }
     ];
 
