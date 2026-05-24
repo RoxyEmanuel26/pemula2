@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Stop'
-$baseUrl = 'https://www.kumpulenak.web.id'
+$baseUrl = 'https://www.kumpulenak.my.id'
 $dateStr = Get-Date -Format "yyyy-MM-ddTHH:mm:ss+07:00"
 $delaySeconds = 0
 $perPage = 100

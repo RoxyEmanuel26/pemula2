@@ -1,5 +1,5 @@
 # ==============================================
-# robots.txt — kumpulenak.web.id
+# robots.txt — kumpulenak.my.id
 # Optimized for maximum SEO crawl coverage
 # ==============================================
 
