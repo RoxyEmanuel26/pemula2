@@ -947,7 +947,7 @@ function renderCardsToGrid(cardsToRender) {
         bannerWrapper.className = 'ingrid-banner-ad';
         bannerWrapper.innerHTML =
             '<a href="https://www.missav-j.web.id/" class="ingrid-banner-link">' +
-            '<img src="https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png" alt="Download Terabox" class="ingrid-banner-img" ' +
+            '<img src="https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png" alt="MissAV" class="ingrid-banner-img" ' +
             'onerror="this.parentElement.parentElement.style.display=\'none\'">' +
             '</a>';
         bannerWrapper.addEventListener('click', function (e) {
@@ -2088,7 +2088,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = 'assets/js/loader.js?v=2.5';
+    scriptLoader.src = 'assets/js/loader.js?v=2.6';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();

@@ -443,7 +443,7 @@
 
                     var img = document.createElement('img');
                     img.src = 'https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png';
-                    img.alt = 'Download Terabox';
+                    img.alt = 'MissAV';
                     img.className = 'ingrid-banner-img';
                     img.onerror = function () { banner.style.display = 'none'; };
 
