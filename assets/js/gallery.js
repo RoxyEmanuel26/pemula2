@@ -1578,30 +1578,30 @@ function renderSortBar() {
         { label: '⚡ Shortest', order: 'shortest', query: 'all' }
     ];
 
-    if (!existingBar) {
-        var sortBar = document.createElement('div');
-        sortBar.id = 'sortBar';
-        sortBar.className = 'sort-bar';
+    if (existingBar) {
+        existingBar.remove();
+    }
 
-        // [SECURITY FIX] Gunakan DOM Element
-        sortOptions.forEach(function (opt) {
-            var isActive = currentSortOrder === opt.order;
-            var btn = document.createElement('button');
-            btn.className = 'sort-btn' + (isActive ? ' active' : '');
-            btn.textContent = opt.label;
-            btn.addEventListener('click', function() { changeSortOrder(opt.order); });
-            sortBar.appendChild(btn);
-        });
+    var sortBar = document.createElement('div');
+    sortBar.id = 'sortBar';
+    sortBar.className = 'sort-bar';
 
-        // Sisipkan setelah sectionLabel
-        var sectionLabel = document.getElementById('sectionLabel');
-        if (sectionLabel && sectionLabel.nextSibling) {
-            contentWrapper.insertBefore(sortBar, sectionLabel.nextSibling);
-        } else {
-            contentWrapper.appendChild(sortBar);
-        }
+    // [SECURITY FIX] Gunakan DOM Element
+    sortOptions.forEach(function (opt) {
+        var isActive = currentSortOrder === opt.order;
+        var btn = document.createElement('button');
+        btn.className = 'sort-btn' + (isActive ? ' active' : '');
+        btn.textContent = opt.label;
+        btn.addEventListener('click', function() { changeSortOrder(opt.order); });
+        sortBar.appendChild(btn);
+    });
+
+    // Sisipkan setelah sectionLabel
+    var sectionLabel = document.getElementById('sectionLabel');
+    if (sectionLabel && sectionLabel.nextSibling) {
+        contentWrapper.insertBefore(sortBar, sectionLabel.nextSibling);
     } else {
-        existingBar.innerHTML = html;
+        contentWrapper.appendChild(sortBar);
     }
 }
 
