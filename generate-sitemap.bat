@@ -7,9 +7,9 @@ echo   kumpulenak Sitemap Generator v4.0
 echo   FULL CRAWL - Ambil SEMUA video tanpa sisa
 echo ============================================
 echo.
-echo PENTING: Proses ini bisa memakan waktu 30-120 menit
-echo karena mengambil SEMUA halaman dari 50 kategori
-echo dengan delay 1.5 detik per request (anti rate limit).
+echo PENTING: Proses ini berjalan sangat cepat karena
+echo mengambil SEMUA halaman dari 50 kategori tanpa
+echo delay per request (kecepatan maksimal).
 echo.
 echo Biarkan jendela ini terbuka sampai selesai!
 echo.

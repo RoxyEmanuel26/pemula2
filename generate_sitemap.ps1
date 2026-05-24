@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $baseUrl = 'https://www.kumpulenak.web.id'
 $dateStr = Get-Date -Format "yyyy-MM-ddTHH:mm:ss+07:00"
-$delaySeconds = 1.5
+$delaySeconds = 0
 $perPage = 100
 
 Write-Host ""
