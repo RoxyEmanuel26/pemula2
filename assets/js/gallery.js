@@ -1900,7 +1900,7 @@ function injectVideoSchema(cardsToRender) {
             'thumbnailUrl': card.image || '',
             'uploadDate': card.date ? '2026-' + card.date.replace('/', '-') : '2026-01-01',
             'duration': isoDuration,
-            'contentUrl': 'https://www.kumpulenak.web.id/',
+            'contentUrl': 'https://www.kumpulenak.my.id/',
             'embedUrl': card.embedUrl || '',
             'interactionStatistic': {
                 '@type': 'InteractionCounter',

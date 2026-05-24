@@ -4,18 +4,18 @@
 
     <!-- Homepage — highest priority -->
     <url>
-        <loc>https://www.kumpulenak.web.id/</loc>
+        <loc>https://www.kumpulenak.my.id/</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.00</priority>
-        <xhtml:link rel="alternate" hreflang="id" href="https://www.kumpulenak.web.id/" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.web.id/" />
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.web.id/" />
+        <xhtml:link rel="alternate" hreflang="id" href="https://www.kumpulenak.my.id/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
     </url>
 
     <!-- Kategori: Indo -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=indo</loc>
+        <loc>https://www.kumpulenak.my.id/?q=indo</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -23,7 +23,7 @@
 
     <!-- Kategori: Viral -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=viral</loc>
+        <loc>https://www.kumpulenak.my.id/?q=viral</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -31,7 +31,7 @@
 
     <!-- Kategori: Japanese -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=japanese</loc>
+        <loc>https://www.kumpulenak.my.id/?q=japanese</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -39,7 +39,7 @@
 
     <!-- Kategori: Korean -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=korean</loc>
+        <loc>https://www.kumpulenak.my.id/?q=korean</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -47,7 +47,7 @@
 
     <!-- Kategori: Amateur -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=amateur</loc>
+        <loc>https://www.kumpulenak.my.id/?q=amateur</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -55,7 +55,7 @@
 
     <!-- Kategori: Hijab -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=hijab</loc>
+        <loc>https://www.kumpulenak.my.id/?q=hijab</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -63,7 +63,7 @@
 
     <!-- Kategori: Student -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=student</loc>
+        <loc>https://www.kumpulenak.my.id/?q=student</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -71,7 +71,7 @@
 
     <!-- Kategori: Couple -->
     <url>
-        <loc>https://www.kumpulenak.web.id/?q=couple</loc>
+        <loc>https://www.kumpulenak.my.id/?q=couple</loc>
         <lastmod>2026-05-18T19:24:19+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.80</priority>
@@ -79,7 +79,7 @@
 
     <!-- About Page -->
     <url>
-        <loc>https://www.kumpulenak.web.id/about</loc>
+        <loc>https://www.kumpulenak.my.id/about</loc>
         <lastmod>2026-05-18T19:24:20+00:00</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.80</priority>
@@ -87,7 +87,7 @@
 
     <!-- How to Download Guide -->
     <url>
-        <loc>https://www.kumpulenak.web.id/howto</loc>
+        <loc>https://www.kumpulenak.my.id/howto</loc>
         <lastmod>2026-05-18T19:24:20+00:00</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.80</priority>
@@ -95,7 +95,7 @@
 
     <!-- Contact Page -->
     <url>
-        <loc>https://www.kumpulenak.web.id/contact</loc>
+        <loc>https://www.kumpulenak.my.id/contact</loc>
         <lastmod>2026-05-18T19:24:20+00:00</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.80</priority>
@@ -103,7 +103,7 @@
 
     <!-- DMCA Policy -->
     <url>
-        <loc>https://www.kumpulenak.web.id/dmca</loc>
+        <loc>https://www.kumpulenak.my.id/dmca</loc>
         <lastmod>2026-05-18T19:24:21+00:00</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.80</priority>
@@ -111,7 +111,7 @@
 
     <!-- Privacy Policy -->
     <url>
-        <loc>https://www.kumpulenak.web.id/privacy</loc>
+        <loc>https://www.kumpulenak.my.id/privacy</loc>
         <lastmod>2026-05-18T19:24:21+00:00</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.80</priority>
@@ -119,7 +119,7 @@
 
     <!-- Terms of Service -->
     <url>
-        <loc>https://www.kumpulenak.web.id/terms</loc>
+        <loc>https://www.kumpulenak.my.id/terms</loc>
         <lastmod>2026-05-18T19:24:21+00:00</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.80</priority>
