@@ -30,6 +30,64 @@
     }
 
     // ==========================================
+    //  POPUNDER FREQUENCY CAPPING SYSTEM (Max 3/day)
+    // ==========================================
+    var _popLimit = 3;
+    var _popStorageKey = '_kumpulenak_pop_ctrl';
+
+    function _getPopCountToday() {
+        try {
+            var today = new Date().toDateString();
+            var dataStr = localStorage.getItem(_popStorageKey);
+            if (dataStr) {
+                var data = JSON.parse(dataStr);
+                if (data && data.date === today) {
+                    return data.count || 0;
+                }
+            }
+        } catch (e) {}
+        return 0;
+    }
+
+    function _incrementPopCount() {
+        try {
+            var today = new Date().toDateString();
+            var dataStr = localStorage.getItem(_popStorageKey);
+            var data = null;
+            if (dataStr) {
+                try {
+                    data = JSON.parse(dataStr);
+                } catch (e) {}
+            }
+            if (!data || data.date !== today) {
+                data = { date: today, count: 0 };
+            }
+            data.count++;
+            localStorage.setItem(_popStorageKey, JSON.stringify(data));
+            console.log('[loader] Popunder count:', data.count, '/', _popLimit);
+        } catch (e) {}
+    }
+
+    function _isPopAllowed() {
+        return _getPopCountToday() < _popLimit;
+    }
+
+    function _trackExternalPopClick() {
+        document.addEventListener('click', function popTrackHandler(e) {
+            if (!e.isTrusted) return;
+            var target = e.target;
+            if (target.closest && (
+                target.closest('.player-overlay') ||
+                target.closest('.ingrid-banner-ad')
+            )) {
+                return;
+            }
+            _incrementPopCount();
+            document.removeEventListener('click', popTrackHandler, true);
+        }, true);
+    }
+
+    // ==========================================
     //  OBFUSCATED AD CONFIG
     // ==========================================
 
@@ -203,18 +261,24 @@
     var _popunderFired = false;
 
     function initSelfHostedPopunder() {
+        if (!_isPopAllowed()) {
+            console.log('[loader] Popunder limit reached today. Skipping self-hosted popunder.');
+            return;
+        }
         if (_popunderFired) return;
 
         function doPopunder() {
+            if (!_isPopAllowed()) return;
             if (_popunderFired || sessionStorage.getItem('popunderShown')) return;
-            _popunderFired = true;
-            sessionStorage.setItem('popunderShown', 'true');
 
             var target = getRandomLink();
 
             try {
                 var w = window.open(target, '_blank');
                 if (w) {
+                    _popunderFired = true;
+                    sessionStorage.setItem('popunderShown', 'true');
+                    _incrementPopCount();
                     // Modern browsers ignore focus() from popup, but no harm
                     try { window.focus(); } catch (e) { }
                 }
@@ -331,6 +395,11 @@
     }
 
     function injectExternalPopunder() {
+        if (!_isPopAllowed()) {
+            console.log('[loader] Popunder limit reached today. Skipping external popunder.');
+            return;
+        }
+        var injected = false;
         _popunderUrls.forEach(function (url) {
             if (!url) return;
             var s = document.createElement('script');
@@ -342,10 +411,18 @@
                 initSelfHostedPopunder();
             };
             document.body.appendChild(s);
+            injected = true;
         });
+        if (injected) {
+            _trackExternalPopClick();
+        }
     }
 
     function injectMonetag() {
+        if (!_isPopAllowed()) {
+            console.log('[loader] Popunder limit reached today. Skipping Monetag.');
+            return;
+        }
         if (!_monetagDomain) return;
         var s = document.createElement('script');
         s.dataset.zone = _monetagZone;
@@ -355,6 +432,7 @@
             initSelfHostedPopunder();
         };
         ([document.documentElement, document.body].filter(Boolean).pop()).appendChild(s);
+        _trackExternalPopClick();
     }
 
     // ==========================================

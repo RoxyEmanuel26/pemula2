@@ -57,6 +57,64 @@
     ];
 
     // ==========================================
+    //  POPUNDER FREQUENCY CAPPING SYSTEM (Max 3/day)
+    // ==========================================
+    var POPUNDER_LIMIT = 3;
+    var STORAGE_KEY = '_kumpulenak_pop_ctrl';
+
+    function getPopunderCountToday() {
+        try {
+            var today = new Date().toDateString();
+            var dataStr = localStorage.getItem(STORAGE_KEY);
+            if (dataStr) {
+                var data = JSON.parse(dataStr);
+                if (data && data.date === today) {
+                    return data.count || 0;
+                }
+            }
+        } catch (e) {}
+        return 0;
+    }
+
+    function incrementPopunderCount() {
+        try {
+            var today = new Date().toDateString();
+            var dataStr = localStorage.getItem(STORAGE_KEY);
+            var data = null;
+            if (dataStr) {
+                try {
+                    data = JSON.parse(dataStr);
+                } catch (e) {}
+            }
+            if (!data || data.date !== today) {
+                data = { date: today, count: 0 };
+            }
+            data.count++;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            console.log('[ads.js] Popunder count:', data.count, '/', POPUNDER_LIMIT);
+        } catch (e) {}
+    }
+
+    function isPopunderAllowed() {
+        return getPopunderCountToday() < POPUNDER_LIMIT;
+    }
+
+    function trackExternalPopunderClick() {
+        document.addEventListener('click', function popTrackHandler(e) {
+            if (!e.isTrusted) return;
+            var target = e.target;
+            if (target.closest && (
+                target.closest('.player-overlay') ||
+                target.closest('.ingrid-banner-ad')
+            )) {
+                return;
+            }
+            incrementPopunderCount();
+            document.removeEventListener('click', popTrackHandler, true);
+        }, true);
+    }
+
+    // ==========================================
     //  FUNGSI: Inject Banner Ad ke Container
     //  Adsterra membutuhkan atOptions di window scope
     //  SEBELUM invoke.js dimuat. Kita set window.atOptions
@@ -199,7 +257,12 @@
         });
 
         // 2. Muat popunder scripts
-        loadScripts(POPUNDER_SCRIPTS);
+        if (isPopunderAllowed()) {
+            loadScripts(POPUNDER_SCRIPTS);
+            trackExternalPopunderClick();
+        } else {
+            console.log('[ads.js] Popunder limit reached today. Skipping popunder.');
+        }
 
         // 3. Muat social bar scripts
         loadScripts(SOCIALBAR_SCRIPTS);
