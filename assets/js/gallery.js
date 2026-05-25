@@ -1421,12 +1421,78 @@ function openPlayerModal(card) {
 
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
+    injectPlayerAds();
     kLog('Player modal dibuka:', card.name);
 }
 
 /**
  * Tutup video player modal dan hentikan video
  */
+
+/**
+ * Inject Adsterra ads ke player modal
+ * - Top: 320x50 banner
+ * - Bottom: 320x50 banner
+ * - Side: 320x50 banner
+ */
+function injectPlayerAds() {
+    // Helper: inject Adsterra script ke container via iframe isolasi
+    function injectAd(containerId, key, width, height) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = ''; // Pastikan bersih
+
+        var iframe = document.createElement('iframe');
+        iframe.width = width;
+        iframe.height = height;
+        iframe.frameBorder = '0';
+        iframe.scrolling = 'no';
+        iframe.style.border = 'none';
+        iframe.style.overflow = 'hidden';
+        iframe.style.width = width + 'px';
+        iframe.style.height = height + 'px';
+        
+        container.appendChild(iframe);
+
+        try {
+            var doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(
+                '<!DOCTYPE html>' +
+                '<html>' +
+                '<head>' +
+                '<style>body { margin: 0; padding: 0; overflow: hidden; background: transparent; display: flex; justify-content: center; align-items: center; }</style>' +
+                '</head>' +
+                '<body>' +
+                '<script type="text/javascript">' +
+                'atOptions = { "key" : "' + key + '", "format" : "iframe", "height" : ' + height + ', "width" : ' + width + ', "params" : {} };' +
+                '</script>' +
+                '<script type="text/javascript" src="https://glamournakedemployee.com/' + key + '/invoke.js"><\/script>' +
+                '</body>' +
+                '</html>'
+            );
+            doc.close();
+        } catch (e) {
+            console.error('Gagal menulis ke iframe ad:', e);
+        }
+    }
+
+    // 320x50 top, bottom & side (key: 2e8603e8d49f282cb2b6c51077745034)
+    injectAd('playerAdTop', '2e8603e8d49f282cb2b6c51077745034', 320, 50);
+    injectAd('playerAdBottom', '2e8603e8d49f282cb2b6c51077745034', 320, 50);
+    injectAd('playerAdSide', '2e8603e8d49f282cb2b6c51077745034', 320, 50);
+}
+
+/**
+ * Bersihkan semua ad dari player modal
+ */
+function clearPlayerAds() {
+    ['playerAdTop', 'playerAdBottom', 'playerAdSide'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+    });
+}
+
 function closePlayerModal() {
     var modal = document.getElementById('playerModal');
     var iframe = document.getElementById('playerIframe');
@@ -1435,12 +1501,13 @@ function closePlayerModal() {
     iframe.src = '';
     modal.classList.remove('show');
     document.body.style.overflow = '';
+    clearPlayerAds();
     kLog('Player modal ditutup');
 }
 
 // Event: tutup player modal saat klik overlay
 document.getElementById('playerModal').addEventListener('click', function (e) {
-    if (e.target === this) closePlayerModal();
+    if (e.target === this || e.target.classList.contains('player-modal-wrapper')) closePlayerModal();
 });
 
 // Event: tutup player modal saat klik tombol close
@@ -1892,6 +1959,7 @@ function enhancedOpenPlayerModal(card) {
 
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
+    injectPlayerAds();
     kLog('Player modal dibuka:', card.name);
 
     // Fetch detail lengkap jika punya videoId (untuk mendapatkan keywords jika belum ada)
