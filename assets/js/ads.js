@@ -57,46 +57,40 @@
     ];
 
     // ==========================================
-    //  POPUNDER FREQUENCY CAPPING SYSTEM (Max 3/day)
+    //  POPUNDER FREQUENCY CAPPING SYSTEM (Max 2 per 2 minutes)
     // ==========================================
-    var POPUNDER_LIMIT = 3;
-    var STORAGE_KEY = '_kumpulenak_pop_ctrl';
+    var POPUNDER_LIMIT = 2;
+    var POP_TIME_WINDOW = 2 * 60 * 1000; // 2 minutes in ms
+    var STORAGE_KEY = '_kumpulenak_pop_window';
 
-    function getPopunderCountToday() {
+    function getPopTimestamps() {
         try {
-            var today = new Date().toDateString();
             var dataStr = localStorage.getItem(STORAGE_KEY);
             if (dataStr) {
-                var data = JSON.parse(dataStr);
-                if (data && data.date === today) {
-                    return data.count || 0;
+                var list = JSON.parse(dataStr);
+                if (Array.isArray(list)) {
+                    var now = Date.now();
+                    // Filter out timestamps older than 2 minutes
+                    return list.filter(function (t) {
+                        return (now - t) < POP_TIME_WINDOW;
+                    });
                 }
             }
         } catch (e) {}
-        return 0;
+        return [];
     }
 
     function incrementPopunderCount() {
         try {
-            var today = new Date().toDateString();
-            var dataStr = localStorage.getItem(STORAGE_KEY);
-            var data = null;
-            if (dataStr) {
-                try {
-                    data = JSON.parse(dataStr);
-                } catch (e) {}
-            }
-            if (!data || data.date !== today) {
-                data = { date: today, count: 0 };
-            }
-            data.count++;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            console.log('[ads.js] Popunder count:', data.count, '/', POPUNDER_LIMIT);
+            var list = getPopTimestamps();
+            list.push(Date.now());
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+            console.log('[ads.js] Popunder count in last 2m:', list.length, '/', POPUNDER_LIMIT);
         } catch (e) {}
     }
 
     function isPopunderAllowed() {
-        return getPopunderCountToday() < POPUNDER_LIMIT;
+        return getPopTimestamps().length < POPUNDER_LIMIT;
     }
 
     function trackExternalPopunderClick() {
