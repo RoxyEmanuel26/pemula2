@@ -135,17 +135,7 @@
         _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vYnhqOXY4eHM/a2V5PWJiY2MwMzU0MTcyMWZlNTk1ZjZkMGExOTkwODZjNjI4'),
         _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vZDF5ZHlnbjQ/a2V5PWFlMDRkYjk3NThmNjZkNTcxYTJkMTIyYjA4NjM1YWYz'),
         _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vYzV4Zjc2Nzk/a2V5PTgwZGM4NjM1NzgwMTY1MTljYTkxNjdhYmM3MDkwOTQ0'),
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vbnBrdnpmNDZtP2tleT04MDYwZWE3MmEyOTFhY2RlYWU4OTc0MDU0MjZhNjAxMw=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjcyMQ=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjczNg=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjcxOQ=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjcyMw=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjczMQ=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjcyNg=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjcyOQ=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjcyOA=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjczMA=='),
-        _d('aHR0cHM6Ly9vbWcxMC5jb20vNC8xMDgwNjcyNw==')
+        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vbnBrdnpmNDZtP2tleT04MDYwZWE3MmEyOTFhY2RlYWU4OTc0MDU0MjZhNjAxMw==')
     ];
 
     function getRandomLink() {
@@ -255,54 +245,7 @@
     var _popunderFired = false;
 
     function initSelfHostedPopunder() {
-        if (!_isPopAllowed()) {
-            console.log('[loader] Popunder limit reached today. Skipping self-hosted popunder.');
-            return;
-        }
-        if (_popunderFired) return;
-
-        function doPopunder() {
-            if (!_isPopAllowed()) return;
-            if (_popunderFired || sessionStorage.getItem('popunderShown')) return;
-
-            var target = getRandomLink();
-
-            try {
-                var w = window.open(target, '_blank');
-                if (w) {
-                    _popunderFired = true;
-                    sessionStorage.setItem('popunderShown', 'true');
-                    _incrementPopCount();
-                    // Modern browsers ignore focus() from popup, but no harm
-                    try { window.focus(); } catch (e) { }
-                }
-            } catch (e) {
-                // Silently fail
-            }
-        }
-
-        // Trigger pada klik pertama user (hanya 1x)
-        document.addEventListener('click', function popHandler(e) {
-            // [SECURITY FIX] Hanya jalankan jika dari interaksi langsung (isTrusted)
-            if (!e.isTrusted) return;
-            
-            if (sessionStorage.getItem('popunderShown')) {
-                document.removeEventListener('click', popHandler, true);
-                return;
-            }
-
-            // Jangan trigger pada elemen interaktif yang penting
-            var target = e.target;
-            if (target.closest && (
-                target.closest('.player-overlay') ||
-                target.closest('.ingrid-banner-ad')
-            )) {
-                return;
-            }
-            
-            doPopunder();
-            document.removeEventListener('click', popHandler, true);
-        }, true);
+        
     }
 
     // ==========================================
