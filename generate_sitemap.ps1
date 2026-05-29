@@ -3,6 +3,7 @@ $baseUrl = 'https://www.kumpulenak.my.id'
 $dateStr = Get-Date -Format "yyyy-MM-ddTHH:mm:ss+07:00"
 $delaySeconds = 0
 $perPage = 100
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
 Write-Host ""
 Write-Host "============================================"
@@ -41,7 +42,7 @@ if (Test-Path $stateFile) {
 }
 
 function Save-State {
-    $state | ConvertTo-Json -Depth 10 | Set-Content $stateFile -Encoding UTF8
+    [System.IO.File]::WriteAllText($stateFile, ($state | ConvertTo-Json -Depth 10), $utf8NoBom)
 }
 
 function Update-MasterIndex {
@@ -54,7 +55,7 @@ function Update-MasterIndex {
         $indexXml += "  <sitemap>`n    <loc>$baseUrl/sitemaps/$sf</loc>`n    <lastmod>$dateStr</lastmod>`n  </sitemap>`n"
     }
     $indexXml += "</sitemapindex>"
-    [System.IO.File]::WriteAllText('sitemap_index.xml', $indexXml, [System.Text.Encoding]::UTF8)
+    [System.IO.File]::WriteAllText('sitemap_index.xml', $indexXml, $utf8NoBom)
 }
 
 function Generate-StaticSitemaps {
@@ -81,7 +82,7 @@ function Generate-StaticSitemaps {
   <url><loc>https://www.kumpulenak.my.id/howto</loc><lastmod>$dateStr</lastmod><changefreq>monthly</changefreq><priority>0.60</priority></url>
 </urlset>
 "@
-    [System.IO.File]::WriteAllText('sitemaps/sitemap_pages.xml', $pagesXml, [System.Text.Encoding]::UTF8)
+    [System.IO.File]::WriteAllText('sitemaps/sitemap_pages.xml', $pagesXml, $utf8NoBom)
 
     # sitemap_kategori.xml
     $kategoriList = @(
@@ -100,7 +101,7 @@ function Generate-StaticSitemaps {
       $kategoriXml += "  <url>`n    <loc>$url</loc>`n    <lastmod>$dateStr</lastmod>`n    <changefreq>daily</changefreq>`n    <priority>0.80</priority>`n  </url>`n"
     }
     $kategoriXml += "</urlset>"
-    [System.IO.File]::WriteAllText('sitemaps/sitemap_kategori.xml', $kategoriXml, [System.Text.Encoding]::UTF8)
+    [System.IO.File]::WriteAllText('sitemaps/sitemap_kategori.xml', $kategoriXml, $utf8NoBom)
 
     # sitemap_tags.xml
     $tags = @('amateur', 'teen', 'milf', 'onlyfans', 'pov', 'blonde', 'ebony', 'latina', 'hentai', 'big ass', 'big tits', 'couple', 'student', 'blowjob', 'creampie', 'uncensored')
@@ -110,7 +111,7 @@ function Generate-StaticSitemaps {
       $tagsXml += "  <url>`n    <loc>$url</loc>`n    <lastmod>$dateStr</lastmod>`n    <changefreq>daily</changefreq>`n    <priority>0.75</priority>`n  </url>`n"
     }
     $tagsXml += "</urlset>"
-    [System.IO.File]::WriteAllText('sitemaps/sitemap_tags.xml', $tagsXml, [System.Text.Encoding]::UTF8)
+    [System.IO.File]::WriteAllText('sitemaps/sitemap_tags.xml', $tagsXml, $utf8NoBom)
 }
 
 # Selalu buat sitemap statis di awal jika belum ada (atau refresh setiap run)
@@ -215,7 +216,7 @@ foreach ($query in $searchQueries) {
             }
             $xml += "</urlset>"
             
-            [System.IO.File]::WriteAllText("sitemaps/$currentFileName", $xml, [System.Text.Encoding]::UTF8)
+            [System.IO.File]::WriteAllText("sitemaps/$currentFileName", $xml, $utf8NoBom)
             $state.sitemapVideoFiles += $currentFileName
             Write-Host "      -> $currentFileName ($($chunkVideos.Count) URLs)"
         }
