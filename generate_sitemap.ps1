@@ -170,9 +170,13 @@ foreach ($query in $searchQueries) {
                     if ($v.added -and $v.added.Length -ge 10) { $addedDate = $v.added.Substring(0, 10) }
 
                     $categoryVideos[$v.id] = @{
-                        id    = $v.id
-                        slug  = $slug
-                        added = $addedDate
+                        id        = $v.id
+                        slug      = $slug
+                        added     = $addedDate
+                        title     = $v.title
+                        thumbnail = if ($v.default_thumb) { $v.default_thumb.src } else { "" }
+                        embed     = $v.embed
+                        duration  = if ($v.length_sec) { [int]$v.length_sec } else { 0 }
                     }
                     $globalTitleSet[$titleLower] = $true
                 }
@@ -209,10 +213,39 @@ foreach ($query in $searchQueries) {
                 $currentFileName = $fileName.Replace(".xml", "_$($i+1).xml")
             }
             
-            $xml = "<?xml version='1.0' encoding='UTF-8'?>`n<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>`n"
+            $xml = "<?xml version='1.0' encoding='UTF-8'?>`n<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:video='http://www.google.com/schemas/sitemap-video/1.1'>`n"
             foreach ($v in $chunkVideos) {
                 $videoUrl = "$baseUrl/video?v=$($v.id)-$($v.slug)"
-                $xml += "  <url>`n    <loc>$videoUrl</loc>`n    <lastmod>$($v.added)</lastmod>`n    <changefreq>monthly</changefreq>`n    <priority>0.70</priority>`n  </url>`n"
+                $xml += "  <url>`n"
+                $xml += "    <loc>$videoUrl</loc>`n"
+                $xml += "    <lastmod>$($v.added)</lastmod>`n"
+                $xml += "    <changefreq>monthly</changefreq>`n"
+                $xml += "    <priority>0.70</priority>`n"
+
+                if ($v.title -and $v.thumbnail -and $v.embed) {
+                    $escapedTitle = [System.Security.SecurityElement]::Escape($v.title)
+                    $escapedThumb = [System.Security.SecurityElement]::Escape($v.thumbnail)
+                    $escapedEmbed = [System.Security.SecurityElement]::Escape($v.embed)
+                    $duration = 0
+                    if ($v.duration) { $duration = [int]$v.duration }
+                    $pubDate = $v.added
+                    if ($pubDate -notmatch '^\d{4}-\d{2}-\d{2}$') {
+                        $pubDate = $dateStr.Substring(0, 10)
+                    }
+                    $description = "Nonton video bokep $escapedTitle gratis di kumpulenak. Streaming cepat tanpa buffer."
+
+                    $xml += "    <video:video>`n"
+                    $xml += "      <video:thumbnail_loc>$escapedThumb</video:thumbnail_loc>`n"
+                    $xml += "      <video:title>$escapedTitle</video:title>`n"
+                    $xml += "      <video:description>$description</video:description>`n"
+                    $xml += "      <video:player_loc>$escapedEmbed</video:player_loc>`n"
+                    if ($duration -gt 0) {
+                        $xml += "      <video:duration>$duration</video:duration>`n"
+                    }
+                    $xml += "      <video:publication_date>$pubDate</video:publication_date>`n"
+                    $xml += "    </video:video>`n"
+                }
+                $xml += "  </url>`n"
             }
             $xml += "</urlset>"
             
