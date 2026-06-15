@@ -505,6 +505,15 @@
             };
 
             document.getElementById('jsonLdScript').textContent = JSON.stringify(schema);
+
+            // Canonical URL
+            let canonicalLink = document.querySelector('link[rel="canonical"]');
+            if (!canonicalLink) {
+                canonicalLink = document.createElement('link');
+                canonicalLink.setAttribute('rel', 'canonical');
+                document.head.appendChild(canonicalLink);
+            }
+            canonicalLink.setAttribute('href', 'https://www.kumpulenak.my.id/video?v=' + encodeURIComponent(video.id || videoId));
         }
 
         async function fetchSimilarVideos(video) {

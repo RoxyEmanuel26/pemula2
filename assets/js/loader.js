@@ -21,6 +21,12 @@
 (function () {
     'use strict';
 
+    // Inject Analytics System
+    var analyticsScript = document.createElement('script');
+    analyticsScript.src = '/assets/js/analytics.js?v=1.0';
+    analyticsScript.defer = true;
+    document.head.appendChild(analyticsScript);
+
     // ==========================================
     //  URL OBFUSCATION UTILITIES
     // ==========================================
