@@ -9,7 +9,7 @@
     'use strict';
 
     // Ganti 'G-XXXXXXXXXX' dengan Measurement ID Google Analytics 4 milik Anda.
-    var GA_MEASUREMENT_ID = 'G-WJGZTZLPES'; 
+    var GA_MEASUREMENT_ID = 'G-CBJ8CPF3PX'; 
 
     // Injeksi skrip gtag.js
     var script = document.createElement('script');
