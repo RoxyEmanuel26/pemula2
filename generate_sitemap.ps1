@@ -47,7 +47,7 @@ function Save-State {
 
 function Update-MasterIndex {
     Write-Host "      -> Memperbarui sitemap_index.xml (Master Index)..."
-    $indexXml = "<?xml version='1.0' encoding='UTF-8'?>`n<sitemapindex xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>`n"
+    $indexXml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?>`n<sitemapindex xmlns=`"http://www.sitemaps.org/schemas/sitemap/0.9`">`n"
     $indexXml += "  <sitemap>`n    <loc>$baseUrl/sitemaps/sitemap_pages.xml</loc>`n    <lastmod>$dateStr</lastmod>`n  </sitemap>`n"
     $indexXml += "  <sitemap>`n    <loc>$baseUrl/sitemaps/sitemap_kategori.xml</loc>`n    <lastmod>$dateStr</lastmod>`n  </sitemap>`n"
     $indexXml += "  <sitemap>`n    <loc>$baseUrl/sitemaps/sitemap_tags.xml</loc>`n    <lastmod>$dateStr</lastmod>`n  </sitemap>`n"
@@ -93,7 +93,7 @@ function Generate-StaticSitemaps {
       @{q='celebrity'; order='most-popular'}, @{q='outdoor'; order='most-popular'}, @{q='dance'; order='most-popular'},
       @{q='live cam'; order='latest'}, @{q='mature'; order='most-popular'}
     )
-    $kategoriXml = "<?xml version='1.0' encoding='UTF-8'?>`n<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>`n"
+    $kategoriXml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?>`n<urlset xmlns=`"http://www.sitemaps.org/schemas/sitemap/0.9`">`n"
     foreach ($k in $kategoriList) {
       $url = ''
       if ($k.q -eq 'all') { $url = $baseUrl + '/?order=' + $k.order }
@@ -105,7 +105,7 @@ function Generate-StaticSitemaps {
 
     # sitemap_tags.xml
     $tags = @('amateur', 'teen', 'milf', 'onlyfans', 'pov', 'blonde', 'ebony', 'latina', 'hentai', 'big ass', 'big tits', 'couple', 'student', 'blowjob', 'creampie', 'uncensored')
-    $tagsXml = "<?xml version='1.0' encoding='UTF-8'?>`n<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>`n"
+    $tagsXml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?>`n<urlset xmlns=`"http://www.sitemaps.org/schemas/sitemap/0.9`">`n"
     foreach ($t in $tags) {
       $url = $baseUrl + '/?q=' + [uri]::EscapeDataString($t)
       $tagsXml += "  <url>`n    <loc>$url</loc>`n    <lastmod>$dateStr</lastmod>`n    <changefreq>daily</changefreq>`n    <priority>0.75</priority>`n  </url>`n"
@@ -213,7 +213,7 @@ foreach ($query in $searchQueries) {
                 $currentFileName = $fileName.Replace(".xml", "_$($i+1).xml")
             }
             
-            $xml = "<?xml version='1.0' encoding='UTF-8'?>`n<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:video='http://www.google.com/schemas/sitemap-video/1.1'>`n"
+            $xml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?>`n<urlset xmlns=`"http://www.sitemaps.org/schemas/sitemap/0.9`" xmlns:video=`"http://www.google.com/schemas/sitemap-video/1.1`">`n"
             foreach ($v in $chunkVideos) {
                 $videoUrl = "$baseUrl/video?v=$($v.id)-$($v.slug)"
                 $xml += "  <url>`n"
