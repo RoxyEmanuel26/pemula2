@@ -85,23 +85,8 @@ function Generate-StaticSitemaps {
     [System.IO.File]::WriteAllText('sitemaps/sitemap_pages.xml', $pagesXml, $utf8NoBom)
 
     # sitemap_kategori.xml
-    $kategoriList = @(
-      @{q='all'; order='most-popular'}, @{q='all'; order='latest'}, @{q='all'; order='top-weekly'}, @{q='all'; order='top-monthly'},
-      @{q='amateur'; order='most-popular'}, @{q='teen'; order='most-popular'}, @{q='milf'; order='most-popular'},
-      @{q='pov'; order='most-popular'}, @{q='blonde'; order='most-popular'}, @{q='ebony'; order='most-popular'},
-      @{q='latina'; order='most-popular'}, @{q='couple'; order='most-popular'}, @{q='student'; order='most-popular'},
-      @{q='celebrity'; order='most-popular'}, @{q='outdoor'; order='most-popular'}, @{q='dance'; order='most-popular'},
-      @{q='live cam'; order='latest'}, @{q='mature'; order='most-popular'}
-    )
-    $kategoriXml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?>`n<urlset xmlns=`"http://www.sitemaps.org/schemas/sitemap/0.9`">`n"
-    foreach ($k in $kategoriList) {
-      $url = ''
-      if ($k.q -eq 'all') { $url = $baseUrl + '/?order=' + $k.order }
-      else { $url = $baseUrl + '/?q=' + [uri]::EscapeDataString($k.q) + '&amp;order=' + $k.order }
-      $kategoriXml += "  <url>`n    <loc>$url</loc>`n    <lastmod>$dateStr</lastmod>`n    <changefreq>daily</changefreq>`n    <priority>0.80</priority>`n  </url>`n"
-    }
-    $kategoriXml += "</urlset>"
-    [System.IO.File]::WriteAllText('sitemaps/sitemap_kategori.xml', $kategoriXml, $utf8NoBom)
+    Write-Host "      -> Menjalankan node scripts/generate-category-sitemap.js..."
+    node scripts/generate-category-sitemap.js
 
     # sitemap_tags.xml
     $tags = @('amateur', 'teen', 'milf', 'onlyfans', 'pov', 'blonde', 'ebony', 'latina', 'hentai', 'big ass', 'big tits', 'couple', 'student', 'blowjob', 'creampie', 'uncensored')

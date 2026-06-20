@@ -2,26 +2,26 @@ const fs = require('fs');
 const path = require('path');
 
 // ============================================================================
-// CONFIGURATION
+// CONFIGURATION & METADATA OVERRIDES
 // ============================================================================
 
-const CATEGORIES = [
-    { slug: 'amateur', query: 'amateur', title: 'Amateur & Homemade Adult Videos', desc: 'Watch the best amateur and homemade adult videos. Real couples and authentic action.', icon: '🏠' },
-    { slug: 'babe', query: 'babe', title: 'Hot Babes & Beautiful Girls', desc: 'Stream HD videos featuring the hottest babes, beautiful models, and stunning girls.', icon: '🔥' },
-    { slug: 'milf', query: 'milf', title: 'Premium MILF & Cougar Videos', desc: 'Browse our exclusive collection of MILF and mature women adult videos in full HD.', icon: '👩' },
-    { slug: 'pov', query: 'pov', title: 'Immersive POV Adult Videos', desc: 'Experience the action firsthand with our top-rated Point of View (POV) videos.', icon: '👀' },
-    { slug: 'blonde', query: 'blonde', title: 'Hot Blonde Babes Videos', desc: 'Watch stunning blonde babes and gorgeous models in high quality HD.', icon: '👱' },
-    { slug: 'ebony', query: 'ebony', title: 'Beautiful Ebony Stars', desc: 'Discover beautiful ebony stars and hot black babes in premium adult scenes.', icon: '👩🏿' },
-    { slug: 'latina', query: 'latina', title: 'Hot Latina & Hispanic Babes', desc: 'Enjoy passionate adult videos featuring gorgeous Latina and Hispanic babes.', icon: '💃' },
-    { slug: 'dance', query: 'dance', title: 'Hot Dance & Twerk Videos', desc: 'Watch sensual dance, twerk, and striptease videos in full high definition.', icon: '💃' },
-    { slug: 'outdoor', query: 'outdoor', title: 'Public & Outdoor Sex Videos', desc: 'Thrilling outdoor and public sex adult videos for your viewing pleasure.', icon: '🏖️' },
-    { slug: 'big-ass', query: 'big ass', title: 'Big Ass & Booty Videos', desc: 'The best collection of big ass and huge booty adult videos on the web.', icon: '🍑' },
-    { slug: 'big-tits', query: 'big tits', title: 'Big Tits & Busty Babes', desc: 'Stream HD videos of busty babes and big tits models.', icon: '🍒' },
-    { slug: 'couple', query: 'couple', title: 'Real Couples & Passionate Sex', desc: 'Watch real couples making love and passionate adult scenes.', icon: '💑' },
-    { slug: 'cosplay', query: 'cosplay', title: 'Cosplay & Costume Roleplay', desc: 'Exciting cosplay, uniform, and costume roleplay adult videos.', icon: '🎭' },
-    { slug: 'live-cam', query: 'live cam', title: 'Live Cam Shows & Recordings', desc: 'Recorded live cam shows and intimate webcam adult videos.', icon: '🎥' },
-    { slug: 'mature', query: 'mature', title: 'Mature Women & Older Ladies', desc: 'Premium adult videos featuring beautiful mature women and older ladies.', icon: '💋' }
-];
+const CUSTOM_METADATA = {
+    'amateur': { title: 'Amateur & Homemade Adult Videos', desc: 'Watch the best amateur and homemade adult videos. Real couples and authentic action.' },
+    'babe': { title: 'Hot Babes & Beautiful Girls', desc: 'Stream HD videos featuring the hottest babes, beautiful models, and stunning girls.' },
+    'milf': { title: 'Premium MILF & Cougar Videos', desc: 'Browse our exclusive collection of MILF and mature women adult videos in full HD.' },
+    'pov': { title: 'Immersive POV Adult Videos', desc: 'Experience the action firsthand with our top-rated Point of View (POV) videos.' },
+    'blonde': { title: 'Hot Blonde Babes Videos', desc: 'Watch stunning blonde babes and gorgeous models in high quality HD.' },
+    'ebony': { title: 'Beautiful Ebony Stars', desc: 'Discover beautiful ebony stars and hot black babes in premium adult scenes.' },
+    'latina': { title: 'Hot Latina & Hispanic Babes', desc: 'Enjoy passionate adult videos featuring gorgeous Latina and Hispanic babes.' },
+    'dance': { title: 'Hot Dance & Twerk Videos', desc: 'Watch sensual dance, twerk, and striptease videos in full high definition.' },
+    'outdoor': { title: 'Public & Outdoor Sex Videos', desc: 'Thrilling outdoor and public sex adult videos for your viewing pleasure.' },
+    'big-ass': { title: 'Big Ass & Booty Videos', desc: 'The best collection of big ass and huge booty adult videos on the web.' },
+    'big-tits': { title: 'Big Tits & Busty Babes', desc: 'Stream HD videos of busty babes and big tits models.' },
+    'couple': { title: 'Real Couples & Passionate Sex', desc: 'Watch real couples making love and passionate adult scenes.' },
+    'cosplay': { title: 'Cosplay & Costume Roleplay', desc: 'Exciting cosplay, uniform, and costume roleplay adult videos.' },
+    'live-cam': { title: 'Live Cam Shows & Recordings', desc: 'Recorded live cam shows and intimate webcam adult videos.' },
+    'mature': { title: 'Mature Women & Older Ladies', desc: 'Premium adult videos featuring beautiful mature women and older ladies.' }
+};
 
 const API_BASE = 'https://www.eporner.com/api/v2/video/search/';
 const API_PARAMS = {
@@ -48,6 +48,7 @@ const MAX_RETRIES = 3;
 const ROOT_DIR = path.join(__dirname, '..');
 const CATEGORY_DIR = path.join(ROOT_DIR, 'category');
 const INDEX_HTML_PATH = path.join(ROOT_DIR, 'index.html');
+const GALLERY_JS_PATH = path.join(ROOT_DIR, 'assets', 'js', 'gallery.js');
 
 if (!fs.existsSync(CATEGORY_DIR)) {
     fs.mkdirSync(CATEGORY_DIR, { recursive: true });
@@ -114,7 +115,7 @@ async function fetchWithRetry(url, retries = MAX_RETRIES) {
                 console.error("All " + retries + " attempts failed for " + url);
                 return null;
             }
-            await new Promise(res => setTimeout(res, 1500));
+            await new Promise(res => setTimeout(res, 2000));
         }
     }
 }
@@ -160,7 +161,7 @@ function generateCardHTML(video) {
     "</a>";
 }
 
-function processTemplate(template, category, videos) {
+function processTemplate(template, category, videos, allCategories) {
     let html = template;
     const siteUrl = 'https://www.kumpulenak.my.id';
     const categoryUrl = siteUrl + "/category/" + category.slug;
@@ -191,7 +192,8 @@ function processTemplate(template, category, videos) {
     html = html.replace('</head>', breadcrumbLd);
     html = html.replace('<body>', "<body data-static-category=\"" + category.slug + "\">");
     html = html.replace(/<h1 class="main-seo-title">.*?<\/h1>/s, "<h1 class=\"main-seo-title\">" + category.title + "</h1>");
-    html = html.replace(/<div class="section-label" id="sectionLabel">.*?<\/div>/s, "<div class=\"section-label\" id=\"sectionLabel\">" + category.icon + " " + category.title + "</div>");
+    html = html.replace(/<p class="main-seo-desc" id="mainSeoDesc">.*?<\/p>/s, "<p class=\"main-seo-desc\" id=\"mainSeoDesc\">" + category.desc + "</p>");
+    html = html.replace(/<div class="section-label" id="sectionLabel">.*?<\/div>/s, "<div class=\"section-label\" id=\"sectionLabel\">" + category.title + "</div>");
     
     let cardsHtml = '';
     if (videos.length > 0) {
@@ -205,11 +207,12 @@ function processTemplate(template, category, videos) {
         "<div class=\"card-grid\" id=\"cardGrid\">\n                " + cardsHtml + "\n            </div>\n\n            <!-- PAGINATION -->"
     );
 
+    // Replace dynamic /?q= links in the static pages with proper static routing to category pages
     const navLinksRegex = /<a href="\/\?q=([a-z-]+)">.*?<\/a>/g;
     html = html.replace(navLinksRegex, (match, query) => {
-        const cat = CATEGORIES.find(c => c.query === query || c.slug === query);
+        const cat = allCategories.find(c => c.query === query || c.slug === query);
         if (cat) {
-            return "<a href=\"/category/" + cat.slug + "\">" + cat.icon + " " + cat.title + "</a>";
+            return "<a href=\"/category/" + cat.slug + "\">" + cat.title + "</a>";
         }
         return match;
     });
@@ -224,17 +227,43 @@ async function main() {
         console.error("❌ Cannot find index.html at " + INDEX_HTML_PATH);
         process.exit(1);
     }
+    if (!fs.existsSync(GALLERY_JS_PATH)) {
+        console.error("❌ Cannot find gallery.js at " + GALLERY_JS_PATH);
+        process.exit(1);
+    }
+
+    // Load categories dynamically from gallery.js
+    const galleryJs = fs.readFileSync(GALLERY_JS_PATH, 'utf-8');
+    const match = galleryJs.match(/const KATEGORI_LIST = \[([\s\S]*?)\];/);
+    if (!match) {
+        console.error("❌ Failed to parse KATEGORI_LIST from gallery.js");
+        process.exit(1);
+    }
+
+    const rawList = eval(`[${match[1]}]`);
+    const allCategories = rawList.map(item => {
+        const custom = CUSTOM_METADATA[item.slug];
+        return {
+            slug: item.slug,
+            query: item.query,
+            title: custom ? custom.title : `${item.label} Adult Videos`,
+            desc: custom ? custom.desc : `Watch the best collection of ${item.label} adult videos on kumpulenak. Stream premium ${item.label} videos, hot scenes, and trending viral clips for free.`,
+            label: item.label
+        };
+    });
+
+    console.log(`📋 Loaded ${allCategories.length} categories from gallery.js`);
     
     const indexTemplate = fs.readFileSync(INDEX_HTML_PATH, 'utf-8');
     
-    for (const category of CATEGORIES) {
+    for (const category of allCategories) {
         console.log("\n======================================");
         console.log("Processing Category: [" + category.title + "] (" + category.slug + ")");
         
         const videos = await fetchCategoryVideos(category.query);
         console.log("✅ Fetched " + videos.length + " videos for " + category.slug);
         
-        const finalHtml = processTemplate(indexTemplate, category, videos);
+        const finalHtml = processTemplate(indexTemplate, category, videos, allCategories);
         
         const outputPath = path.join(CATEGORY_DIR, category.slug + ".html");
         fs.writeFileSync(outputPath, finalHtml, 'utf-8');
@@ -242,7 +271,7 @@ async function main() {
         console.log("💾 Saved " + outputPath);
     }
     
-    console.log("\n🎉 Generation complete! " + CATEGORIES.length + " category pages created in /category/");
+    console.log("\n🎉 Generation complete! " + allCategories.length + " category pages created in /category/");
 }
 
 main().catch(console.error);
