@@ -17,9 +17,11 @@ Allow: /howto
 Disallow: /assets/js/ads.js
 Disallow: /assets/js/loader.js
 Disallow: /.env
+Disallow: /fix_state.js
+Disallow: /generate_sitemap.ps1
+Disallow: /generate-sitemap.bat
+Disallow: /output.log
 
-# Crawl delay (politeness for smaller bots)
-Crawl-delay: 1
 
 # Sitemap location
 Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml

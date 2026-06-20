@@ -54,16 +54,16 @@ const TAB_CONFIG = {
 //  API hanya support 1 query per request, jadi kita
 //  fetch semua keyword paralel lalu gabungkan hasilnya
 // =====================================================
-const INDO_QUERIES = ['amateur', 'teen', 'milf', 'pov', 'blonde', 'ebony'];
+const INDO_QUERIES = ['amateur', 'babe', 'milf', 'pov', 'blonde', 'ebony'];
 
 // =====================================================
 //  VIRAL TAGS — Daftar tag/keyword untuk tab "viral"
 // =====================================================
 const VIRAL_TAGS = [
     { label: '🏠 Amateur', query: 'amateur' },
-    { label: '👧 Teen', query: 'teen' },
+    { label: '💃 Dance', query: 'dance' },
     { label: '👩 MILF', query: 'milf' },
-    { label: '📱 OnlyFans', query: 'onlyfans' },
+    { label: '🏖️ Outdoor', query: 'outdoor' },
     { label: '👀 POV', query: 'pov' },
     { label: '👱 Blonde', query: 'blonde' },
     { label: '👩🏿 Ebony', query: 'ebony' },
@@ -72,7 +72,7 @@ const VIRAL_TAGS = [
     { label: '🍑 Big Ass', query: 'big ass' },
     { label: '🍒 Big Tits', query: 'big tits' },
     { label: '💑 Couples', query: 'couple' },
-    { label: '🎓 College', query: 'student' },
+    { label: '🎭 Cosplay', query: 'cosplay' },
     { label: '👄 Blowjob', query: 'blowjob' },
     { label: '💦 Creampie', query: 'creampie' },
     { label: '🔞 Uncensored', query: 'uncensored' }
@@ -87,20 +87,42 @@ const KATEGORI_LIST = [
     { label: '📈 Weekly Top', query: 'all', order: 'top-weekly', icon: '📈' },
     { label: '📅 Monthly Top', query: 'all', order: 'top-monthly', icon: '📅' },
     { label: '🏠 Amateur', query: 'amateur', order: 'most-popular', icon: '🏠' },
-    { label: '👧 Teen', query: 'teen', order: 'most-popular', icon: '👧' },
+    { label: '🔥 Babe', query: 'babe', order: 'most-popular', icon: '🔥' },
     { label: '👩 MILF', query: 'milf', order: 'most-popular', icon: '👩' },
     { label: '👀 POV', query: 'pov', order: 'most-popular', icon: '👀' },
     { label: '👱 Blonde', query: 'blonde', order: 'most-popular', icon: '👱' },
     { label: '👩🏿 Ebony', query: 'ebony', order: 'most-popular', icon: '👩🏿' },
     { label: '💃 Latina', query: 'latina', order: 'most-popular', icon: '💃' },
     { label: '💑 Couples', query: 'couple', order: 'most-popular', icon: '💑' },
-    { label: '🎓 College', query: 'student', order: 'most-popular', icon: '🎓' },
+    { label: '🎭 Cosplay', query: 'cosplay', order: 'most-popular', icon: '🎭' },
     { label: '⭐ Celebrities', query: 'celebrity', order: 'most-popular', icon: '⭐' },
     { label: '🏖️ Outdoor', query: 'outdoor', order: 'most-popular', icon: '🏖️' },
     { label: '💃 Dance', query: 'dance', order: 'most-popular', icon: '💃' },
     { label: '🎥 Live Cam', query: 'live cam', order: 'latest', icon: '🎥' },
     { label: '💋 Mature', query: 'mature', order: 'most-popular', icon: '💋' }
 ];
+
+// =====================================================
+//  HARMFUL CONTENT FILTER — Blocks unsafe content
+//  Videos matching these keywords are filtered out
+// =====================================================
+const HARMFUL_KEYWORDS = [
+    'teen', 'teenager', 'underage', 'minor', 'child', 'kid',
+    'young girl', 'young boy', 'loli', 'shota', 'preteen',
+    'onlyfans', 'leaked', 'leak', 'student', 'school',
+    'college girl', 'high school', 'jailbait', 'barely legal'
+];
+
+function isHarmfulVideo(video) {
+    const title = (video.title || video.name || '').toLowerCase();
+    const keywords = (video.keywords || '').toLowerCase();
+    const combined = title + ' ' + keywords;
+    return HARMFUL_KEYWORDS.some(kw => combined.includes(kw));
+}
+
+function filterHarmfulVideos(videos) {
+    return videos.filter(v => !isHarmfulVideo(v));
+}
 
 // =====================================================
 //  CACHE STORE — In-memory cache untuk response API
@@ -507,7 +529,8 @@ async function fetchMultiQuery(queries, page, order) {
 
         results.forEach(function (res) {
             if (res && res.videos) {
-                res.videos.forEach(function (v) {
+                var safeVids = filterHarmfulVideos(res.videos);
+                safeVids.forEach(function (v) {
                     // Deduplicate berdasarkan video ID
                     if (!seenIds[v.id]) {
                         seenIds[v.id] = true;
@@ -1024,7 +1047,8 @@ async function loadAndRender() {
 
             // Convert API data to cards
             if (apiResponse.videos && apiResponse.videos.length > 0) {
-                currentDisplayCards = apiResponse.videos.map(mapAPIVideoToCard);
+                var safeVideos = filterHarmfulVideos(apiResponse.videos);
+                currentDisplayCards = safeVideos.map(mapAPIVideoToCard);
                 // Filter removed videos
                 currentDisplayCards = filterRemovedVideos(currentDisplayCards);
                 totalPagesFromAPI = apiResponse.total_pages || 1;
@@ -1592,6 +1616,8 @@ function scrollToTop() {
 //  VIEW COUNTER ANIMATION — IntersectionObserver
 // =====================================================
 
+let viewCounterObserver = null;
+
 /**
  * Inisialisasi animasi counter views saat card masuk viewport
  * Angka views akan count up dari 0 ke nilai sebenarnya dalam 1 detik
@@ -1600,7 +1626,9 @@ function initViewCounterAnimation() {
     var viewElements = document.querySelectorAll('.card-views[data-views]');
     if (!viewElements.length) return;
 
-    var observer = new IntersectionObserver(function (entries) {
+    if (viewCounterObserver) viewCounterObserver.disconnect();
+
+    viewCounterObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
             if (entry.isIntersecting) {
                 var el = entry.target;
@@ -1634,14 +1662,14 @@ function initViewCounterAnimation() {
                 }
 
                 requestAnimationFrame(animate);
-                observer.unobserve(el);
+                viewCounterObserver.unobserve(el);
             }
         });
     }, { threshold: 0.3 });
 
     viewElements.forEach(function (el) {
         if (el.dataset.animated !== 'true') {
-            observer.observe(el);
+            viewCounterObserver.observe(el);
         }
     });
 }

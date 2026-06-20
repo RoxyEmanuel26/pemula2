@@ -14,10 +14,10 @@ Write-Host "  Waktu: $dateStr"
 Write-Host "============================================"
 
 $searchQueries = @(
-    'amateur', 'teen', 'milf', 'onlyfans', 'pov', 'blonde', 'ebony', 'latina', 'hentai',
-    'big ass', 'big tits', 'small tits', 'couple', 'student', 'blowjob', 'creampie', 'uncensored',
+    'amateur', 'milf', 'pov', 'blonde', 'ebony', 'latina', 'hentai',
+    'big ass', 'big tits', 'small tits', 'couple', 'blowjob', 'creampie', 'uncensored',
     'asian', 'japanese', 'korean', 'celebrity', 'homemade', 'massage', 'outdoor', 'webcam',
-    'brunette', 'anal', 'threesome', 'lesbian', 'interracial', 'redhead', 'indian', 'college',
+    'brunette', 'anal', 'threesome', 'lesbian', 'interracial', 'redhead', 'indian',
     'office', 'public', 'beach', 'hotel', 'shower', 'car', 'gym', 'babe', 'gangbang', 'panties',
     'socks', 'bbw', 'cosplay', 'yoga', 'dance', 'submissive'
 )

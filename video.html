@@ -13,7 +13,8 @@
     <link rel="preconnect" href="https://static-ca-cdn.eporner.com">
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"></noscript>
     
     <!-- Favicon -->
     <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -29,6 +30,10 @@
     <meta id="ogDesc" property="og:description" content="Watch trending viral adult videos in full HD for free on kumpulenak.">
     <meta id="ogImage" property="og:image" content="">
     <meta id="ogUrl" property="og:url" content="">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="kumpulenak — Watch Trending Viral Video">
+    <meta name="twitter:description" content="Watch trending viral adult videos in full HD for free on kumpulenak.">
     
     <style>
         .video-page-container { 
@@ -186,6 +191,21 @@
     <!-- ===== VIDEO CONTAINER ===== -->
     <main class="video-page-container" id="videoContainer">
         <div class="loader" id="videoLoader"></div>
+        <noscript>
+            <div class="noscript-seo" style="padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; margin: 20px;">
+                <h2>Watch Premium 18+ Videos on kumpulenak</h2>
+                <p>This page requires JavaScript to load the video player. Please enable JavaScript in your browser to watch this video in full HD quality.</p>
+                <h3>Explore More Content</h3>
+                <ul>
+                    <li><a href="/">Browse All Videos</a></li>
+                    <li><a href="/about">About kumpulenak</a></li>
+                    <li><a href="/howto">How to Download Videos</a></li>
+                    <li><a href="/contact">Contact Support</a></li>
+                    <li><a href="/dmca">DMCA Policy</a></li>
+                </ul>
+                <p>kumpulenak — Premium 18+ NSFW Gallery Platform. Stream trending viral videos in HD for free.</p>
+            </div>
+        </noscript>
     </main>
 
     <!-- ===== BOTTOM AD BANNER ===== -->
@@ -404,6 +424,7 @@
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allowfullscreen', 'true');
                 iframe.setAttribute('scrolling', 'no');
+                iframe.setAttribute('title', 'Video Player');
                 
                 wrapper.appendChild(iframe);
                 container.appendChild(wrapper);
@@ -598,5 +619,19 @@
     
     <!-- Load Ads Script -->
     <script src="/assets/js/loader.js?v=3.0" defer></script>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/howto">How to Download</a>
+            <a href="/contact">Contact</a>
+            <a href="/dmca">DMCA</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+        </div>
+        <p>All resources are shared by their respective owners. &copy; 2026 kumpulenak</p>
+    </footer>
 </body>
 </html>
