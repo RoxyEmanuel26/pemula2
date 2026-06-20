@@ -18,8 +18,8 @@
     --shadow: rgba(0, 0, 0, 0.6);
     --accent: #ff2a5f;
     --accent-glow: rgba(255, 42, 95, 0.25);
-    --accent-gradient: linear-gradient(135deg, #ff2a5f 0%, #7d12ff 100%);
-    --accent-gradient-hover: linear-gradient(135deg, #ff4c7b 0%, #953dff 100%);
+    --accent-gradient: linear-gradient(135deg, #ff2a5f 0%, #a259ff 100%);
+    --accent-gradient-hover: linear-gradient(135deg, #ff4c7b 0%, #b875ff 100%);
     --green: #10b981;
     --skeleton-base: #13151f;
     --skeleton-shine: #1f2235;
@@ -157,7 +157,6 @@ body {
 
 .logo span {
     font-weight: 500;
-    opacity: 0.9;
 }
 
 .logo:hover {
