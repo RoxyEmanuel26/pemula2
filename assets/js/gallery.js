@@ -60,19 +60,19 @@ const INDO_QUERIES = ['amateur', 'babe', 'milf', 'pov', 'blonde', 'ebony'];
 //  VIRAL TAGS — Daftar tag/keyword untuk tab "viral"
 // =====================================================
 const VIRAL_TAGS = [
-    { label: '🏠 Amateur', query: 'amateur' },
-    { label: '💃 Dance', query: 'dance' },
-    { label: '👩 MILF', query: 'milf' },
-    { label: '🏖️ Outdoor', query: 'outdoor' },
-    { label: '👀 POV', query: 'pov' },
-    { label: '👱 Blonde', query: 'blonde' },
-    { label: '👩🏿 Ebony', query: 'ebony' },
-    { label: '💃 Latina', query: 'latina' },
+    { label: '🏠 Amateur', query: 'amateur', slug: 'amateur' },
+    { label: '💃 Dance', query: 'dance', slug: 'dance' },
+    { label: '👩 MILF', query: 'milf', slug: 'milf' },
+    { label: '🏖️ Outdoor', query: 'outdoor', slug: 'outdoor' },
+    { label: '👀 POV', query: 'pov', slug: 'pov' },
+    { label: '👱 Blonde', query: 'blonde', slug: 'blonde' },
+    { label: '👩🏿 Ebony', query: 'ebony', slug: 'ebony' },
+    { label: '💃 Latina', query: 'latina', slug: 'latina' },
     { label: '🎌 Hentai', query: 'hentai' },
-    { label: '🍑 Big Ass', query: 'big ass' },
-    { label: '🍒 Big Tits', query: 'big tits' },
-    { label: '💑 Couples', query: 'couple' },
-    { label: '🎭 Cosplay', query: 'cosplay' },
+    { label: '🍑 Big Ass', query: 'big ass', slug: 'big-ass' },
+    { label: '🍒 Big Tits', query: 'big tits', slug: 'big-tits' },
+    { label: '💑 Couples', query: 'couple', slug: 'couple' },
+    { label: '🎭 Cosplay', query: 'cosplay', slug: 'cosplay' },
     { label: '👄 Blowjob', query: 'blowjob' },
     { label: '💦 Creampie', query: 'creampie' },
     { label: '🔞 Uncensored', query: 'uncensored' }
@@ -82,24 +82,89 @@ const VIRAL_TAGS = [
 //  KATEGORI LIST — Daftar semua kategori video
 // =====================================================
 const KATEGORI_LIST = [
-    { label: '🔥 Most Popular', query: 'all', order: 'most-popular', icon: '🔥' },
-    { label: '🆕 Newest', query: 'all', order: 'latest', icon: '🆕' },
-    { label: '📈 Weekly Top', query: 'all', order: 'top-weekly', icon: '📈' },
-    { label: '📅 Monthly Top', query: 'all', order: 'top-monthly', icon: '📅' },
-    { label: '🏠 Amateur', query: 'amateur', order: 'most-popular', icon: '🏠' },
-    { label: '🔥 Babe', query: 'babe', order: 'most-popular', icon: '🔥' },
-    { label: '👩 MILF', query: 'milf', order: 'most-popular', icon: '👩' },
-    { label: '👀 POV', query: 'pov', order: 'most-popular', icon: '👀' },
-    { label: '👱 Blonde', query: 'blonde', order: 'most-popular', icon: '👱' },
-    { label: '👩🏿 Ebony', query: 'ebony', order: 'most-popular', icon: '👩🏿' },
-    { label: '💃 Latina', query: 'latina', order: 'most-popular', icon: '💃' },
-    { label: '💑 Couples', query: 'couple', order: 'most-popular', icon: '💑' },
-    { label: '🎭 Cosplay', query: 'cosplay', order: 'most-popular', icon: '🎭' },
-    { label: '⭐ Celebrities', query: 'celebrity', order: 'most-popular', icon: '⭐' },
-    { label: '🏖️ Outdoor', query: 'outdoor', order: 'most-popular', icon: '🏖️' },
-    { label: '💃 Dance', query: 'dance', order: 'most-popular', icon: '💃' },
-    { label: '🎥 Live Cam', query: 'live cam', order: 'latest', icon: '🎥' },
-    { label: '💋 Mature', query: 'mature', order: 'most-popular', icon: '💋' }
+    { label: 'Japanese', query: 'japanese', img: 'https://static-sg-cdn.eporner.com/catimg/52.jpg', order: 'most-popular' },
+    { label: 'Anal', query: 'anal', img: 'https://static-sg-cdn.eporner.com/catimg/3.jpg', order: 'most-popular' },
+    { label: 'HD Porn 1080p', query: 'hd porn 1080p', img: 'https://static-sg-cdn.eporner.com/catimg/43.jpg', order: 'most-popular' },
+    { label: 'VR Porn', query: 'vr porn', img: 'https://static-sg-cdn.eporner.com/catimg/72.jpg', order: 'most-popular' },
+    { label: 'Teen', query: 'babe', img: 'https://static-sg-cdn.eporner.com/catimg/0.jpg', order: 'most-popular', slug: 'babe' },
+    { label: 'Asian', query: 'asian', img: 'https://static-sg-cdn.eporner.com/catimg/11.jpg', order: 'most-popular' },
+    { label: 'Big Tits', query: 'big tits', img: 'https://static-sg-cdn.eporner.com/catimg/25.jpg', order: 'most-popular', slug: 'big-tits' },
+    { label: 'Shemale', query: 'shemale', img: 'https://static-sg-cdn.eporner.com/catimg/24.jpg', order: 'most-popular' },
+    { label: 'MILF', query: 'milf', img: 'https://static-sg-cdn.eporner.com/catimg/53.jpg', order: 'most-popular', slug: 'milf' },
+    { label: 'Ebony', query: 'ebony', img: 'https://static-sg-cdn.eporner.com/catimg/10.jpg', order: 'most-popular', slug: 'ebony' },
+    { label: 'Homemade', query: 'homemade', img: 'https://static-sg-cdn.eporner.com/catimg/12.jpg', order: 'most-popular' },
+    { label: 'Indian', query: 'indian', img: 'https://static-sg-cdn.eporner.com/catimg/59.jpg', order: 'most-popular' },
+    { label: 'Interracial', query: 'interracial', img: 'https://static-sg-cdn.eporner.com/catimg/48.jpg', order: 'most-popular' },
+    { label: 'Amateur', query: 'amateur', img: 'https://static-sg-cdn.eporner.com/catimg/1.jpg', order: 'most-popular', slug: 'amateur' },
+    { label: 'Lesbian', query: 'lesbian', img: 'https://static-sg-cdn.eporner.com/catimg/6.jpg', order: 'most-popular' },
+    { label: '60 FPS', query: '60 fps', img: 'https://static-sg-cdn.eporner.com/catimg/67.jpg', order: 'most-popular' },
+    { label: 'Big Ass', query: 'big ass', img: 'https://static-sg-cdn.eporner.com/catimg/44.jpg', order: 'most-popular', slug: 'big-ass' },
+    { label: 'POV', query: 'pov', img: 'https://static-sg-cdn.eporner.com/catimg/33.jpg', order: 'most-popular', slug: 'pov' },
+    { label: 'Mature', query: 'mature', img: 'https://static-sg-cdn.eporner.com/catimg/17.jpg', order: 'most-popular', slug: 'mature' },
+    { label: 'Creampie', query: 'creampie', img: 'https://static-sg-cdn.eporner.com/catimg/47.jpg', order: 'most-popular' },
+    { label: 'Hentai', query: 'hentai', img: 'https://static-sg-cdn.eporner.com/catimg/42.jpg', order: 'most-popular' },
+    { label: 'Hardcore', query: 'hardcore', img: 'https://static-sg-cdn.eporner.com/catimg/5.jpg', order: 'most-popular' },
+    { label: 'BBW', query: 'bbw', img: 'https://static-sg-cdn.eporner.com/catimg/63.jpg', order: 'most-popular' },
+    { label: 'Threesome', query: 'threesome', img: 'https://static-sg-cdn.eporner.com/catimg/9.jpg', order: 'most-popular' },
+    { label: 'Latina', query: 'latina', img: 'https://static-sg-cdn.eporner.com/catimg/54.jpg', order: 'most-popular', slug: 'latina' },
+    { label: 'Big Dick', query: 'big dick', img: 'https://static-sg-cdn.eporner.com/catimg/7.jpg', order: 'most-popular' },
+    { label: 'Double Penetration', query: 'double penetration', img: 'https://static-sg-cdn.eporner.com/catimg/2.jpg', order: 'most-popular' },
+    { label: 'Pornstar', query: 'pornstar', img: 'https://static-sg-cdn.eporner.com/catimg/66.jpg', order: 'most-popular' },
+    { label: 'Group Sex', query: 'group sex', img: 'https://static-sg-cdn.eporner.com/catimg/26.jpg', order: 'most-popular' },
+    { label: 'Vintage', query: 'vintage', img: 'https://static-sg-cdn.eporner.com/catimg/57.jpg', order: 'most-popular' },
+    { label: 'Cumshot', query: 'cumshot', img: 'https://static-sg-cdn.eporner.com/catimg/4.jpg', order: 'most-popular' },
+    { label: 'Blowjob', query: 'blowjob', img: 'https://static-sg-cdn.eporner.com/catimg/8.jpg', order: 'most-popular' },
+    { label: 'Masturbation', query: 'masturbation', img: 'https://static-sg-cdn.eporner.com/catimg/28.jpg', order: 'most-popular' },
+    { label: 'Students', query: 'couple', img: 'https://static-sg-cdn.eporner.com/catimg/19.jpg', order: 'most-popular', slug: 'couple' },
+    { label: 'Blonde', query: 'blonde', img: 'https://static-sg-cdn.eporner.com/catimg/37.jpg', order: 'most-popular', slug: 'blonde' },
+    { label: 'Petite', query: 'petite', img: 'https://static-sg-cdn.eporner.com/catimg/65.jpg', order: 'most-popular' },
+    { label: 'Webcam', query: 'webcam', img: 'https://static-sg-cdn.eporner.com/catimg/62.jpg', order: 'most-popular' },
+    { label: 'Orgy', query: 'orgy', img: 'https://static-sg-cdn.eporner.com/catimg/58.jpg', order: 'most-popular' },
+    { label: 'Brunette', query: 'brunette', img: 'https://static-sg-cdn.eporner.com/catimg/38.jpg', order: 'most-popular' },
+    { label: 'Office', query: 'office', img: 'https://static-sg-cdn.eporner.com/catimg/23.jpg', order: 'most-popular' },
+    { label: 'BDSM', query: 'bdsm', img: 'https://static-sg-cdn.eporner.com/catimg/29.jpg', order: 'most-popular' },
+    { label: 'Public', query: 'public', img: 'https://static-sg-cdn.eporner.com/catimg/15.jpg', order: 'most-popular' },
+    { label: 'Older Men', query: 'older men', img: 'https://static-sg-cdn.eporner.com/catimg/13.jpg', order: 'most-popular' },
+    { label: 'Massage', query: 'massage', img: 'https://static-sg-cdn.eporner.com/catimg/49.jpg', order: 'most-popular' },
+    { label: 'Lingerie', query: 'lingerie', img: 'https://static-sg-cdn.eporner.com/catimg/36.jpg', order: 'most-popular' },
+    { label: 'Toys', query: 'toys', img: 'https://static-sg-cdn.eporner.com/catimg/30.jpg', order: 'most-popular' },
+    { label: 'Hotel', query: 'hotel', img: 'https://static-sg-cdn.eporner.com/catimg/35.jpg', order: 'most-popular' },
+    { label: 'Squirt', query: 'squirt', img: 'https://static-sg-cdn.eporner.com/catimg/51.jpg', order: 'most-popular' },
+    { label: 'Outdoor', query: 'outdoor', img: 'https://static-sg-cdn.eporner.com/catimg/16.jpg', order: 'most-popular', slug: 'outdoor' },
+    { label: 'Fat', query: 'fat', img: 'https://static-sg-cdn.eporner.com/catimg/18.jpg', order: 'most-popular' },
+    { label: 'Fetish', query: 'fetish', img: 'https://static-sg-cdn.eporner.com/catimg/60.jpg', order: 'most-popular' },
+    { label: 'Redhead', query: 'redhead', img: 'https://static-sg-cdn.eporner.com/catimg/39.jpg', order: 'most-popular' },
+    { label: 'Housewives', query: 'housewives', img: 'https://static-sg-cdn.eporner.com/catimg/20.jpg', order: 'most-popular' },
+    { label: 'Small Tits', query: 'small tits', img: 'https://static-sg-cdn.eporner.com/catimg/50.jpg', order: 'most-popular' },
+    { label: 'Sleep', query: 'sleep', img: 'https://static-sg-cdn.eporner.com/catimg/22.jpg', order: 'most-popular' },
+    { label: 'Swinger', query: 'swinger', img: 'https://static-sg-cdn.eporner.com/catimg/32.jpg', order: 'most-popular' },
+    { label: 'Bukkake', query: 'bukkake', img: 'https://static-sg-cdn.eporner.com/catimg/55.jpg', order: 'most-popular' },
+    { label: 'Uniform', query: 'uniform', img: 'https://static-sg-cdn.eporner.com/catimg/27.jpg', order: 'most-popular' },
+    { label: 'Striptease', query: 'striptease', img: 'https://static-sg-cdn.eporner.com/catimg/61.jpg', order: 'most-popular' },
+    { label: 'Handjob', query: 'handjob', img: 'https://static-sg-cdn.eporner.com/catimg/21.jpg', order: 'most-popular' },
+    { label: 'Bondage', query: 'bondage', img: 'https://static-sg-cdn.eporner.com/catimg/45.jpg', order: 'most-popular' },
+    { label: 'For Women', query: 'for women', img: 'https://static-sg-cdn.eporner.com/catimg/64.jpg', order: 'most-popular' },
+    { label: 'Nurses', query: 'nurses', img: 'https://static-sg-cdn.eporner.com/catimg/41.jpg', order: 'most-popular' },
+    { label: 'Fisting', query: 'fisting', img: 'https://static-sg-cdn.eporner.com/catimg/56.jpg', order: 'most-popular' },
+    { label: 'HQ Porn', query: 'hq porn', img: 'https://static-sg-cdn.eporner.com/catimg/69.jpg', order: 'most-popular' },
+    { label: 'Footjob', query: 'footjob', img: 'https://static-sg-cdn.eporner.com/catimg/40.jpg', order: 'most-popular' },
+    { label: 'HD Sex', query: 'hd sex', img: 'https://static-sg-cdn.eporner.com/catimg/70.jpg', order: 'most-popular' },
+    { label: 'Bisexual', query: 'bisexual', img: 'https://static-sg-cdn.eporner.com/catimg/46.jpg', order: 'most-popular' },
+    { label: 'ASMR', query: 'asmr', img: 'https://static-sg-cdn.eporner.com/catimg/31.jpg', order: 'most-popular' },
+    { label: 'Doctor', query: 'doctor', img: 'https://static-sg-cdn.eporner.com/catimg/34.jpg', order: 'most-popular' },
+    { label: 'Indonesia', query: 'indonesia', img: 'https://static-sg-cdn.eporner.com/catimg/80.jpg', order: 'most-popular' },
+    { label: 'Stepmom', query: 'stepmom', img: 'https://static-sg-cdn.eporner.com/catimg/84.jpg', order: 'most-popular' },
+    { label: 'Compilation', query: 'compilation', img: 'https://static-sg-cdn.eporner.com/catimg/75.jpg', order: 'most-popular' },
+    { label: 'Cuckold', query: 'cuckold', img: 'https://static-sg-cdn.eporner.com/catimg/77.jpg', order: 'most-popular' },
+    { label: 'Stepsister', query: 'stepsister', img: 'https://static-sg-cdn.eporner.com/catimg/85.jpg', order: 'most-popular' },
+    { label: 'AI', query: 'ai', img: 'https://static-sg-cdn.eporner.com/catimg/73.jpg', order: 'most-popular' },
+    { label: 'Casting', query: 'casting', img: 'https://static-sg-cdn.eporner.com/catimg/74.jpg', order: 'most-popular' },
+    { label: 'Cosplay', query: 'cosplay', img: 'https://static-sg-cdn.eporner.com/catimg/76.jpg', order: 'most-popular', slug: 'cosplay' },
+    { label: 'Hotwife', query: 'hotwife', img: 'https://static-sg-cdn.eporner.com/catimg/79.jpg', order: 'most-popular' },
+    { label: 'PAWG', query: 'pawg', img: 'https://static-sg-cdn.eporner.com/catimg/81.jpg', order: 'most-popular' },
+    { label: 'Pregnant', query: 'pregnant', img: 'https://static-sg-cdn.eporner.com/catimg/83.jpg', order: 'most-popular' },
+    { label: 'Pinay', query: 'pinay', img: 'https://static-sg-cdn.eporner.com/catimg/82.jpg', order: 'most-popular' },
+    { label: 'Gloryhole', query: 'gloryhole', img: 'https://static-sg-cdn.eporner.com/catimg/78.jpg', order: 'most-popular' }
 ];
 
 // =====================================================
@@ -747,11 +812,16 @@ function renderViralTags(activeQuery) {
 
         VIRAL_TAGS.forEach(function (tag) {
             var isActive = activeQuery === tag.query;
-            var btn = document.createElement('button');
+            var isLink = !!tag.slug;
+            var btn = document.createElement(isLink ? 'a' : 'button');
             btn.className = 'viral-filter-btn' + (isActive ? ' active' : '');
+            if (isLink) btn.href = '/category/' + tag.slug;
             btn.textContent = tag.label;
             btn.dataset.query = tag.query;
-            btn.addEventListener('click', function() { filterViralTab(tag.query); });
+            btn.addEventListener('click', function(e) { 
+                e.preventDefault(); 
+                filterViralTab(tag.query); 
+            });
             filterBar.appendChild(btn);
         });
 
@@ -810,11 +880,20 @@ function renderKategoriGrid() {
 
     var html = '<div class="kategori-grid">';
     KATEGORI_LIST.forEach(function (kat) {
-        html += '<button class="kategori-card-btn" onclick="loadFromKategori(\'' +
-            escapeHTML(kat.query) + '\',\'' + escapeHTML(kat.order) + '\')">' +
-            '<span class="kategori-icon">' + kat.icon + '</span>' +
-            '<span class="kategori-label">' + escapeHTML(kat.label) + '</span>' +
-            '</button>';
+        var href = kat.slug ? ' href="/category/' + kat.slug + '"' : '';
+        var tag = kat.slug ? 'a' : 'button';
+        var onclickAttr = ' onclick="event.preventDefault(); loadFromKategori(\'' +
+            escapeHTML(kat.query) + '\',\'' + escapeHTML(kat.order || 'most-popular') + '\')"';
+        
+        html += '<' + tag + href + ' class="kategori-card-btn"' + onclickAttr + '>' +
+            '<img src="' + escapeHTML(kat.img) + '" loading="lazy" class="kategori-img" alt="' + escapeHTML(kat.label) + '">' +
+            '<div class="kategori-overlay"></div>' +
+            '<div class="kategori-badge">#</div>' +
+            '<div class="kategori-info">' +
+                '<h3 class="kategori-title">' + escapeHTML(kat.label) + '</h3>' +
+                '<p class="kategori-subtitle">Explore videos</p>' +
+            '</div>' +
+            '</' + tag + '>';
     });
     html += '</div>';
     grid.innerHTML = html;
@@ -1226,6 +1305,11 @@ function initTabSwitching() {
     navTabs.addEventListener('click', function (e) {
         var tab = e.target.closest('.nav-tab');
         if (!tab) return;
+
+        // Jika kita di URL /category/ tapi klik tab utama, ubah URL jadi /
+        if (window.location.pathname.startsWith('/category/')) {
+            window.history.pushState(null, '', '/');
+        }
 
         // Hapus viral filter bar jika pindah dari tab viral
         var oldBar = document.getElementById('viralFilterBar');
@@ -2164,7 +2248,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = 'assets/js/loader.js?v=3.4.0';
+    scriptLoader.src = 'assets/js/loader.js?v=3.6';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
@@ -2197,8 +2281,25 @@ function injectVideoSchema(cardsToRender) {
     // Override openPlayerModal with enhanced version
     window.openPlayerModal = enhancedOpenPlayerModal;
 
-    // Load and render data on first load
-    loadAndRender();
+    // Check if this is a pre-rendered static category page
+    var staticCategory = document.body.getAttribute('data-static-category');
+    if (staticCategory) {
+        kLog('Static category page detected: ' + staticCategory);
+        currentQuery = staticCategory;
+        isSearchActive = true;
+        
+        // Render pagination manually since we skip loadAndRender for page 1
+        renderPagination(50); // Eporner has many pages, 50 is a good max
+        
+        // Ensure skeletons on existing images are removed
+        document.querySelectorAll('.card img').forEach(function(img) {
+            img.onload = function() { this.classList.add('loaded'); };
+            if (img.complete) img.classList.add('loaded');
+        });
+    } else {
+        // Load and render data on first load
+        loadAndRender();
+    }
 
     // Lazy load: fetch removed videos after 3 seconds
     setTimeout(function () {
