@@ -15,9 +15,19 @@ console.log(`🚀 Memperbarui seluruh versi cache menjadi: v${newVersion}...`);
 const filesInRoot = fs.readdirSync(__dirname);
 const htmlFiles = filesInRoot.filter(file => file.endsWith('.html'));
 
+// Dapatkan semua file HTML di direktori category secara dinamis
+const categoryDir = path.join(__dirname, 'category');
+let categoryHtmlFiles = [];
+if (fs.existsSync(categoryDir)) {
+  categoryHtmlFiles = fs.readdirSync(categoryDir)
+    .filter(file => file.endsWith('.html'))
+    .map(file => path.join('category', file));
+}
+
 // Daftar file yang akan dipindai dan diperbarui versi cache-nya (?v=)
 const filesToUpdate = [
   ...htmlFiles,
+  ...categoryHtmlFiles,
   'assets/js/gallery.js',
   'assets/js/loader.js'
 ];
