@@ -13,7 +13,14 @@ console.log(`🚀 Memperbarui seluruh versi cache menjadi: v${newVersion}...`);
 
 // Dapatkan semua file HTML di direktori root secara dinamis
 const filesInRoot = fs.readdirSync(__dirname);
-const filesToUpdate = filesInRoot.filter(file => file.endsWith('.html'));
+const htmlFiles = filesInRoot.filter(file => file.endsWith('.html'));
+
+// Daftar file yang akan dipindai dan diperbarui versi cache-nya (?v=)
+const filesToUpdate = [
+  ...htmlFiles,
+  'assets/js/gallery.js',
+  'assets/js/loader.js'
+];
 
 // Tambahkan sw.js jika ada di root
 if (fs.existsSync(path.join(__dirname, 'sw.js'))) {
@@ -22,8 +29,8 @@ if (fs.existsSync(path.join(__dirname, 'sw.js'))) {
 
 let totalReplaced = 0;
 
-filesToUpdate.forEach(filePath => {
-  const fullPath = path.join(__dirname, filePath);
+filesToUpdate.forEach(relativePath => {
+  const fullPath = path.join(__dirname, relativePath);
   
   if (fs.existsSync(fullPath)) {
     let content = fs.readFileSync(fullPath, 'utf8');
@@ -32,19 +39,19 @@ filesToUpdate.forEach(filePath => {
     let newContent = content.replace(/\?v=[^"'\s>]+/g, `?v=${newVersion}`);
     
     // Khusus untuk sw.js jika ada, ganti CACHE_NAME
-    if (filePath === 'sw.js') {
+    if (relativePath === 'sw.js') {
       newContent = newContent.replace(/CACHE_NAME\s*=\s*'[^']+'/g, `CACHE_NAME = 'kumpulenak-cache-v${newVersion}'`);
     }
 
     if (content !== newContent) {
       fs.writeFileSync(fullPath, newContent, 'utf8');
-      console.log(`   Diperbarui: ${filePath}`);
+      console.log(`   Diperbarui: ${relativePath}`);
       totalReplaced++;
     } else {
-      console.log(`➖ Tidak ada perubahan di: ${filePath}`);
+      console.log(`➖ Tidak ada perubahan di: ${relativePath}`);
     }
   } else {
-    console.warn(`⚠️ File tidak ditemukan: ${filePath}`);
+    console.warn(`⚠️ File tidak ditemukan: ${relativePath}`);
   }
 });
 
