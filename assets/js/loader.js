@@ -23,7 +23,7 @@
 
     // Inject Analytics System
     var analyticsScript = document.createElement('script');
-    analyticsScript.src = '/assets/js/analytics.js?v=3.9';
+    analyticsScript.src = '/assets/js/analytics.js?v=4.0';
     analyticsScript.defer = true;
     document.head.appendChild(analyticsScript);
 
@@ -116,7 +116,7 @@
         {
             containerId: 'adBannerCustom',
             imageUrl: 'https://i.ibb.co/PvhvpsJM/ezgif-com-animated-gif-maker.gif',
-            linkUrl: _d('aHR0cHM6Ly93d3cubWlzc2F2LWoud2ViLmlkLw=='),
+            linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
             alt: 'MissAV'
         }
     ];
@@ -162,10 +162,12 @@
         adBannerHeader: [
             {
                 image: 'https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png',
+                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
                 alt: 'Premium Content'
             },
             {
                 image: 'https://i.ibb.co/PvhvpsJM/ezgif-com-animated-gif-maker.gif',
+                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
                 alt: 'Exclusive Download'
             }
         ],
@@ -173,10 +175,12 @@
         adBannerContent: [
             {
                 image: 'https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png',
+                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
                 alt: 'Premium Content'
             },
             {
                 image: 'https://i.ibb.co/PvhvpsJM/ezgif-com-animated-gif-maker.gif',
+                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
                 alt: 'Exclusive Download'
             }
         ]
@@ -196,7 +200,7 @@
 
         // Pilih random banner
         var banner = banners[Math.floor(Math.random() * banners.length)];
-        var link = getRandomLink();
+        var link = banner.linkUrl || getRandomLink();
 
         container.innerHTML = '';
 
@@ -229,10 +233,12 @@
         anchor.addEventListener('click', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            // Ganti link untuk klik berikutnya
-            setTimeout(function () {
-                anchor.href = getRandomLink();
-            }, 100);
+            // Ganti link untuk klik berikutnya jika bukan custom linkUrl
+            if (!banner.linkUrl) {
+                setTimeout(function () {
+                    anchor.href = getRandomLink();
+                }, 100);
+            }
         }, true);
 
         anchor.appendChild(img);
@@ -452,14 +458,13 @@
                     // Re-inject in-grid banner
                     banner.innerHTML = '';
                     var link = document.createElement('a');
-                    link.href = getRandomLink();
+                    link.href = _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ==');
                     link.target = '_blank';
                     link.rel = 'noopener noreferrer';
                     link.className = 'ingrid-banner-link';
                     link.addEventListener('click', function (e) {
                         e.stopPropagation();
                         e.stopImmediatePropagation();
-                        setTimeout(function () { link.href = getRandomLink(); }, 100);
                     }, true);
 
                     var img = document.createElement('img');

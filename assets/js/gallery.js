@@ -1048,7 +1048,7 @@ function renderCardsToGrid(cardsToRender) {
         var bannerWrapper = document.createElement('div');
         bannerWrapper.className = 'ingrid-banner-ad';
         bannerWrapper.innerHTML =
-            '<a href="https://www.missav-j.web.id/" class="ingrid-banner-link">' +
+            '<a href="https://www.teraboxpage.com/myknow/kumpulenak1" class="ingrid-banner-link">' +
             '<img src="https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png" alt="MissAV" class="ingrid-banner-img" ' +
             'onerror="this.parentElement.parentElement.style.display=\'none\'">' +
             '</a>';
@@ -2248,7 +2248,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=3.9';
+    scriptLoader.src = '/assets/js/loader.js?v=4.0';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
