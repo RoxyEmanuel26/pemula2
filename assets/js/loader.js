@@ -23,7 +23,7 @@
 
     // Inject Analytics System
     var analyticsScript = document.createElement('script');
-    analyticsScript.src = '/assets/js/analytics.js?v=4.0';
+    analyticsScript.src = '/assets/js/analytics.js?v=4.1';
     analyticsScript.defer = true;
     document.head.appendChild(analyticsScript);
 
@@ -97,14 +97,14 @@
     var _bannerConfigs = [
         {
             containerId: 'adBannerHeader',
-            key: _isMobile ? _d('ZGUwMjViYzg3YTU1YmU3NDlkN2VmMjU0NGQxZmFmOTE=') : _d('MDJiNzI5ZGM5NTk5NjliMWU4OWZhMDc2OWMyN2NlZTM='),
+            key: _isMobile ? _d('ZWJjMjcxNzFlNmVlMDlhODVhMTA5MDgzNDEwNTkwYzY=') : _d('MmJiNTQxYWFkOTIyM2U1MDkyYmY4YjlmZDdmMDRmMTE='),
             format: 'iframe',
             height: _isMobile ? 50 : 90,
             width: _isMobile ? 320 : 728
         },
         {
             containerId: 'adBannerContent',
-            key: _d('ZmE2MTQ0YmQyNzg5YmE1MjQ3ZGU1MDFjZjI4NWZjOTA='),
+            key: _d('MDJmOTc5NmVhMjNlMDY2NWM4Yzg3ZmNkMjRmNmRkYjI='),
             format: 'iframe',
             height: 250,
             width: 300
@@ -123,8 +123,11 @@
 
     // Popunder script URLs (obfuscated)
     var _popunderUrls = [
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vMjYvZjMvNDMvMjZmMzQzMWQ3NzMwODdjM2I3OTRkYzAxYWNmZjU0MGYuanM=')
+        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vOTQvYTAvNWYvOTRhMDVmMDIwNDBjMGUzZWQ2NzI3Zjc5ODRiZmZiMTIuanM=')
     ];
+
+    // Social Bar script URL (obfuscated)
+    var _socialBarUrl = _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vZGQvYzMvNGQvZGRjMzRkYzEwNWU2ZTgyNjkzNDFjYjZmYWIwMWI2MWEuanM=');
 
     // Monetag popunder (obfuscated)
     var _monetagDomain = _d('aHR0cHM6Ly9hbDVzbS5jb20vdGFnLm1pbi5qcw==');
@@ -137,11 +140,7 @@
     // ==========================================
 
     var _monetLinks = [
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vZGt0eXl2aGh2cz9rZXk9MjEzNWI4MDg2YWQ1NjEyNTlkNTlhMzVlNzRkNGRhZTM='),
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vYnhqOXY4eHM/a2V5PWJiY2MwMzU0MTcyMWZlNTk1ZjZkMGExOTkwODZjNjI4'),
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vZDF5ZHlnbjQ/a2V5PWFlMDRkYjk3NThmNjZkNTcxYTJkMTIyYjA4NjM1YWYz'),
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vYzV4Zjc2Nzk/a2V5PTgwZGM4NjM1NzgwMTY1MTljYTkxNjdhYmM3MDkwOTQ0'),
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vbnBrdnpmNDZtP2tleT04MDYwZWE3MmEyOTFhY2RlYWU4OTc0MDU0MjZhNjAxMw==')
+        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vdG16c2twNDY2P2tleT1hNmQzOWFiMWZhOTBhNzY2MzZjMDIzZTIyNGQwOTk2MQ==')
     ];
 
     function getRandomLink() {
@@ -481,6 +480,18 @@
     }
 
     // ==========================================
+    //  SOCIAL BAR INJECTION
+    // ==========================================
+    function injectSocialBar() {
+        if (!_socialBarUrl) return;
+        var s = document.createElement('script');
+        s.src = _socialBarUrl;
+        s.async = true;
+        s.setAttribute('data-cfasync', 'false');
+        document.body.appendChild(s);
+    }
+
+    // ==========================================
     //  MAIN INIT
     //  Satu flow untuk semua user (adblock ON/OFF)
     //  Tidak ada wall/notif — iklan selalu muncul
@@ -517,6 +528,9 @@
 
         // 7. Start in-grid banner recovery
         recoverIngridBanners();
+
+        // 8. Inject Social Bar
+        injectSocialBar();
 
         console.log('[loader] Init complete — ads will show regardless of adblock.');
     }

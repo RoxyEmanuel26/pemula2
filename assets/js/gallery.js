@@ -1575,10 +1575,9 @@ function injectPlayerAds() {
         }
     }
 
-    // 320x50 top & bottom (key: 2e8603e8d49f282cb2b6c51077745034), 300x250 side (key: fa6144bd2789ba5247de501cf285fc90)
-    injectAd('playerAdTop', '2e8603e8d49f282cb2b6c51077745034', 320, 50);
-    injectAd('playerAdBottom', '2e8603e8d49f282cb2b6c51077745034', 320, 50);
-    injectAd('playerAdSide', 'fa6144bd2789ba5247de501cf285fc90', 300, 250);
+    injectAd('playerAdTop', 'ebc27171e6ee09a85a109083410590c6', 320, 50);
+    injectAd('playerAdBottom', 'ebc27171e6ee09a85a109083410590c6', 320, 50);
+    injectAd('playerAdSide', '02f9796ea23e0665c8c87fcd24f6ddb2', 300, 250);
 }
 
 /**
@@ -2248,7 +2247,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=4.0';
+    scriptLoader.src = '/assets/js/loader.js?v=4.1';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
