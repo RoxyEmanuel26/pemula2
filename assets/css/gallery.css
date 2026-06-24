@@ -1547,3 +1547,65 @@ body {
     flex: 1;
     min-width: 0;
 }
+
+/* ===== MISSAV PROMO BUTTON ===== */
+.missav-promo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 24px auto 28px;
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.missav-promo-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(240, 242, 245, 0.6);
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+}
+
+.missav-promo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 44px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    background: var(--accent-gradient);
+    border-radius: 50px;
+    box-shadow: 0 0 25px rgba(255, 42, 95, 0.45), 0 0 25px rgba(162, 89, 255, 0.45);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: none;
+    cursor: pointer;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.missav-promo-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 35px rgba(255, 42, 95, 0.7), 0 0 35px rgba(162, 89, 255, 0.7);
+    background: var(--accent-gradient-hover);
+}
+
+.missav-promo-btn:active {
+    transform: translateY(1px) scale(0.99);
+}
+
+@media (max-width: 576px) {
+    .missav-promo-text {
+        font-size: 12px;
+    }
+    .missav-promo-btn {
+        padding: 12px 28px;
+        font-size: 15px;
+        width: 100%;
+        max-width: 320px;
+    }
+}

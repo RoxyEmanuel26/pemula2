@@ -1328,7 +1328,7 @@ function initTabSwitching() {
         window._tempTabOverride = null;
 
         // Beautiful mapping for section label
-        var labelMap = { popular: 'Popular', viral: 'Viral 🔥', kategori: 'All Categories' };
+        var labelMap = { popular: 'BEST VIDEOS', viral: 'Viral 🔥', kategori: 'All Categories' };
         document.getElementById('sectionLabel').textContent = labelMap[currentTab] || currentTab;
 
         // Update posisi tab indicator
@@ -1872,14 +1872,14 @@ function renderSortBar() {
     }
 
     var sortOptions = [
-        { label: '🔥 Trending', order: 'indo', query: 'amateur' },
-        { label: '⭐ Popular', order: 'most-popular', query: 'all' },
-        { label: '🆕 Newest', order: 'latest', query: 'all' },
-        { label: '👍 Top Rated', order: 'top-rated', query: 'all' },
-        { label: '📈 Weekly Top', order: 'top-weekly', query: 'all' },
-        { label: '📅 Monthly Top', order: 'top-monthly', query: 'all' },
-        { label: '⏱ Longest', order: 'longest', query: 'all' },
-        { label: '⚡ Shortest', order: 'shortest', query: 'all' }
+        { label: 'ID Indo', order: 'indo', query: 'amateur' },
+        { label: 'Popular', order: 'most-popular', query: 'all' },
+        { label: 'Latest', order: 'latest', query: 'all' },
+        { label: 'Top Rated', order: 'top-rated', query: 'all' },
+        { label: 'Top Weekly', order: 'top-weekly', query: 'all' },
+        { label: 'Top Monthly', order: 'top-monthly', query: 'all' },
+        { label: 'Longest', order: 'longest', query: 'all' },
+        { label: 'Shortest', order: 'shortest', query: 'all' }
     ];
 
     if (existingBar) {
@@ -2247,16 +2247,49 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=4.1';
+    scriptLoader.src = '/assets/js/loader.js?v=4.2';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
+
+// =====================================================
+//  MISSAV PROMO BUTTON INJECTION
+// =====================================================
+function injectMissavPromo() {
+    var sectionLabel = document.getElementById('sectionLabel');
+    if (!sectionLabel) return;
+
+    if (document.getElementById('missavPromo')) return;
+
+    var container = document.createElement('div');
+    container.id = 'missavPromo';
+    container.className = 'missav-promo-container';
+
+    var text = document.createElement('div');
+    text.className = 'missav-promo-text';
+    text.textContent = 'Instant 18+ NSFW Streaming & Daily Viral Video Leaks';
+
+    var button = document.createElement('a');
+    button.className = 'missav-promo-btn';
+    button.href = 'https://www.missav-j.web.id/en/';
+    button.target = '_blank';
+    button.rel = 'noopener noreferrer';
+    button.textContent = '🔥 Watch Full JAV on MissAV (English)';
+
+    container.appendChild(text);
+    container.appendChild(button);
+
+    sectionLabel.parentNode.insertBefore(container, sectionLabel);
+}
 
 // =====================================================
 //  INIT — Inisialisasi semua komponen
 // =====================================================
 (function init() {
     kLog('Initializing kumpulenak gallery...');
+
+    // Inject MissAV Promo Button
+    injectMissavPromo();
 
     // Setup event delegation for card grid
     initCardGridDelegation();
