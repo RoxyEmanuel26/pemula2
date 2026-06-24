@@ -2247,7 +2247,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=4.2';
+    scriptLoader.src = '/assets/js/loader.js?v=4.3';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();

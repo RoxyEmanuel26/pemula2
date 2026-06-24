@@ -1407,6 +1407,16 @@ body {
     [data-theme="light"] .header {
         background: rgba(255, 255, 255, 0.95);
     }
+
+    /* Optimize mobile spacing for better conversion */
+    .main-seo-title {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+    }
+
+    .main-seo-desc {
+        display: none; /* Hidden for users on mobile to save screen space, but remains in HTML for SEO */
+    }
 }
 
 /* 2-Column Tablet Layout */
