@@ -1047,49 +1047,39 @@ function renderCardsToGrid(cardsToRender) {
     // Helper: buat in-grid banner element
     // Helper: buat in-grid banner element
     function createIngridBanner() {
-        var bannerId = 'ingrid-ad-' + (ingridCount++);
         var bannerWrapper = document.createElement('div');
         bannerWrapper.className = 'ingrid-banner-ad';
-        bannerWrapper.id = bannerId;
         
-        var iframe = document.createElement('iframe');
-        iframe.className = 'ingrid-banner-iframe';
-        iframe.scrolling = 'no';
-        iframe.frameBorder = '0';
+        var container = document.createElement('div');
+        container.id = 'container-0dae6421659ccec66a169a9192f11484';
+        container.style.width = '100%';
+        container.style.display = 'block';
+        bannerWrapper.appendChild(container);
         
-        bannerWrapper.appendChild(iframe);
-        
-        try {
-            var doc = iframe.contentDocument || iframe.contentWindow.document;
-            doc.open();
-            doc.write(
-                '<!DOCTYPE html>' +
-                '<html>' +
-                '<head>' +
-                '<style>' +
-                'body { margin: 0; padding: 0; background: transparent; overflow: hidden; }' +
-                '#container-0dae6421659ccec66a169a9192f11484 { width: 100% !important; display: block !important; }' +
-                '</style>' +
-                '</head>' +
-                '<body>' +
-                '<div id="container-0dae6421659ccec66a169a9192f11484"></div>' +
-                '<script>' +
-                'var s = document.createElement("script");' +
-                's.async = true;' +
-                's.setAttribute("data-cfasync", "false");' +
-                's.src = "https://glamournakedemployee.com/0dae6421659ccec66a169a9192f11484/invoke.js";' +
-                's.onerror = function() {' +
-                '  window.parent.postMessage({ type: "ingrid_blocked", id: "' + bannerId + '" }, "*");' +
-                '};' +
-                'document.body.appendChild(s);' +
-                '</script>' +
-                '</body>' +
-                '</html>'
-            );
-            doc.close();
-        } catch (e) {
-            console.error('Failed to write native ad iframe:', e);
-        }
+        // Dynamically load Adsterra Native Banner script in top window context
+        setTimeout(function() {
+            var oldScript = document.getElementById('adsterra-native-script');
+            if (oldScript) oldScript.remove();
+            
+            var s = document.createElement('script');
+            s.id = 'adsterra-native-script';
+            s.async = true;
+            s.setAttribute('data-cfasync', 'false');
+            s.src = 'https://glamournakedemployee.com/0dae6421659ccec66a169a9192f11484/invoke.js?t=' + Date.now();
+            s.onerror = function() {
+                console.log('[loader] Native banner script blocked by adblock.');
+                bannerWrapper.style.display = 'none';
+            };
+            document.body.appendChild(s);
+            
+            // Safety check: if container is empty after 3.5 seconds, hide the wrapper
+            setTimeout(function() {
+                if (container.children.length === 0) {
+                    console.log('[loader] Native banner failed to render. Hiding wrapper.');
+                    bannerWrapper.style.display = 'none';
+                }
+            }, 3500);
+        }, 100);
         
         bannerWrapper.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -1100,7 +1090,6 @@ function renderCardsToGrid(cardsToRender) {
     }
 
     cardsToRender.forEach(function (card, idx) {
-        if (idx === 0) frag.appendChild(createIngridBanner());
         if (idx === midIndex) frag.appendChild(createIngridBanner());
         frag.appendChild(createCardElement(card, idx));
     });
@@ -2287,7 +2276,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=4.6';
+    scriptLoader.src = '/assets/js/loader.js?v=4.7';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
@@ -2380,14 +2369,3 @@ function injectMissavPromo() {
 
     kLog('Initialization complete.');
 })();
-
-window.addEventListener('message', function (e) {
-    if (e.data && e.data.type === 'ingrid_blocked') {
-        var bannerId = e.data.id;
-        var container = document.getElementById(bannerId);
-        if (container) {
-            console.log('[loader] In-grid Adsterra Native Banner blocked. Hiding container:', bannerId);
-            container.style.display = 'none';
-        }
-    }
-});

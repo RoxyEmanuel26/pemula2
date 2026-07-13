@@ -23,7 +23,7 @@
 
     // Inject Analytics System
     var analyticsScript = document.createElement('script');
-    analyticsScript.src = '/assets/js/analytics.js?v=4.6';
+    analyticsScript.src = '/assets/js/analytics.js?v=4.7';
     analyticsScript.defer = true;
     document.head.appendChild(analyticsScript);
 
