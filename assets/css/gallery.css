@@ -1619,3 +1619,31 @@ body {
         max-width: 320px;
     }
 }
+
+/* ===== IN-GRID BANNER IFRAME NATIVE ADS ===== */
+.ingrid-banner-iframe {
+    width: 100%;
+    height: 160px; /* Desktop: height of 4:1 widget */
+    border: none;
+    overflow: hidden;
+    display: block;
+    background: transparent;
+}
+
+@media (max-width: 900px) {
+    .ingrid-banner-iframe {
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ingrid-banner-iframe {
+        height: 280px; /* Mobile reflow (e.g. 2x2 grid) */
+    }
+}
+
+@media (max-width: 480px) {
+    .ingrid-banner-iframe {
+        height: 480px; /* Mobile reflow (e.g. 4x1 vertical list) */
+    }
+}

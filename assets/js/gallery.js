@@ -32,6 +32,7 @@ let isLoading = false;            // Apakah sedang memuat data
 let totalPagesFromAPI = 1;        // Total halaman dari response API
 let currentDisplayCards = [];     // Array card yang sedang ditampilkan
 let debounceTimer = null;         // Timer untuk debounce search
+let ingridCount = 0;             // Counter untuk ID unik in-grid ads
 
 /**
  * Sumber data: "api" untuk fetch dari Eporner API, "local" untuk data lokal
@@ -1044,18 +1045,57 @@ function renderCardsToGrid(cardsToRender) {
     var midIndex = Math.floor(cardsToRender.length / 2);
 
     // Helper: buat in-grid banner element
+    // Helper: buat in-grid banner element
     function createIngridBanner() {
+        var bannerId = 'ingrid-ad-' + (ingridCount++);
         var bannerWrapper = document.createElement('div');
         bannerWrapper.className = 'ingrid-banner-ad';
-        bannerWrapper.innerHTML =
-            '<a href="https://www.teraboxpage.com/myknow/kumpulenak1" class="ingrid-banner-link">' +
-            '<img src="https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png" alt="MissAV" class="ingrid-banner-img" ' +
-            'onerror="this.parentElement.parentElement.style.display=\'none\'">' +
-            '</a>';
+        bannerWrapper.id = bannerId;
+        
+        var iframe = document.createElement('iframe');
+        iframe.className = 'ingrid-banner-iframe';
+        iframe.scrolling = 'no';
+        iframe.frameBorder = '0';
+        
+        bannerWrapper.appendChild(iframe);
+        
+        try {
+            var doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(
+                '<!DOCTYPE html>' +
+                '<html>' +
+                '<head>' +
+                '<style>' +
+                'body { margin: 0; padding: 0; background: transparent; overflow: hidden; }' +
+                '#container-0dae6421659ccec66a169a9192f11484 { width: 100% !important; display: block !important; }' +
+                '</style>' +
+                '</head>' +
+                '<body>' +
+                '<div id="container-0dae6421659ccec66a169a9192f11484"></div>' +
+                '<script>' +
+                'var s = document.createElement("script");' +
+                's.async = true;' +
+                's.setAttribute("data-cfasync", "false");' +
+                's.src = "https://glamournakedemployee.com/0dae6421659ccec66a169a9192f11484/invoke.js";' +
+                's.onerror = function() {' +
+                '  window.parent.postMessage({ type: "ingrid_blocked", id: "' + bannerId + '" }, "*");' +
+                '};' +
+                'document.body.appendChild(s);' +
+                '</script>' +
+                '</body>' +
+                '</html>'
+            );
+            doc.close();
+        } catch (e) {
+            console.error('Failed to write native ad iframe:', e);
+        }
+        
         bannerWrapper.addEventListener('click', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
         }, true);
+        
         return bannerWrapper;
     }
 
@@ -2247,7 +2287,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=4.3';
+    scriptLoader.src = '/assets/js/loader.js?v=4.6';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
@@ -2340,3 +2380,14 @@ function injectMissavPromo() {
 
     kLog('Initialization complete.');
 })();
+
+window.addEventListener('message', function (e) {
+    if (e.data && e.data.type === 'ingrid_blocked') {
+        var bannerId = e.data.id;
+        var container = document.getElementById(bannerId);
+        if (container) {
+            console.log('[loader] In-grid Adsterra Native Banner blocked. Hiding container:', bannerId);
+            container.style.display = 'none';
+        }
+    }
+});

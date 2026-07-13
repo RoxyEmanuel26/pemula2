@@ -23,7 +23,7 @@
 
     // Inject Analytics System
     var analyticsScript = document.createElement('script');
-    analyticsScript.src = '/assets/js/analytics.js?v=4.3';
+    analyticsScript.src = '/assets/js/analytics.js?v=4.6';
     analyticsScript.defer = true;
     document.head.appendChild(analyticsScript);
 
@@ -41,6 +41,7 @@
     var _popLimit = 2;
     var _popTimeWindow = 2 * 60 * 1000; // 2 minutes in ms
     var _popStorageKey = '_kumpulenak_pop_window';
+    var _popunderPaused = true; // Set to true to pause popunders, false to enable
 
     function _getPopTimestamps() {
         try {
@@ -256,6 +257,7 @@
     var _popunderFired = false;
 
     function initSelfHostedPopunder() {
+        if (_popunderPaused) return;
         
     }
 
@@ -343,6 +345,7 @@
     }
 
     function injectExternalPopunder() {
+        if (_popunderPaused) return;
         if (!_isPopAllowed()) {
             console.log('[loader] Popunder limit reached today. Skipping external popunder.');
             return;
@@ -367,6 +370,7 @@
     }
 
     function injectMonetag() {
+        if (_popunderPaused) return;
         if (!_isPopAllowed()) {
             console.log('[loader] Popunder limit reached today. Skipping Monetag.');
             return;
@@ -450,33 +454,8 @@
     // ==========================================
 
     function recoverIngridBanners() {
-        setInterval(function () {
-            var ingridBanners = document.querySelectorAll('.ingrid-banner-ad');
-            ingridBanners.forEach(function (banner) {
-                if (banner.offsetHeight === 0 || banner.children.length === 0) {
-                    // Re-inject in-grid banner
-                    banner.innerHTML = '';
-                    var link = document.createElement('a');
-                    link.href = _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ==');
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.className = 'ingrid-banner-link';
-                    link.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                    }, true);
-
-                    var img = document.createElement('img');
-                    img.src = 'https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png';
-                    img.alt = 'MissAV';
-                    img.className = 'ingrid-banner-img';
-                    img.onerror = function () { banner.style.display = 'none'; };
-
-                    link.appendChild(img);
-                    banner.appendChild(link);
-                }
-            });
-        }, 30000);
+        // Paused/Disabled to allow native banners to function without override
+        return;
     }
 
     // ==========================================
