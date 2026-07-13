@@ -23,7 +23,7 @@
 
     // Inject Analytics System
     var analyticsScript = document.createElement('script');
-    analyticsScript.src = '/assets/js/analytics.js?v=4.7';
+    analyticsScript.src = '/assets/js/analytics.js?v=4.8';
     analyticsScript.defer = true;
     document.head.appendChild(analyticsScript);
 
@@ -288,7 +288,11 @@
         var parts = ['//', _invokeDomain, '/', config.key, '/invoke.js'];
         scriptEl.src = parts.join('');
 
+        scriptEl.onload = function () {
+            try { delete window.atOptions; } catch(e) {}
+        };
         scriptEl.onerror = function () {
+            try { delete window.atOptions; } catch(e) {}
             // Adsterra diblokir → inject fallback banner
             if (typeof onBlocked === 'function') {
                 onBlocked(config.containerId);

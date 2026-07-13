@@ -1562,51 +1562,39 @@ function openPlayerModal(card) {
  * - Bottom: 320x50 banner
  * - Side: 320x50 banner
  */
-function injectPlayerAds() {
-    // Helper: inject Adsterra script ke container via iframe isolasi
-    function injectAd(containerId, key, width, height) {
+function injectBannerDirectly(containerId, key, width, height) {
+    return new Promise(function (resolve) {
         var container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) return resolve();
         container.innerHTML = ''; // Pastikan bersih
 
-        var iframe = document.createElement('iframe');
-        iframe.width = width;
-        iframe.height = height;
-        iframe.frameBorder = '0';
-        iframe.scrolling = 'no';
-        iframe.style.border = 'none';
-        iframe.style.overflow = 'hidden';
-        iframe.style.width = width + 'px';
-        iframe.style.height = height + 'px';
-        
-        container.appendChild(iframe);
+        window.atOptions = {
+            'key': key,
+            'format': 'iframe',
+            'height': height,
+            'width': width,
+            'params': {}
+        };
 
-        try {
-            var doc = iframe.contentDocument || iframe.contentWindow.document;
-            doc.open();
-            doc.write(
-                '<!DOCTYPE html>' +
-                '<html>' +
-                '<head>' +
-                '<style>body { margin: 0; padding: 0; overflow: hidden; background: transparent; display: flex; justify-content: center; align-items: center; }</style>' +
-                '</head>' +
-                '<body>' +
-                '<script type="text/javascript">' +
-                'atOptions = { "key" : "' + key + '", "format" : "iframe", "height" : ' + height + ', "width" : ' + width + ', "params" : {} };' +
-                '</script>' +
-                '<script type="text/javascript" src="https://glamournakedemployee.com/' + key + '/invoke.js"><\/script>' +
-                '</body>' +
-                '</html>'
-            );
-            doc.close();
-        } catch (e) {
-            console.error('Gagal menulis ke iframe ad:', e);
-        }
-    }
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://glamournakedemployee.com/' + key + '/invoke.js';
+        s.onload = function () {
+            try { delete window.atOptions; } catch(e) {}
+            resolve();
+        };
+        s.onerror = function () {
+            try { delete window.atOptions; } catch(e) {}
+            resolve();
+        };
+        container.appendChild(s);
+    });
+}
 
-    injectAd('playerAdTop', 'ebc27171e6ee09a85a109083410590c6', 320, 50);
-    injectAd('playerAdBottom', 'ebc27171e6ee09a85a109083410590c6', 320, 50);
-    injectAd('playerAdSide', '02f9796ea23e0665c8c87fcd24f6ddb2', 300, 250);
+async function injectPlayerAds() {
+    await injectBannerDirectly('playerAdTop', 'ebc27171e6ee09a85a109083410590c6', 320, 50);
+    await injectBannerDirectly('playerAdBottom', 'ebc27171e6ee09a85a109083410590c6', 320, 50);
+    await injectBannerDirectly('playerAdSide', '02f9796ea23e0665c8c87fcd24f6ddb2', 300, 250);
 }
 
 /**
@@ -2276,7 +2264,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=4.7';
+    scriptLoader.src = '/assets/js/loader.js?v=4.8';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
