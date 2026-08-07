@@ -89,7 +89,7 @@ function Generate-StaticSitemaps {
     node scripts/generate-category-sitemap.js
 
     # sitemap_tags.xml
-    $tags = @('amateur', 'teen', 'milf', 'onlyfans', 'pov', 'blonde', 'ebony', 'latina', 'hentai', 'big ass', 'big tits', 'couple', 'student', 'blowjob', 'creampie', 'uncensored')
+    $tags = @('amateur', 'babe', 'milf', 'dance', 'pov', 'blonde', 'ebony', 'latina', 'hentai', 'big ass', 'big tits', 'couple', 'cosplay', 'blowjob', 'creampie', 'uncensored')
     $tagsXml = "<?xml version=`"1.0`" encoding=`"UTF-8`"?>`n<urlset xmlns=`"http://www.sitemaps.org/schemas/sitemap/0.9`">`n"
     foreach ($t in $tags) {
       $url = $baseUrl + '/?q=' + [uri]::EscapeDataString($t)

@@ -37,6 +37,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/icons/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192x192.png">
     <link rel="manifest" href="/assets/icons/site.webmanifest">
 
     <!-- PWA Support -->
@@ -65,7 +67,15 @@
     <meta name="twitter:description"
         content="The ultimate premium adult gallery for 18+ NSFW content in 2026. Stream trending viral videos for free.">
     <meta name="twitter:image" content="https://www.kumpulenak.my.id/assets/icons/og-image.png">
-    <link rel="canonical" href="https://www.kumpulenak.my.id/">
+    <link rel="canonical" id="canonicalLink" href="https://www.kumpulenak.my.id/">
+    <script>
+        (function(){
+            var q = new URLSearchParams(window.location.search).get('q');
+            if(q) {
+                document.getElementById('canonicalLink').href = 'https://www.kumpulenak.my.id/?q=' + encodeURIComponent(q);
+            }
+        })();
+    </script>
 
     <!-- Hreflang — Multi-language indexing -->
     <link rel="alternate" hreflang="id" href="https://www.kumpulenak.my.id/">
