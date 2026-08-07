@@ -119,7 +119,7 @@
       ]
     },
     {
-      "source": "/v/(.*).html",
+      "source": "/v/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

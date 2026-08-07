@@ -9,9 +9,9 @@ echo ====================================================
 echo.
 
 :: 1. Verifikasi File Script
-if not exist ".\generate_sitemap.ps1" (
+if not exist ".\generate_sitemap_fast.js" (
     color 0C
-    echo [ERROR] File 'generate_sitemap.ps1' tidak ditemukan di direktori aktif!
+    echo [ERROR] File 'generate_sitemap_fast.js' tidak ditemukan di direktori aktif!
     echo Silakan pastikan Anda menjalankan file batch ini dari direktori proyek.
     echo.
     pause
@@ -26,19 +26,19 @@ echo [*] Memulai proses crawling sitemap (No Delay)...
 echo [*] Waktu Mulai: %TIME%
 echo.
 
-:: Jalankan PowerShell script
-powershell -ExecutionPolicy Bypass -File .\generate_sitemap.ps1
-set PS_ERROR=%ERRORLEVEL%
+:: Jalankan Node.js script
+node generate_sitemap_fast.js
+set NODE_ERROR=%ERRORLEVEL%
 
 echo.
-if %PS_ERROR% NEQ 0 (
+if %NODE_ERROR% NEQ 0 (
     color 0C
     echo ====================================================
     echo   [ERROR] Terjadi kesalahan saat menjalankan script!
     echo ====================================================
     echo.
     pause
-    exit /b %PS_ERROR%
+    exit /b %NODE_ERROR%
 )
 
 color 0A
