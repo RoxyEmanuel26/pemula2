@@ -17,9 +17,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"></noscript>
     
-    <!-- Favicon -->
-    <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+        <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/icons/site.webmanifest">
 
     <!-- CSS UTAMA -->
     <link rel="stylesheet" href="/assets/css/gallery.css?v=4.8">
@@ -364,6 +366,7 @@
         // Get video slug from query param or path
         const urlParams = new URLSearchParams(window.location.search);
         let videoId = urlParams.get('id') || urlParams.get('v');
+        let originalSlug = videoId; // [SEO FIX] Simpan slug utuh untuk URL canonical
         
         if (!videoId) {
             const pathParts = window.location.pathname.split('/').filter(Boolean);
@@ -372,6 +375,7 @@
             if (videoId === 'v' || videoId === 'video' || !videoId) {
                 videoId = null;
             }
+            originalSlug = videoId;
         }
 
         // Parse ID from standard slug formats (e.g. ID-slug)
@@ -535,7 +539,15 @@
                 canonicalLink.setAttribute('rel', 'canonical');
                 document.head.appendChild(canonicalLink);
             }
-            canonicalLink.setAttribute('href', 'https://www.kumpulenak.my.id/video?v=' + encodeURIComponent(video.id || videoId));
+            
+            // [SEO FIX] Pastikan canonical persis sama dengan Sitemap (/v/ID-slug)
+            let finalSlug = originalSlug;
+            if (!finalSlug || finalSlug === video.id || finalSlug === videoId) {
+                const safeTitle = (video.title || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+                const trimmedSlug = safeTitle.length > 80 ? safeTitle.substring(0, 80).replace(/-+$/, '') : safeTitle;
+                finalSlug = (video.id || videoId) + (trimmedSlug ? '-' + trimmedSlug : '');
+            }
+            canonicalLink.setAttribute('href', 'https://www.kumpulenak.my.id/v/' + finalSlug);
         }
 
         async function fetchSimilarVideos(video) {

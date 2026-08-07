@@ -945,19 +945,23 @@ function loadFromKategori(query, order) {
  * @returns {HTMLElement} Element card yang siap di-append
  */
 function createCardElement(card, idx) {
-    // Gunakan div untuk card dengan embedUrl (video player)
-    // Gunakan anchor tag hanya untuk card tanpa embedUrl (link eksternal)
-    const cardEl = document.createElement(card.embedUrl ? 'div' : 'a');
+    // [SEO FIX] Selalu gunakan anchor tag <a> agar Googlebot dapat menelusuri link video
+    const cardEl = document.createElement('a');
     cardEl.className = 'card';
     cardEl.dataset.index = idx;
 
-    // Jika tidak punya embedUrl → buka link biasa di tab baru
-    if (!card.embedUrl) {
+    if (card.embedUrl) {
+        // Buat slug bersih yang persis sama dengan algoritma di generate_sitemap.ps1
+        const safeTitle = (card.title || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+        const trimmedSlug = safeTitle.length > 80 ? safeTitle.substring(0, 80).replace(/-+$/, '') : safeTitle;
+        // Gunakan format rewrite Vercel /v/ID-slug
+        cardEl.href = '/v/' + card.id + (trimmedSlug ? '-' + trimmedSlug : '');
+    } else {
+        // Link eksternal (Ads/Promoted)
         cardEl.href = card.link || '#';
         cardEl.target = '_blank';
         cardEl.rel = 'noopener noreferrer';
     }
-    // Jika punya embedUrl → akan dibuka via player modal (handled by event delegation)
 
     // Badge durasi (kiri bawah gambar)
     var durationBadge = '';
