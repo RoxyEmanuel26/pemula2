@@ -14,12 +14,26 @@ Write-Host "  Waktu: $dateStr"
 Write-Host "============================================"
 
 $searchQueries = @(
-    'amateur', 'milf', 'pov', 'blonde', 'ebony', 'latina', 'hentai',
-    'big ass', 'big tits', 'small tits', 'couple', 'blowjob', 'creampie', 'uncensored',
-    'asian', 'japanese', 'korean', 'celebrity', 'homemade', 'massage', 'outdoor', 'webcam',
-    'brunette', 'anal', 'threesome', 'lesbian', 'interracial', 'redhead', 'indian',
-    'office', 'public', 'beach', 'hotel', 'shower', 'car', 'gym', 'babe', 'gangbang', 'panties',
-    'socks', 'bbw', 'cosplay', 'yoga', 'dance', 'submissive'
+    '60 fps', 'ai', 'amateur', 'anal', 'arab',
+    'asian', 'asmr', 'bbw', 'bdsm', 'beach',
+    'big ass', 'big dick', 'big tits', 'blonde', 'blowjob',
+    'bondage', 'brunette', 'bukkake', 'car', 'casting',
+    'celebrity', 'chinese', 'compilation', 'cosplay', 'couple',
+    'creampie', 'cuckold', 'cumshot', 'dance', 'doctor',
+    'double penetration', 'ebony', 'fetish', 'filipina', 'fisting',
+    'footjob', 'for women', 'gloryhole', 'group sex', 'handjob',
+    'hardcore', 'hd porn 1080p', 'hd sex', 'hentai', 'hijab',
+    'homemade', 'hotel', 'hotwife', 'housewives', 'hq porn',
+    'indian', 'indonesia', 'interracial', 'japanese', 'korean',
+    'latina', 'lesbian', 'lingerie', 'malay', 'massage',
+    'masturbation', 'mature', 'milf', 'nurses', 'office',
+    'older men', 'orgy', 'outdoor', 'pawg', 'petite',
+    'pinay', 'pornstar', 'pov', 'pregnant', 'public',
+    'redhead', 'russian', 'shemale', 'shower', 'sleep',
+    'small tits', 'squirt', 'stepmom', 'stepsister', 'striptease',
+    'student', 'students', 'swinger', 'teen', 'thai',
+    'threesome', 'toys', 'turkish', 'uniform', 'vietnam',
+    'vintage', 'viral', 'vr porn', 'webcam', 'yoga'
 )
 
 $stateFile = "sitemap_state.json"
