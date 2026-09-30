@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/v/(.*)",
-      "destination": "/video.html"
+      "source": "/v/:path*",
+      "destination": "/video"
     },
     {
       "source": "/about",
@@ -119,11 +119,11 @@
       ]
     },
     {
-      "source": "/v/(.*)",
+      "source": "/v/:path*",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
         },
         {
           "key": "X-Content-Type-Options",

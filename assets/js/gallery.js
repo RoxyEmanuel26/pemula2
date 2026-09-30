@@ -951,8 +951,8 @@ function createCardElement(card, idx) {
     cardEl.dataset.index = idx;
 
     if (card.embedUrl) {
-        // Buat slug bersih yang persis sama dengan algoritma di generate_sitemap.ps1
-        const safeTitle = (card.title || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+        // Buat slug bersih yang sama dengan generator sitemap Node.js.
+        const safeTitle = (card.title || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
         const trimmedSlug = safeTitle.length > 80 ? safeTitle.substring(0, 80).replace(/-+$/, '') : safeTitle;
         // Gunakan format rewrite Vercel /v/ID-slug
         cardEl.href = '/v/' + card.id + (trimmedSlug ? '-' + trimmedSlug : '');
@@ -2059,10 +2059,10 @@ function enhancedOpenPlayerModal(card) {
     // Setup Tonton Halaman Penuh Link
     var fullPageBtn = document.getElementById('playerFullPageBtn');
     if (fullPageBtn) {
-        var slug = (card.name || 'video').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        var slug = (card.name || 'video').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
         var vid = card.videoId ? card.videoId + '-' : '';
-        // Menggunakan clean URL /video?v= agar bekerja di Vercel (cleanUrls:true)
-        fullPageBtn.href = '/video?v=' + vid + slug;
+        // Canonical watch URL; Vercel rewrites /v/:path* ke halaman video statis.
+        fullPageBtn.href = '/v/' + vid + slug;
         fullPageBtn.target = '_blank';
     }
 

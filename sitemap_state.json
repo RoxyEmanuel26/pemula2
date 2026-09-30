@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "lastSuccessfulAt": "2026-09-30T05:49:43.790Z",
+  "mode": "bootstrap",
+  "requests": 452,
+  "candidates": 45195,
+  "added": 45000,
+  "duplicates": 0,
+  "expiredShardsRemoved": 0,
+  "capacityShardsRemoved": 0,
+  "shardsCreated": 9,
+  "activeShards": 9,
+  "activeVideoUrls": 45000
+}

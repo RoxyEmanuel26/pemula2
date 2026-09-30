@@ -1,0 +1,61 @@
+name: Daily rolling video sitemap
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+      timezone: 'Asia/Jakarta'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-rolling-video-sitemap
+  cancel-in-progress: false
+
+jobs:
+  update-sitemap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 20
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run unit tests
+        run: node scripts/test-sitemap.js
+
+      - name: Fetch new videos and validate sitemap
+        run: |
+          node generate_sitemap_fast.js --daily
+          node generate_sitemap_fast.js --validate
+
+      - name: Write job summary
+        shell: bash
+        run: |
+          echo '## Daily sitemap result' >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat sitemap_state.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit only when the published sitemap changed
+        shell: bash
+        run: |
+          if git diff --quiet -- sitemap_index.xml sitemaps; then
+            echo 'No new published video URLs; skipping commit and Vercel deployment.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add sitemap_index.xml sitemap_state.json sitemaps/
+          git commit -m "chore(sitemap): daily rolling update $(date -u +%F)"
+          git pull --rebase origin main
+          git push origin HEAD:main

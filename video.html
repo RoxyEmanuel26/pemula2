@@ -366,7 +366,6 @@
         // Get video slug from query param or path
         const urlParams = new URLSearchParams(window.location.search);
         let videoId = urlParams.get('id') || urlParams.get('v');
-        let originalSlug = videoId; // [SEO FIX] Simpan slug utuh untuk URL canonical
         
         if (!videoId) {
             const pathParts = window.location.pathname.split('/').filter(Boolean);
@@ -375,7 +374,6 @@
             if (videoId === 'v' || videoId === 'video' || !videoId) {
                 videoId = null;
             }
-            originalSlug = videoId;
         }
 
         // Parse ID from standard slug formats (e.g. ID-slug)
@@ -502,8 +500,6 @@
             // Open Graph
             document.getElementById('ogTitle').setAttribute('content', cleanedTitle);
             document.getElementById('ogDesc').setAttribute('content', desc);
-            document.getElementById('ogUrl').setAttribute('content', window.location.href);
-            
             if (video.default_thumb && video.default_thumb.src && isSafeUrl(video.default_thumb.src)) {
                 document.getElementById('ogImage').setAttribute('content', video.default_thumb.src);
             }
@@ -540,14 +536,17 @@
                 document.head.appendChild(canonicalLink);
             }
             
-            // [SEO FIX] Pastikan canonical persis sama dengan Sitemap (/v/ID-slug)
-            let finalSlug = originalSlug;
-            if (!finalSlug || finalSlug === video.id || finalSlug === videoId) {
-                const safeTitle = (video.title || '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
-                const trimmedSlug = safeTitle.length > 80 ? safeTitle.substring(0, 80).replace(/-+$/, '') : safeTitle;
-                finalSlug = (video.id || videoId) + (trimmedSlug ? '-' + trimmedSlug : '');
+            // Always consolidate aliases and old slugs to the sitemap URL.
+            const safeTitle = (video.title || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+            const trimmedSlug = safeTitle.length > 80 ? safeTitle.substring(0, 80).replace(/-+$/, '') : safeTitle;
+            const finalSlug = (video.id || videoId) + (trimmedSlug ? '-' + trimmedSlug : '');
+            const canonicalUrl = 'https://www.kumpulenak.my.id/v/' + finalSlug;
+            canonicalLink.setAttribute('href', canonicalUrl);
+            document.getElementById('ogUrl').setAttribute('content', canonicalUrl);
+
+            if (window.location.pathname.startsWith('/v/') && window.location.pathname !== '/v/' + finalSlug) {
+                window.history.replaceState(null, '', '/v/' + finalSlug);
             }
-            canonicalLink.setAttribute('href', 'https://www.kumpulenak.my.id/v/' + finalSlug);
         }
 
         async function fetchSimilarVideos(video) {
@@ -605,6 +604,11 @@
         }
 
         function showError(msg) {
+            // Invalid/removed videos must not become soft-404 pages in search.
+            const robotsMeta = document.querySelector('meta[name="robots"]');
+            if (robotsMeta) robotsMeta.setAttribute('content', 'noindex, follow');
+            document.title = 'Video unavailable — kumpulenak';
+
             const container = document.getElementById('videoContainer');
             container.innerHTML = '';
             

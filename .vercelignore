@@ -1,0 +1,20 @@
+# Generator and CI-only state are not part of the public deployment.
+.github
+.agents
+scripts
+generate_sitemap_fast.js
+generate-sitemap.bat
+sitemap_state.json
+skills-lock.json
+STRUCTURE.md
+fix_state.js
+bump-version.js
+bump-version.bat
+output.log
+temp_test_api.json
+
+# Repository metadata and local files.
+.git
+.gitignore
+.vercelignore
+*.log
