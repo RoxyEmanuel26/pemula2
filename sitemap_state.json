@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "lastSuccessfulAt": "2026-10-15T23:07:39.646Z",
+  "lastSuccessfulAt": "2026-10-16T22:54:58.531Z",
   "mode": "daily",
   "requests": 100,
-  "candidates": 9992,
-  "added": 4276,
-  "duplicates": 5716,
+  "candidates": 9995,
+  "added": 4423,
+  "duplicates": 5572,
   "expiredShardsRemoved": 0,
-  "capacityShardsRemoved": 1,
+  "capacityShardsRemoved": 2,
   "shardsCreated": 1,
-  "activeShards": 14,
+  "activeShards": 13,
   "activeVideoUrls": 45000
 }
