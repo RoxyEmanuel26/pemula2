@@ -1263,12 +1263,31 @@ function renderPagination(totalPages) {
     
     var frag = document.createDocumentFragment();
 
-    function createBtn(text, pageNum, className = 'page-btn') {
-        var btn = document.createElement('button');
-        btn.className = className;
-        btn.textContent = text;
-        btn.addEventListener('click', function() { goToPage(pageNum); });
-        return btn;
+    function getPageHref(pageNum) {
+        var base = window.location.pathname;
+        var sp = new URLSearchParams(window.location.search);
+        if (pageNum > 1) {
+            sp.set('page', pageNum);
+        } else {
+            sp.delete('page');
+        }
+        var qs = sp.toString();
+        return base + (qs ? '?' + qs : '');
+    }
+
+    function createBtn(text, pageNum, className) {
+        var a = document.createElement('a');
+        a.className = className || 'page-btn';
+        a.textContent = text;
+        a.href = getPageHref(pageNum);
+        a.setAttribute('aria-label', 'Page ' + pageNum);
+        a.addEventListener('click', function(e) {
+            if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                e.preventDefault();
+                goToPage(pageNum);
+            }
+        });
+        return a;
     }
 
     if (currentPage > 1) {
@@ -1316,6 +1335,11 @@ function goToPage(page) {
     if (page < 1 || page === currentPage || isLoading) return;
     currentPage = page;
     kLog('Berpindah ke halaman:', page);
+
+    try {
+        var newHref = getPageHref(page);
+        window.history.pushState({ page: page }, '', newHref);
+    } catch (e) {}
 
     // Scroll ke atas content
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2335,8 +2359,14 @@ function injectMissavPromo() {
     window.openPlayerModal = enhancedOpenPlayerModal;
 
     // Check if this is a pre-rendered static category page
+    var urlParams = new URLSearchParams(window.location.search);
+    var pageParam = parseInt(urlParams.get('page'), 10);
+    if (!isNaN(pageParam) && pageParam >= 1) {
+        currentPage = pageParam;
+    }
+
     var staticCategory = document.body.getAttribute('data-static-category');
-    if (staticCategory) {
+    if (staticCategory && currentPage === 1) {
         kLog('Static category page detected: ' + staticCategory);
         currentQuery = staticCategory;
         isSearchActive = true;

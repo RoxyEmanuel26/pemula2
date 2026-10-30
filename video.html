@@ -37,6 +37,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="kumpulenak — Watch Trending Viral Video">
     <meta name="twitter:description" content="Watch trending viral adult videos in full HD for free on kumpulenak.">
+    <link rel="canonical" id="canonicalLink" href="https://www.kumpulenak.my.id/">
     
     <style>
         .video-page-container { 
@@ -242,6 +243,17 @@
         /**
          * Membersihkan teks dari Mathematical Alphanumeric Symbols dan mojibake
          */
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function cleanFancyText(text) {
             if (!text || typeof text !== 'string') return text || '';
 
@@ -475,11 +487,19 @@
                     ? video.keywords.split(',').map(t => t.trim()) 
                     : video.keywords;
                     
+                const KNOWN_CATEGORIES = new Set(["60-fps","ai","amateur","anal","asian","asmr","babe","bbw","bdsm","big-ass","big-dick","big-tits","bisexual","blonde","blowjob","bondage","brunette","bukkake","casting","compilation","cosplay","couple","creampie","cuckold","cumshot","dance","doctor","double-penetration","ebony","fat","fetish","fisting","footjob","for-women","gloryhole","group-sex","handjob","hardcore","hd-porn-1080p","hd-sex","hentai","homemade","hotel","hotwife","housewives","hq-porn","indian","indonesia","interracial","japanese","latina","lesbian","lingerie","live-cam","massage","masturbation","mature","milf","nurses","office","older-men","orgy","outdoor","pawg","petite","pinay","pornstar","pov","pregnant","public","redhead","shemale","sleep","small-tits","squirt","stepmom","stepsister","striptease","swinger","threesome","toys","uniform","vintage","vr-porn","webcam"]);
+
                 tagArray.forEach(tag => {
                     if (!tag) return;
                     const tagLink = document.createElement('a');
                     tagLink.className = 'video-tag';
-                    tagLink.href = '/?q=' + encodeURIComponent(tag);
+                    const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                    if (KNOWN_CATEGORIES.has(tagSlug)) {
+                        tagLink.href = '/category/' + tagSlug;
+                    } else {
+                        tagLink.href = '/?q=' + encodeURIComponent(tag);
+                        tagLink.rel = 'nofollow';
+                    }
                     tagLink.textContent = tag;
                     tagsContainer.appendChild(tagLink);
                 });
@@ -585,7 +605,7 @@
                             '<div class="card-img-wrapper">' +
                                 (v.length_min ? '<span class="badge-duration">' + v.length_min + '</span>' : '') +
                                 (v.rate ? '<span class="badge-rating">⭐ ' + v.rate + '</span>' : '') +
-                                '<img src="' + thumb + '" alt="Thumbnail" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\'); this.style.background=\'#333\';">' +
+                                '<img src="' + thumb + '" alt="' + escapeHtml(title) + ' thumbnail" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\'); this.style.background=\'#333\';">' +
                             '</div>' +
                             '<div class="card-meta">' +
                                 '<div class="card-date-views">' +

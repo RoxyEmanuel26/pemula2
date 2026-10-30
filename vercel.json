@@ -1,8 +1,21 @@
 {
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "kumpulenak.my.id"
+        }
+      ],
+      "destination": "https://www.kumpulenak.my.id/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/v/:path*",
-      "destination": "/video"
+      "destination": "/api/video?slug=:path*"
     },
     {
       "source": "/about",
@@ -61,7 +74,7 @@
       ]
     },
     {
-      "source": "/category/(.*).html",
+      "source": "/category/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -90,7 +103,7 @@
       ]
     },
     {
-      "source": "/(about|dmca|contact|privacy|terms|howto).html",
+      "source": "/(about|dmca|contact|privacy|terms|howto)(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -123,7 +136,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
         },
         {
           "key": "X-Content-Type-Options",
@@ -132,6 +145,10 @@
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer-when-downgrade"
         },
         {
           "key": "Permissions-Policy",

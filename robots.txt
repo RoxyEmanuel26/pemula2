@@ -1,55 +1,92 @@
 # ==============================================
 # robots.txt — kumpulenak.my.id
-# Optimized for maximum SEO crawl coverage
+# Optimized for maximum SEO crawl coverage & crawl budget
 # ==============================================
 
-# Allow all search engine crawlers
 User-agent: *
 Allow: /
+Allow: /v/
+Allow: /category/
 Allow: /about
 Allow: /dmca
 Allow: /contact
 Allow: /privacy
 Allow: /terms
 Allow: /howto
+Allow: /sitemap_index.xml
+Allow: /sitemaps/
 
-# Disallow ad scripts and internal assets
+# Block internal search parameters & query variations from wasting crawl budget
+Disallow: /*?*q=
+Disallow: /*?*query=
+Disallow: /*?*order=
+Disallow: /*?*tab=
+
+# Disallow ad scripts and internal build/system files
 Disallow: /assets/js/ads.js
 Disallow: /assets/js/loader.js
 Disallow: /.env
+Disallow: /.git/
+Disallow: /api/
+Disallow: /scripts/
 Disallow: /fix_state.js
 Disallow: /generate_sitemap.ps1
 Disallow: /generate-sitemap.bat
+Disallow: /generate_sitemap_fast.js
+Disallow: /bump-version.bat
+Disallow: /bump-version.js
 Disallow: /output.log
+Disallow: /*.json$
+Disallow: /*.bat$
+Disallow: /*.log$
+Disallow: /*.md$
 
-
-# Sitemap location
+# Sitemap index
 Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml
 
 # ==============================================
-# Specific bot rules
+# Bot-Specific Rules
 # ==============================================
 
-# Google
 User-agent: Googlebot
 Allow: /
+Allow: /v/
+Allow: /category/
+Disallow: /*?*q=
+Disallow: /*?*query=
+Disallow: /*?*order=
+Disallow: /*?*tab=
 Crawl-delay: 0
 
-# Google Images
 User-agent: Googlebot-Image
 Allow: /assets/icons/
 
-# Bing
 User-agent: Bingbot
 Allow: /
+Allow: /v/
+Allow: /category/
+Disallow: /*?*q=
+Disallow: /*?*query=
+Disallow: /*?*order=
+Disallow: /*?*tab=
 Crawl-delay: 1
 
-# Yandex
 User-agent: Yandex
 Allow: /
+Allow: /v/
+Allow: /category/
+Disallow: /*?*q=
+Disallow: /*?*query=
+Disallow: /*?*order=
+Disallow: /*?*tab=
 Crawl-delay: 2
 
-# Baidu
 User-agent: Baiduspider
 Allow: /
+Allow: /v/
+Allow: /category/
+Disallow: /*?*q=
+Disallow: /*?*query=
+Disallow: /*?*order=
+Disallow: /*?*tab=
 Crawl-delay: 2
