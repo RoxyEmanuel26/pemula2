@@ -14,6 +14,7 @@ Allow: /privacy
 Allow: /terms
 Allow: /howto
 Allow: /sitemap_index.xml
+Allow: /sitemap.xml
 Allow: /sitemaps/
 
 # Block internal search parameters & query variations from wasting crawl budget
@@ -43,6 +44,7 @@ Disallow: /*.md$
 
 # Sitemap index
 Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml
+Sitemap: https://www.kumpulenak.my.id/sitemap.xml
 
 # ==============================================
 # Bot-Specific Rules

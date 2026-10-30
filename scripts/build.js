@@ -25,6 +25,9 @@ try {
     // 2. Pre-render home cards
     run('scripts/prerender-home.js');
 
+    // 3. Comprehensive SEO verification
+    run('scripts/verify-seo-output.js');
+
     console.log('\n✨ Build completed successfully! All checks passed.');
 } catch (err) {
     console.error('\n❌ Build failed:', err.message);
