@@ -1,9 +1,9 @@
-name: Daily rolling video sitemap
+name: Daily rolling video sitemap & SEO refresh
 
 on:
   schedule:
-    - cron: '17 3 * * *'
-      timezone: 'Asia/Jakarta'
+    # Berjalan setiap hari pukul 03:17 WIB (UTC+7 -> 20:17 UTC)
+    - cron: '17 20 * * *'
   workflow_dispatch:
 
 permissions:
@@ -14,48 +14,57 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  update-sitemap:
+  update-sitemap-and-seo:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Check out main
+      - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: main
-          fetch-depth: 20
+          fetch-depth: 0 # Full history agar gitLastmod membaca tanggal rilis/edit sebenarnya
 
       - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Run unit tests
-        run: node scripts/test-sitemap.js
+      - name: Run verification test suite
+        run: npm test
 
-      - name: Fetch new videos and validate sitemap
+      - name: Optional AI Enrichment (runs only if secret GEMINI_API_KEY exists)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: 'gemini-3.8-flash'
+        run: |
+          npm run seo:enrich -- --limit 20
+
+      - name: Fetch new videos and update rolling sitemap
         run: |
           node generate_sitemap_fast.js --daily
           node generate_sitemap_fast.js --validate
 
+      - name: Refresh home pre-render and verify SEO build
+        run: npm run build
+
       - name: Write job summary
         shell: bash
         run: |
-          echo '## Daily sitemap result' >> "$GITHUB_STEP_SUMMARY"
+          echo '## Daily SEO & Sitemap Update Result' >> "$GITHUB_STEP_SUMMARY"
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
           cat sitemap_state.json >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Commit only when the published sitemap changed
+      - name: Commit and push changes if updated
         shell: bash
         run: |
-          if git diff --quiet -- sitemap_index.xml sitemaps; then
-            echo 'No new published video URLs; skipping commit and Vercel deployment.'
+          if git diff --quiet -- sitemap_index.xml sitemaps sitemap_state.json index.html data/enriched-videos.json; then
+            echo 'No new published video URLs or SEO changes; skipping commit.'
             exit 0
           fi
 
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add sitemap_index.xml sitemap_state.json sitemaps/
-          git commit -m "chore(sitemap): daily rolling update $(date -u +%F)"
+          git add sitemap_index.xml sitemap_state.json sitemaps/ index.html data/enriched-videos.json
+          git commit -m "chore(seo): daily sitemap & pre-render update $(date -u +%F)"
           git pull --rebase origin main
           git push origin HEAD:main
