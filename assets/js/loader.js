@@ -41,7 +41,7 @@
     var _popLimit = 2;
     var _popTimeWindow = 2 * 60 * 1000; // 2 minutes in ms
     var _popStorageKey = '_kumpulenak_pop_window';
-    var _popunderPaused = true; // Set to true to pause popunders, false to enable
+    var _popunderPaused = false; // Set to true to pause popunders, false to enable
 
     function _getPopTimestamps() {
         try {
@@ -92,7 +92,7 @@
     //  OBFUSCATED AD CONFIG
     // ==========================================
 
-    var _invokeDomain = _d('Z2xhbW91cm5ha2VkZW1wbG95ZWUuY29t');
+    var _bannerScriptBase = _d('aHR0cHM6Ly9iaW9tYW5vcy5vcmcvMjIv');
 
     var _isMobile = window.innerWidth < 768;
     var _bannerConfigs = [
@@ -124,11 +124,11 @@
 
     // Popunder script URLs (obfuscated)
     var _popunderUrls = [
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vOTQvYTAvNWYvOTRhMDVmMDIwNDBjMGUzZWQ2NzI3Zjc5ODRiZmZiMTIuanM=')
+        _d('aHR0cHM6Ly9iZW5jaGZvcm0ub3JnLzEvOTRhMDVmMDIwNDBjMGUzZWQ2NzI3Zjc5ODRiZmZiMTI=')
     ];
 
     // Social Bar script URL (obfuscated)
-    var _socialBarUrl = _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vZGQvYzMvNGQvZGRjMzRkYzEwNWU2ZTgyNjkzNDFjYjZmYWIwMWI2MWEuanM=');
+    var _socialBarUrl = _d('aHR0cHM6Ly9iaW9tYW5vcy5vcmcvMTQvZGRjMzRkYzEwNWU2ZTgyNjkzNDFjYjZmYWIwMWI2MWE=');
 
     // Monetag popunder (obfuscated)
     var _monetagDomain = _d('aHR0cHM6Ly9hbDVzbS5jb20vdGFnLm1pbi5qcw==');
@@ -141,7 +141,7 @@
     // ==========================================
 
     var _monetLinks = [
-        _d('aHR0cHM6Ly9nbGFtb3VybmFrZWRlbXBsb3llZS5jb20vdG16c2twNDY2P2tleT1hNmQzOWFiMWZhOTBhNzY2MzZjMDIzZTIyNGQwOTk2MQ==')
+        _d('aHR0cHM6Ly9hcGlndWluZWUub3JnLzQvYTZkMzlhYjFmYTkwYTc2NjM2YzAyM2UyMjRkMDk5NjE=')
     ];
 
     function getRandomLink() {
@@ -285,8 +285,7 @@
 
         var scriptEl = document.createElement('script');
         scriptEl.type = 'text/javascript';
-        var parts = ['//', _invokeDomain, '/', config.key, '/invoke.js'];
-        scriptEl.src = parts.join('');
+        scriptEl.src = _bannerScriptBase + config.key;
 
         scriptEl.onload = function () {
             try { delete window.atOptions; } catch(e) {}

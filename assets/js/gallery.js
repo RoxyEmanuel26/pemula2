@@ -1069,7 +1069,7 @@ function renderCardsToGrid(cardsToRender) {
             s.id = 'adsterra-native-script';
             s.async = true;
             s.setAttribute('data-cfasync', 'false');
-            s.src = 'https://glamournakedemployee.com/0dae6421659ccec66a169a9192f11484/invoke.js?t=' + Date.now();
+            s.src = 'https://biomanos.org/22/0dae6421659ccec66a169a9192f11484?t=' + Date.now();
             s.onerror = function() {
                 console.log('[loader] Native banner script blocked by adblock.');
                 bannerWrapper.style.display = 'none';
@@ -1561,16 +1561,16 @@ function openPlayerModal(card) {
     views.textContent = '👁 ' + (card.views || '0');
     date.textContent = '📅 ' + (card.date || '----');
     var randomLinks = [
-        "https://glamournakedemployee.com/dktyyvhhvs?key=2135b8086ad561259d59a35e74d4dae3",
-        "https://glamournakedemployee.com/bxj9v8xs?key=bbcc03541721fe595f6d0a199086c628",
-        "https://glamournakedemployee.com/d1ydygn4?key=ae04db9758f66d571a2d122b08635af3",
-        "https://glamournakedemployee.com/c5xf7679?key=80dc863578016519ca9167abc7090944",
-        "https://glamournakedemployee.com/npkvzf46m?key=8060ea72a291acdeae897405426a6013",
-        "https://glamournakedemployee.com/xdn13p8ti?key=d9dbf00859cec6d1da89b3855b9f40df",
-        "https://glamournakedemployee.com/r0ue7gdeb8?key=0f351b4656e9db04d06bdd25deb60f05",
-        "https://glamournakedemployee.com/vfag6svjx?key=ba78cf78789f91aa7ace1942fce8a322",
-        "https://glamournakedemployee.com/jpnevpwu8?key=53b3ae6972e09ad30eb53ce3f99890a5",
-        "https://glamournakedemployee.com/xdi7pkz9wh?key=46862d356a0f361ac92be23fe00a265a"
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961"
     ];
     openTab.href = randomLinks[Math.floor(Math.random() * randomLinks.length)];
 
@@ -1606,7 +1606,7 @@ function injectBannerDirectly(containerId, key, width, height) {
 
         var s = document.createElement('script');
         s.async = true;
-        s.src = 'https://glamournakedemployee.com/' + key + '/invoke.js';
+        s.src = 'https://biomanos.org/22/' + key;
         s.onload = function () {
             try { delete window.atOptions; } catch(e) {}
             resolve();
@@ -2067,16 +2067,16 @@ function enhancedOpenPlayerModal(card) {
     views.textContent = '👁 ' + (card.views || '0');
     date.textContent = '📅 ' + (card.date || '----');
     var randomLinks = [
-        "https://glamournakedemployee.com/dktyyvhhvs?key=2135b8086ad561259d59a35e74d4dae3",
-        "https://glamournakedemployee.com/bxj9v8xs?key=bbcc03541721fe595f6d0a199086c628",
-        "https://glamournakedemployee.com/d1ydygn4?key=ae04db9758f66d571a2d122b08635af3",
-        "https://glamournakedemployee.com/c5xf7679?key=80dc863578016519ca9167abc7090944",
-        "https://glamournakedemployee.com/npkvzf46m?key=8060ea72a291acdeae897405426a6013",
-        "https://glamournakedemployee.com/xdn13p8ti?key=d9dbf00859cec6d1da89b3855b9f40df",
-        "https://glamournakedemployee.com/r0ue7gdeb8?key=0f351b4656e9db04d06bdd25deb60f05",
-        "https://glamournakedemployee.com/vfag6svjx?key=ba78cf78789f91aa7ace1942fce8a322",
-        "https://glamournakedemployee.com/jpnevpwu8?key=53b3ae6972e09ad30eb53ce3f99890a5",
-        "https://glamournakedemployee.com/xdi7pkz9wh?key=46862d356a0f361ac92be23fe00a265a"
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961",
+        "https://apiguinee.org/4/a6d39ab1fa90a76636c023e224d09961"
     ];
     openTab.href = randomLinks[Math.floor(Math.random() * randomLinks.length)];
 
