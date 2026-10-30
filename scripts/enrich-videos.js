@@ -12,9 +12,47 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// Automatically read local .env if present
+function loadEnv() {
+    const envPath = path.join(__dirname, '..', '.env');
+    if (fs.existsSync(envPath)) {
+        try {
+            const raw = fs.readFileSync(envPath, 'utf8');
+            for (const line of raw.split('\n')) {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) continue;
+                const eqIdx = trimmed.indexOf('=');
+                if (eqIdx > 0) {
+                    const key = trimmed.slice(0, eqIdx).trim();
+                    let val = trimmed.slice(eqIdx + 1).trim();
+                    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+                        val = val.slice(1, -1);
+                    }
+                    if (!process.env[key]) {
+                        process.env[key] = val;
+                    }
+                }
+            }
+        } catch {
+            // Non-blocking
+        }
+    }
+}
+loadEnv();
+
 const DATA_FILE = path.join(__dirname, '..', 'data', 'enriched-videos.json');
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+
+// Prioritize responsive, active models with automatic fallback
+const CANDIDATE_MODELS = [
+    process.env.GEMINI_MODEL,
+    'gemini-3.5-flash-lite',
+    'gemini-3.6-flash',
+    'gemini-2.5-flash',
+    'gemini-3.8-flash'
+].filter(Boolean).filter((m, i, arr) => arr.indexOf(m) === i);
+
+const GEMINI_MODEL = CANDIDATE_MODELS[0] || 'gemini-3.5-flash-lite';
 const BATCH_SIZE = parseInt(process.env.GEMINI_BATCH_SIZE, 10) || 5;
 const DAILY_LIMIT = parseInt(process.env.GEMINI_DAILY_REQUEST_LIMIT, 10) || 1000;
 
@@ -90,11 +128,10 @@ function validateEnrichment(rawTitle, item) {
 }
 
 /**
- * Call Gemini API with exponential backoff on 429
+ * Call Gemini API with safetySettings set to BLOCK_NONE for editorial classification
+ * and model fallback with exponential backoff on 429 / 503
  */
 async function callGeminiBatch(videosBatch, retries = 3) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-    
     const promptInput = videosBatch.map(v => ({
         video_id: v.id,
         raw_title: v.title,
@@ -127,52 +164,72 @@ STRICT RULES:
                 ]
             }
         ],
+        safetySettings: [
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+        ],
         generationConfig: {
             temperature: 0.3,
             responseMimeType: 'application/json'
         }
     };
 
-    let delay = 2000;
-    for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
+    let lastError = null;
 
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestBody),
-                signal: controller.signal
-            });
-            clearTimeout(timeoutId);
+    for (const model of CANDIDATE_MODELS) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+        let delay = 2000;
 
-            if (res.status === 429) {
-                console.warn(`[Gemini API] Rate limited (429). Retrying in ${delay / 1000}s... (Attempt ${attempt}/${retries})`);
-                await new Promise(r => setTimeout(r, delay));
-                delay *= 2;
-                continue;
+        for (let attempt = 1; attempt <= retries; attempt++) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (res.status === 429 || res.status === 503) {
+                    console.warn(`[Gemini API - ${model}] Status ${res.status} (Busy/High Demand). Retrying in ${delay / 1000}s... (Attempt ${attempt}/${retries})`);
+                    await new Promise(r => setTimeout(r, delay));
+                    delay = Math.min(delay * 2, 8000);
+                    continue;
+                }
+
+                if (!res.ok) {
+                    const errText = await res.text();
+                    throw new Error(`Gemini API [${model}] HTTP ${res.status}: ${errText}`);
+                }
+
+                const data = await res.json();
+                const textOutput = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!textOutput) throw new Error(`Empty response from Gemini model ${model}`);
+
+                const parsed = JSON.parse(textOutput);
+                if (!Array.isArray(parsed)) throw new Error('Gemini response is not a JSON array');
+
+                return { results: parsed, usedModel: model };
+            } catch (err) {
+                lastError = err;
+                const isRetryable = err.name === 'AbortError' || err.message.includes('503') || err.message.includes('429');
+                if (attempt < retries && isRetryable) {
+                    await new Promise(r => setTimeout(r, delay));
+                    delay = Math.min(delay * 2, 8000);
+                } else if (!isRetryable) {
+                    break;
+                }
             }
-
-            if (!res.ok) {
-                const errText = await res.text();
-                throw new Error(`Gemini API HTTP ${res.status}: ${errText}`);
-            }
-
-            const data = await res.json();
-            const textOutput = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (!textOutput) throw new Error('Empty response from Gemini');
-
-            const parsed = JSON.parse(textOutput);
-            if (!Array.isArray(parsed)) throw new Error('Gemini response is not a JSON array');
-
-            return parsed;
-        } catch (err) {
-            if (attempt === retries) throw err;
-            await new Promise(r => setTimeout(r, delay));
-            delay *= 2;
         }
+        console.warn(`[Gemini API] Model ${model} unavailable or busy. Trying next available model...`);
     }
+
+    throw lastError || new Error('All candidate models failed');
 }
 
 /**
@@ -236,7 +293,7 @@ async function runEnrichmentPipeline(options = {}) {
 
         try {
             requestCount++;
-            const results = await callGeminiBatch(batch);
+            const { results, usedModel } = await callGeminiBatch(batch);
             
             results.forEach(result => {
                 const originalVideo = batch.find(v => v.id === result.video_id);
@@ -256,19 +313,19 @@ async function runEnrichmentPipeline(options = {}) {
                         tags: result.tags,
                         faq: result.faq,
                         status: 'enriched',
-                        model: GEMINI_MODEL,
+                        model: usedModel || GEMINI_MODEL,
                         generated_at: new Date().toISOString(),
                         attempts: (db[result.video_id]?.attempts || 0) + 1
                     };
                     enrichedCount++;
-                    console.log(`  ✅ Enriched: [${result.video_id}] ${result.seo_title}`);
+                    console.log(`  ✅ Enriched [${usedModel}]: [${result.video_id}] ${result.seo_title}`);
                 } else {
                     db[result.video_id] = {
                         video_id: result.video_id,
                         source_hash: computeHash(rawTitle),
                         status: 'rejected',
                         reject_reason: validation.reason,
-                        model: GEMINI_MODEL,
+                        model: usedModel || GEMINI_MODEL,
                         generated_at: new Date().toISOString(),
                         attempts: (db[result.video_id]?.attempts || 0) + 1
                     };
