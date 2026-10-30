@@ -20,6 +20,7 @@ try {
     run('scripts/test-sitemap.js');
     run('scripts/test-schema.js');
     run('scripts/test-video-handler.js');
+    run('scripts/test-enrichment.js');
 
     // 2. Pre-render home cards
     run('scripts/prerender-home.js');

@@ -5,7 +5,8 @@
   "description": "kumpulenak - Adult Video Gallery SEO Platform",
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "node scripts/test-sitemap.js && node scripts/test-schema.js && node scripts/test-video-handler.js",
-    "sitemap": "node generate_sitemap_fast.js"
+    "test": "node scripts/test-sitemap.js && node scripts/test-schema.js && node scripts/test-video-handler.js && node scripts/test-enrichment.js",
+    "sitemap": "node generate_sitemap_fast.js",
+    "seo:enrich": "node scripts/enrich-videos.js"
   }
 }

@@ -95,6 +95,24 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour cache
 const NEGATIVE_CACHE_TTL_MS = 10 * 60 * 1000; // 10 min negative cache for 404s
 const MAX_CACHE_ENTRIES = 500;
 
+let enrichedDb = null;
+function getEnrichedData(id) {
+    if (enrichedDb === null) {
+        try {
+            const p = path.join(__dirname, '..', 'data', 'enriched-videos.json');
+            if (fs.existsSync(p)) {
+                enrichedDb = JSON.parse(fs.readFileSync(p, 'utf8'));
+            } else {
+                enrichedDb = {};
+            }
+        } catch {
+            enrichedDb = {};
+        }
+    }
+    const item = enrichedDb[id];
+    return (item && item.status === 'enriched') ? item : null;
+}
+
 module.exports = async function handler(req, res) {
     const { videoTemplate: rawVideoTpl, notFoundTemplate: raw404Tpl } = getTemplates();
     const siteUrl = 'https://www.kumpulenak.my.id';
@@ -162,11 +180,12 @@ module.exports = async function handler(req, res) {
             memoryCache.set(videoId, { data, expires: Date.now() + CACHE_TTL_MS });
         }
 
+        const enriched = getEnrichedData(data.id);
         const title = cleanFancyText(data.title || 'Trending Video');
         const safeTitle = escapeHtml(title);
-        const seoTitle = buildSeoTitle(title);
+        const seoTitle = enriched ? enriched.seo_title : buildSeoTitle(title);
         const safeSeoTitle = escapeHtml(seoTitle);
-        const desc = buildMetaDesc(title);
+        const desc = enriched ? enriched.meta_description : buildMetaDesc(title);
         const safeDesc = escapeHtml(desc);
         const slug = slugify(title);
         const finalSlug = `${data.id}${slug ? '-' + slug : ''}`;
@@ -246,6 +265,20 @@ module.exports = async function handler(req, res) {
             ]
         };
 
+        if (enriched && Array.isArray(enriched.faq) && enriched.faq.length > 0) {
+            jsonLdGraph['@graph'].push({
+                "@type": "FAQPage",
+                "mainEntity": enriched.faq.map(f => ({
+                    "@type": "Question",
+                    "name": f.question,
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": f.answer
+                    }
+                }))
+            });
+        }
+
         // Build tags HTML
         let tagsHtml = '';
         if (data.keywords) {
@@ -291,6 +324,12 @@ module.exports = async function handler(req, res) {
                     <span>⭐ ${escapeHtml(String(ratingVal))} rating</span>
                 </div>
                 ${tagsHtml ? `<div class="video-tags">${tagsHtml}</div>` : ''}
+                ${enriched ? `
+                <div class="video-editorial-enriched">
+                    ${enriched.summary ? `<p class="video-summary">${escapeHtml(enriched.summary)}</p>` : ''}
+                    ${enriched.highlights && enriched.highlights.length ? `<div class="video-highlights"><h3>Key Highlights</h3><ul>${enriched.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join('')}</ul></div>` : ''}
+                    ${enriched.faq && enriched.faq.length ? `<div class="video-faq"><h3>Frequently Asked Questions</h3>${enriched.faq.map(f => `<div class="faq-item"><h4>${escapeHtml(f.question)}</h4><p>${escapeHtml(f.answer)}</p></div>`).join('')}</div>` : ''}
+                </div>` : ''}
             </div>
         `;
 

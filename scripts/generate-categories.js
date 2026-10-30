@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { generateBreadcrumbSchema, generateItemListSchema } = require('./schema-helper');
+const { getCategoryEditorial } = require('./category-intros');
 
 // ============================================================================
 // CONFIGURATION & METADATA OVERRIDES
@@ -249,7 +250,16 @@ function processTemplate(template, category, videos, allCategories) {
         "            </nav>\n";
 
     html = html.replace(/<h1 class="main-seo-title">.*?<\/h1>/s, visualBreadcrumb + "            <h1 class=\"main-seo-title\">" + escapeHTML(category.title) + "</h1>");
-    html = html.replace(/<p class="main-seo-desc" id="mainSeoDesc">.*?<\/p>/s, "<p class=\"main-seo-desc\" id=\"mainSeoDesc\">" + escapeHTML(seoDesc) + "</p>");
+    const editorial = getCategoryEditorial(category.slug, category.title);
+    const editorialParagraphs = editorial.paragraphs.map(p => "                <p>" + escapeHTML(p) + "</p>").join("\n");
+    const editorialSection = 
+        "\n            <!-- Category Editorial Hub Content (SEO Fase 5A) -->\n" +
+        "            <section class=\"category-editorial\" aria-label=\"About this collection\">\n" +
+        "                <h2>" + escapeHTML(editorial.heading) + "</h2>\n" +
+        editorialParagraphs + "\n" +
+        "            </section>\n";
+
+    html = html.replace(/<p class="main-seo-desc" id="mainSeoDesc">.*?<\/p>/s, "<p class=\"main-seo-desc\" id=\"mainSeoDesc\">" + escapeHTML(seoDesc) + "</p>" + editorialSection);
     html = html.replace(/<(?:div|h2) class="section-label" id="sectionLabel">.*?<\/(?:div|h2)>/s, "<h2 class=\"section-label\" id=\"sectionLabel\">" + escapeHTML(category.title) + "</h2>");
     
     let cardsHtml = '';
