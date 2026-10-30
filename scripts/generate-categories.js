@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { generateBreadcrumbSchema, generateItemListSchema } = require('./schema-helper');
 
 // ============================================================================
 // CONFIGURATION & METADATA OVERRIDES
@@ -200,21 +201,38 @@ function processTemplate(template, category, videos, allCategories) {
     // Remove inherited homepage hreflang tags
     html = html.replace(/<!-- Hreflang[\s\S]*?-->\s*(<link rel="alternate"[\s\S]*?>\s*)+/g, '');
     
-    const breadcrumbLd = "\n" +
-    "    <!-- Category Breadcrumb -->\n" +
-    "    <script type=\"application/ld+json\">\n" +
-    "    {\n" +
-    "        \"@context\": \"https://schema.org\",\n" +
-    "        \"@type\": \"BreadcrumbList\",\n" +
-    "        \"itemListElement\": [\n" +
-    "            { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"" + siteUrl + "/\" },\n" +
-    "            { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"" + category.title + "\", \"item\": \"" + categoryUrl + "\" }\n" +
-    "        ]\n" +
-    "    }\n" +
-    "    </script>\n" +
-    "</head>";
-    
-    html = html.replace('</head>', breadcrumbLd);
+    // Remove any existing BreadcrumbList from template
+    html = html.replace(/<!-- JSON-LD BreadcrumbList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+
+    const breadcrumbSchema = generateBreadcrumbSchema([
+        { name: 'Home', url: siteUrl + '/' },
+        { name: category.title, url: categoryUrl }
+    ]);
+
+    const cardItems = videos.map(v => {
+        const title = cleanFancyText(v.title || 'Untitled');
+        const slug = title.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase().substring(0, 80);
+        return {
+            title: title,
+            url: siteUrl + '/v/' + v.id + '-' + slug,
+            image: (v.default_thumb && isSafeUrl(v.default_thumb.src)) ? v.default_thumb.src : ''
+        };
+    });
+
+    const itemListSchema = generateItemListSchema(category.title, seoDesc, cardItems);
+
+    let schemasHtml = '\n    <!-- JSON-LD BreadcrumbList -->\n';
+    schemasHtml += '    <script type="application/ld+json">\n' + JSON.stringify(breadcrumbSchema, null, 2) + '\n    </script>\n';
+    if (itemListSchema && itemListSchema.itemListElement.length > 0) {
+        schemasHtml += '\n    <!-- JSON-LD ItemList -->\n';
+        schemasHtml += '    <script type="application/ld+json">\n' + JSON.stringify(itemListSchema, null, 2) + '\n    </script>\n';
+    }
+
+    if (html.includes('<!-- Gallery Styles -->')) {
+        html = html.replace('<!-- Gallery Styles -->', schemasHtml + '\n    <!-- Gallery Styles -->');
+    } else {
+        html = html.replace('</head>', schemasHtml + '\n</head>');
+    }
     html = html.replace('<body>', "<body data-static-category=\"" + category.slug + "\">");
     const visualBreadcrumb = 
         "            <nav class=\"breadcrumb-nav\" aria-label=\"Breadcrumb\">\n" +

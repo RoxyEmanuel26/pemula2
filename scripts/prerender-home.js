@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { generateItemListSchema, BASE_URL } = require('./schema-helper');
 
 const ROOT_DIR = path.join(__dirname, '..');
 const INDEX_HTML_PATH = path.join(ROOT_DIR, 'index.html');
@@ -80,15 +81,34 @@ async function prerenderHome() {
     const cardsHtml = cleanVideos.map(generateCardHTML).join('\n');
     let indexHtml = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
 
-    // Replace cardGrid contents
-    const cardGridRegex = /<div class="card-grid" id="cardGrid">[\s\S]*?<\/div>/;
+    // Replace cardGrid contents (anchored to <!-- PAGINATION --> to avoid terminating on nested </div>)
+    const cardGridRegex = /<div class="card-grid" id="cardGrid">[\s\S]*?<\/div>\s*<!-- PAGINATION -->/;
     indexHtml = indexHtml.replace(
         cardGridRegex,
-        `<div class="card-grid" id="cardGrid">\n${cardsHtml}\n            </div>`
+        `<div class="card-grid" id="cardGrid">\n${cardsHtml}\n            </div>\n\n            <!-- PAGINATION -->`
     );
 
+    // Build ItemList JSON-LD
+    const cardItems = cleanVideos.map(v => {
+        const title = cleanFancyText(v.title || 'Untitled');
+        const slug = title.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/g, '');
+        return {
+            title: title,
+            url: `${BASE_URL}/v/${v.id}${slug ? '-' + slug : ''}`,
+            image: (v.default_thumb && v.default_thumb.src) ? v.default_thumb.src : ''
+        };
+    });
+    const itemListSchema = generateItemListSchema('Trending Viral Videos', 'Trending viral videos and exclusive adult content on kumpulenak.', cardItems);
+
+    // Remove old ItemList if present
+    indexHtml = indexHtml.replace(/\s*<!-- JSON-LD ItemList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+
+    // Insert ItemList right before <!-- Gallery Styles -->
+    const itemListHtml = `\n    <!-- JSON-LD ItemList -->\n    <script type="application/ld+json">\n${JSON.stringify(itemListSchema, null, 2)}\n    </script>`;
+    indexHtml = indexHtml.replace('<!-- Gallery Styles -->', `${itemListHtml}\n\n    <!-- Gallery Styles -->`);
+
     fs.writeFileSync(INDEX_HTML_PATH, indexHtml, 'utf8');
-    console.log(`✅ Pre-rendered ${cleanVideos.length} cards into index.html`);
+    console.log(`✅ Pre-rendered ${cleanVideos.length} cards and updated ItemList schema in index.html`);
 }
 
 prerenderHome().catch(err => {

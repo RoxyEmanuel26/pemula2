@@ -170,17 +170,48 @@ module.exports = async function handler(req, res) {
         const viewsCount = data.views ? Number(data.views).toLocaleString('en-US') : '0';
         const ratingVal = data.rate || '4.5';
 
-        // Build VideoObject JSON-LD
-        const videoSchema = {
+        // Build Rich Results Schema (@graph: BreadcrumbList + VideoObject)
+        const jsonLdGraph = {
             "@context": "https://schema.org",
-            "@type": "VideoObject",
-            "name": title,
-            "description": desc,
-            "thumbnailUrl": [thumbUrl],
-            "uploadDate": `${uploadISO}T00:00:00Z`,
-            "duration": `PT${durationSec}S`,
-            "embedUrl": embedUrl,
-            "interactionCount": String(data.views || 0)
+            "@graph": [
+                {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": siteUrl + "/"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": primaryCatName,
+                            "item": `${siteUrl}/category/${primaryCatSlug}`
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 3,
+                            "name": title,
+                            "item": canonicalUrl
+                        }
+                    ]
+                },
+                {
+                    "@type": "VideoObject",
+                    "name": title,
+                    "description": desc,
+                    "thumbnailUrl": [thumbUrl],
+                    "uploadDate": `${uploadISO}T00:00:00Z`,
+                    "duration": `PT${durationSec}S`,
+                    "embedUrl": embedUrl,
+                    "interactionStatistic": {
+                        "@type": "InteractionCounter",
+                        "interactionType": { "@type": "WatchAction" },
+                        "userInteractionCount": Number(data.views || 0)
+                    }
+                }
+            ]
         };
 
         // Build tags HTML
@@ -243,7 +274,7 @@ module.exports = async function handler(req, res) {
         // Replace JSON-LD
         html = html.replace(
             '<script id="jsonLdScript" type="application/ld+json"></script>',
-            `<script id="jsonLdScript" type="application/ld+json">\n${JSON.stringify(videoSchema, null, 2)}\n    </script>`
+            `<script id="jsonLdScript" type="application/ld+json">\n${JSON.stringify(jsonLdGraph, null, 2)}\n    </script>`
         );
 
         // Replace video container loader with server-rendered content

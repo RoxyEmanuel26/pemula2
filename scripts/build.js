@@ -18,6 +18,7 @@ try {
 
     // 1. Run unit tests
     run('scripts/test-sitemap.js');
+    run('scripts/test-schema.js');
     run('scripts/test-video-handler.js');
 
     // 2. Pre-render home cards

@@ -533,21 +533,6 @@
                 }
             }
 
-            // JSON-LD Schema
-            const schema = {
-                "@context": "https://schema.org",
-                "@type": "VideoObject",
-                "name": cleanedTitle,
-                "description": desc,
-                "thumbnailUrl": (video.default_thumb && video.default_thumb.src) ? [video.default_thumb.src] : [],
-                "uploadDate": uploadISO,
-                "duration": "PT" + (video.length_sec || 0) + "S",
-                "embedUrl": video.embed || window.location.href,
-                "interactionCount": video.views || "0"
-            };
-
-            document.getElementById('jsonLdScript').textContent = JSON.stringify(schema);
-
             // Canonical URL
             let canonicalLink = document.querySelector('link[rel="canonical"]');
             if (!canonicalLink) {
@@ -567,6 +552,69 @@
             if (window.location.pathname.startsWith('/v/') && window.location.pathname !== '/v/' + finalSlug) {
                 window.history.replaceState(null, '', '/v/' + finalSlug);
             }
+
+            // Determine Primary Category
+            const KNOWN_CATEGORIES = new Set(["60-fps","ai","amateur","anal","asian","asmr","babe","bbw","bdsm","big-ass","big-dick","big-tits","bisexual","blonde","blowjob","bondage","brunette","bukkake","casting","compilation","cosplay","couple","creampie","cuckold","cumshot","dance","doctor","double-penetration","ebony","fat","fetish","fisting","footjob","for-women","gloryhole","group-sex","handjob","hardcore","hd-porn-1080p","hd-sex","hentai","homemade","hotel","hotwife","housewives","hq-porn","indian","indonesia","interracial","japanese","latina","lesbian","lingerie","live-cam","massage","masturbation","mature","milf","nurses","office","older-men","orgy","outdoor","pawg","petite","pinay","pornstar","pov","pregnant","public","redhead","shemale","sleep","small-tits","squirt","stepmom","stepsister","striptease","swinger","threesome","toys","uniform","vintage","vr-porn","webcam"]);
+            let primaryCatSlug = 'amateur';
+            let primaryCatName = 'Amateur';
+            if (video.keywords) {
+                const tagList = (typeof video.keywords === 'string' ? video.keywords.split(',') : video.keywords)
+                    .map(t => String(t).trim()).filter(Boolean);
+                const matched = tagList.find(t => {
+                    const slug = t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                    return KNOWN_CATEGORIES.has(slug);
+                });
+                if (matched) {
+                    primaryCatSlug = matched.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                    primaryCatName = matched.charAt(0).toUpperCase() + matched.slice(1);
+                }
+            }
+
+            // JSON-LD Schema: @graph with BreadcrumbList and VideoObject
+            const schema = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Home",
+                                "item": "https://www.kumpulenak.my.id/"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": primaryCatName,
+                                "item": "https://www.kumpulenak.my.id/category/" + primaryCatSlug
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 3,
+                                "name": cleanedTitle,
+                                "item": canonicalUrl
+                            }
+                        ]
+                    },
+                    {
+                        "@type": "VideoObject",
+                        "name": cleanedTitle,
+                        "description": desc,
+                        "thumbnailUrl": (video.default_thumb && video.default_thumb.src) ? [video.default_thumb.src] : [],
+                        "uploadDate": uploadISO,
+                        "duration": "PT" + (video.length_sec || 0) + "S",
+                        "embedUrl": video.embed || window.location.href,
+                        "interactionStatistic": {
+                            "@type": "InteractionCounter",
+                            "interactionType": { "@type": "WatchAction" },
+                            "userInteractionCount": parseInt(video.views, 10) || 0
+                        }
+                    }
+                ]
+            };
+
+            document.getElementById('jsonLdScript').textContent = JSON.stringify(schema, null, 2);
         }
 
         async function fetchSimilarVideos(video) {
