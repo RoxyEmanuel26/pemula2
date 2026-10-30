@@ -54,7 +54,7 @@ function generateCardHTML(video) {
     return `                <a href="${escapeHTML(videoUrl)}" class="card" aria-label="${safeTitle}">
                     <div class="card-img-wrapper">
                         ${badges}
-                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} thumbnail" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} thumbnail" width="360" height="202" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">

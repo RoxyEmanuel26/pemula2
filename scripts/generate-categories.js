@@ -81,6 +81,25 @@ function isSafeUrl(url) {
     }
 }
 
+
+function buildCategorySeoTitle(title) {
+    const brand = ' | kumpulenak';
+    const withSuffix = title + ' - Watch HD Clips' + brand;
+    if (withSuffix.length <= 60) return withSuffix;
+    const shorter = title + ' - HD Videos' + brand;
+    if (shorter.length <= 60) return shorter;
+    return (title + brand).slice(0, 60);
+}
+
+function buildCategoryMetaDesc(title, customDesc) {
+    if (customDesc && customDesc.length >= 120 && customDesc.length <= 155) {
+        return customDesc;
+    }
+    const base = 'Watch top ' + title + ' in full HD resolution for free on kumpulenak. Stream viral 18+ adult clips with fast loading, daily releases, and no sign-up.';
+    if (base.length > 155) return base.slice(0, 152) + '...';
+    return base;
+}
+
 function isHarmfulVideo(video) {
     const title = (video.title || video.name || '').toLowerCase();
     const keywords = (video.keywords || '').toLowerCase();
@@ -149,7 +168,7 @@ function generateCardHTML(video) {
     "<a href=\"" + escapeHTML(videoUrl) + "\" class=\"card\" aria-label=\"" + safeTitle + "\">\n" +
     "    <div class=\"card-img-wrapper\">\n" +
     "        " + badges + "\n" +
-    "        <img src=\"" + escapeHTML(thumbUrl) + "\" alt=\"" + safeTitle + " thumbnail\" loading=\"lazy\" onload=\"this.classList.add('loaded')\" onerror=\"this.classList.add('loaded'); this.style.background='#333';\">\n" +
+    "        <img src=\"" + escapeHTML(thumbUrl) + "\" alt=\"" + safeTitle + " thumbnail\" width=\"360\" height=\"202\" loading=\"lazy\" onload=\"this.classList.add('loaded')\" onerror=\"this.classList.add('loaded'); this.style.background='#333';\">\n" +
     "    </div>\n" +
     "    <div class=\"card-meta\">\n" +
     "        <div class=\"card-date-views\">\n" +
@@ -166,14 +185,20 @@ function processTemplate(template, category, videos, allCategories) {
     const siteUrl = 'https://www.kumpulenak.my.id';
     const categoryUrl = siteUrl + "/category/" + category.slug;
     
-    html = html.replace(/<title>.*?<\/title>/s, "<title>" + category.title + " — kumpulenak Gallery</title>");
-    html = html.replace(/<meta name="description"[\s\S]*?>/s, "<meta name=\"description\" content=\"" + category.desc + "\">");
-    html = html.replace(/<meta property="og:title" content=".*?">/s, "<meta property=\"og:title\" content=\"" + category.title + " — kumpulenak\">");
-    html = html.replace(/<meta property="og:description"[\s\S]*?>/s, "<meta property=\"og:description\" content=\"" + category.desc + "\">");
+    const seoTitle = buildCategorySeoTitle(category.title);
+    const seoDesc = buildCategoryMetaDesc(category.title, category.desc);
+
+    html = html.replace(/<title>.*?<\/title>/s, "<title>" + escapeHTML(seoTitle) + "</title>");
+    html = html.replace(/<meta name="description"[\s\S]*?>/s, "<meta name=\"description\" content=\"" + escapeHTML(seoDesc) + "\">");
+    html = html.replace(/<meta property="og:title" content=".*?">/s, "<meta property=\"og:title\" content=\"" + escapeHTML(seoTitle) + "\">");
+    html = html.replace(/<meta property="og:description"[\s\S]*?>/s, "<meta property=\"og:description\" content=\"" + escapeHTML(seoDesc) + "\">");
     html = html.replace(/<meta property="og:url" content=".*?">/s, "<meta property=\"og:url\" content=\"" + categoryUrl + "\">");
-    html = html.replace(/<meta name="twitter:title" content=".*?">/s, "<meta name=\"twitter:title\" content=\"" + category.title + "\">");
-    html = html.replace(/<meta name="twitter:description"[\s\S]*?>/s, "<meta name=\"twitter:description\" content=\"" + category.desc + "\">");
+    html = html.replace(/<meta name="twitter:title" content=".*?">/s, "<meta name=\"twitter:title\" content=\"" + escapeHTML(seoTitle) + "\">");
+    html = html.replace(/<meta name="twitter:description"[\s\S]*?>/s, "<meta name=\"twitter:description\" content=\"" + escapeHTML(seoDesc) + "\">");
     html = html.replace(/<link rel="canonical" href=".*?">/s, "<link rel=\"canonical\" href=\"" + categoryUrl + "\">");
+    
+    // Remove inherited homepage hreflang tags
+    html = html.replace(/<!-- Hreflang[\s\S]*?-->\s*(<link rel="alternate"[\s\S]*?>\s*)+/g, '');
     
     const breadcrumbLd = "\n" +
     "    <!-- Category Breadcrumb -->\n" +
@@ -191,9 +216,18 @@ function processTemplate(template, category, videos, allCategories) {
     
     html = html.replace('</head>', breadcrumbLd);
     html = html.replace('<body>', "<body data-static-category=\"" + category.slug + "\">");
-    html = html.replace(/<h1 class="main-seo-title">.*?<\/h1>/s, "<h1 class=\"main-seo-title\">" + category.title + "</h1>");
-    html = html.replace(/<p class="main-seo-desc" id="mainSeoDesc">.*?<\/p>/s, "<p class=\"main-seo-desc\" id=\"mainSeoDesc\">" + category.desc + "</p>");
-    html = html.replace(/<div class="section-label" id="sectionLabel">.*?<\/div>/s, "<div class=\"section-label\" id=\"sectionLabel\">" + category.title + "</div>");
+    const visualBreadcrumb = 
+        "            <nav class=\"breadcrumb-nav\" aria-label=\"Breadcrumb\">\n" +
+        "                <a href=\"/\">Home</a>\n" +
+        "                <span class=\"sep\">›</span>\n" +
+        "                <span>Categories</span>\n" +
+        "                <span class=\"sep\">›</span>\n" +
+        "                <span class=\"current\" aria-current=\"page\">" + escapeHTML(category.title) + "</span>\n" +
+        "            </nav>\n";
+
+    html = html.replace(/<h1 class="main-seo-title">.*?<\/h1>/s, visualBreadcrumb + "            <h1 class=\"main-seo-title\">" + escapeHTML(category.title) + "</h1>");
+    html = html.replace(/<p class="main-seo-desc" id="mainSeoDesc">.*?<\/p>/s, "<p class=\"main-seo-desc\" id=\"mainSeoDesc\">" + escapeHTML(seoDesc) + "</p>");
+    html = html.replace(/<(?:div|h2) class="section-label" id="sectionLabel">.*?<\/(?:div|h2)>/s, "<h2 class=\"section-label\" id=\"sectionLabel\">" + escapeHTML(category.title) + "</h2>");
     
     let cardsHtml = '';
     if (videos.length > 0) {

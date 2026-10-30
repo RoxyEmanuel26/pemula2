@@ -992,7 +992,7 @@ function createCardElement(card, idx) {
         durationBadge +
         ratingBadge +
         '<div class="thumb-progress-bar"></div>' +
-        '<img src="' + escapeHTML(card.image) + '" alt="' + escapeHTML(card.name) + '" loading="lazy" ' +
+        '<img src="' + escapeHTML(card.image) + '" alt="' + escapeHTML(card.name) + ' thumbnail" width="360" height="202" loading="lazy" ' +
         'onload="handleImageLoad(this)" ' +
         'onerror="this.style.background=\'linear-gradient(135deg,#333,#555)\';this.style.minHeight=\'200px\';this.classList.add(\'loaded\');"></img>' +
         '</div>' +
@@ -1001,7 +1001,7 @@ function createCardElement(card, idx) {
         '<span>📅 ' + escapeHTML(card.date) + '</span>' +
         '<span class="card-views" data-views="' + escapeHTML(card.views) + '">👁 ' + escapeHTML(card.views) + '</span>' +
         '</div>' +
-        '<div class="card-title">' + escapeHTML(card.name) + '</div>' +
+        '<h3 class="card-title">' + escapeHTML(card.name) + '</h3>' +
         tagsHtml +
         '</div>';
     

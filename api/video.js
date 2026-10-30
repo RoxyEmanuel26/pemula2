@@ -60,6 +60,35 @@ const KNOWN_CATEGORIES = new Set([
     "vintage","vr-porn","webcam"
 ]);
 
+
+function buildSeoTitle(rawTitle) {
+    const clean = cleanFancyText(rawTitle || 'Trending Video');
+    const brand = ' | kumpulenak';
+    const targetMax = 60;
+    const maxLen = targetMax - brand.length; // 46 chars
+    if (clean.length > maxLen) {
+        return clean.slice(0, maxLen - 3).trim() + '...' + brand;
+    }
+    if (clean.length < 32) {
+        const withSuffix = clean + ' - Watch HD' + brand;
+        if (withSuffix.length <= 60) return withSuffix;
+    }
+    return clean + brand;
+}
+
+function buildMetaDesc(rawTitle) {
+    const clean = cleanFancyText(rawTitle || 'Trending Video');
+    const base = 'Watch ' + clean + ' in full HD resolution for free on kumpulenak. High quality streaming, instant playback, and daily viral video updates.';
+    if (base.length > 155) {
+        return base.slice(0, 152).trim() + '...';
+    }
+    if (base.length < 120) {
+        const longer = 'Watch ' + clean + ' in full HD resolution for free on kumpulenak. Stream top rated viral adult clips with fast loading and no registration required.';
+        return longer.length > 155 ? longer.slice(0, 152).trim() + '...' : longer;
+    }
+    return base;
+}
+
 module.exports = async function handler(req, res) {
     const { videoTemplate: rawVideoTpl, notFoundTemplate: raw404Tpl } = getTemplates();
     const siteUrl = 'https://www.kumpulenak.my.id';
@@ -103,11 +132,30 @@ module.exports = async function handler(req, res) {
 
         const title = cleanFancyText(data.title || 'Trending Video');
         const safeTitle = escapeHtml(title);
+        const seoTitle = buildSeoTitle(title);
+        const safeSeoTitle = escapeHtml(seoTitle);
+        const desc = buildMetaDesc(title);
+        const safeDesc = escapeHtml(desc);
         const slug = slugify(title);
         const finalSlug = `${data.id}${slug ? '-' + slug : ''}`;
         const canonicalUrl = `${siteUrl}/v/${finalSlug}`;
-        const desc = `Watch ${title} in full HD resolution for free on kumpulenak. High quality adult streaming.`;
-        const safeDesc = escapeHtml(desc);
+
+        // Find primary category for breadcrumbs
+        let primaryCatSlug = 'amateur';
+        let primaryCatName = 'Amateur';
+        if (data.keywords) {
+            const rawTags = typeof data.keywords === 'string'
+                ? data.keywords.split(',').map(t => t.trim())
+                : (Array.isArray(data.keywords) ? data.keywords : []);
+            for (const t of rawTags) {
+                const s = slugify(t);
+                if (KNOWN_CATEGORIES.has(s)) {
+                    primaryCatSlug = s;
+                    primaryCatName = t.charAt(0).toUpperCase() + t.slice(1);
+                    break;
+                }
+            }
+        }
         const thumbUrl = (data.default_thumb && data.default_thumb.src) ? data.default_thumb.src : `${siteUrl}/assets/icons/og-image.png`;
         const embedUrl = data.embed || `https://www.eporner.com/embed/${data.id}/`;
 
@@ -153,6 +201,13 @@ module.exports = async function handler(req, res) {
 
         // Pre-rendered video container HTML
         const preRenderedContainer = `
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <span class="sep">›</span>
+                <a href="/category/${escapeHtml(primaryCatSlug)}">${escapeHtml(primaryCatName)}</a>
+                <span class="sep">›</span>
+                <span class="current" aria-current="page">${safeTitle.slice(0, 40)}${safeTitle.length > 40 ? '...' : ''}</span>
+            </nav>
             <a href="/" class="back-btn">← Back to Home</a>
             <div class="video-wrapper">
                 <iframe src="${escapeHtml(embedUrl)}" frameborder="0" allowfullscreen="true" scrolling="no" title="${safeTitle}" allow="autoplay; encrypted-media"></iframe>
@@ -171,18 +226,18 @@ module.exports = async function handler(req, res) {
         let html = rawVideoTpl;
 
         // Replace metadata
-        html = html.replace(/<title>.*?<\/title>/s, `<title>${safeTitle} — kumpulenak</title>`);
+        html = html.replace(/<title>.*?<\/title>/s, `<title>${safeSeoTitle}</title>`);
         html = html.replace(/<meta name="description"[\s\S]*?>/s, `<meta name="description" content="${safeDesc}">`);
         html = html.replace(/<link rel="canonical"[\s\S]*?>/s, `<link rel="canonical" href="${canonicalUrl}">`);
 
         // Replace Open Graph
-        html = html.replace(/<meta id="ogTitle" property="og:title" content=".*?">/s, `<meta id="ogTitle" property="og:title" content="${safeTitle} — kumpulenak">`);
+        html = html.replace(/<meta id="ogTitle" property="og:title" content=".*?">/s, `<meta id="ogTitle" property="og:title" content="${safeSeoTitle}">`);
         html = html.replace(/<meta id="ogDesc" property="og:description" content=".*?">/s, `<meta id="ogDesc" property="og:description" content="${safeDesc}">`);
         html = html.replace(/<meta id="ogImage" property="og:image" content=".*?">/s, `<meta id="ogImage" property="og:image" content="${escapeHtml(thumbUrl)}">`);
         html = html.replace(/<meta id="ogUrl" property="og:url" content=".*?">/s, `<meta id="ogUrl" property="og:url" content="${canonicalUrl}">`);
 
         // Replace Twitter
-        html = html.replace(/<meta name="twitter:title" content=".*?">/s, `<meta name="twitter:title" content="${safeTitle}">`);
+        html = html.replace(/<meta name="twitter:title" content=".*?">/s, `<meta name="twitter:title" content="${safeSeoTitle}">`);
         html = html.replace(/<meta name="twitter:description" content=".*?">/s, `<meta name="twitter:description" content="${safeDesc}">`);
 
         // Replace JSON-LD

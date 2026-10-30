@@ -1647,3 +1647,40 @@ body {
         height: 480px; /* Mobile reflow (e.g. 4x1 vertical list) */
     }
 }
+
+/* ===== BREADCRUMB NAVIGATION (SEO FASE 2) ===== */
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.breadcrumb-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-nav a:hover {
+    color: var(--accent);
+}
+
+.breadcrumb-nav .sep {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    user-select: none;
+}
+
+.breadcrumb-nav .current {
+    color: #fff;
+    font-weight: 600;
+}
+
+h2.section-label {
+    margin-top: 0;
+}
