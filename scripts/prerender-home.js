@@ -37,7 +37,7 @@ function isHarmfulVideo(video) {
     return HARMFUL_KEYWORDS.some(kw => combined.includes(kw));
 }
 
-function generateCardHTML(video) {
+function generateCardHTML(video, index) {
     const title = cleanFancyText(video.title || 'Untitled');
     const safeTitle = escapeHTML(title);
     const slug = title.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/g, '');
@@ -52,10 +52,15 @@ function generateCardHTML(video) {
     if (length) badges += `<span class="badge-duration">${escapeHTML(length)}</span>`;
     if (rate) badges += `<span class="badge-rating">⭐ ${escapeHTML(String(rate))}</span>`;
 
+    const isLcp = typeof index === 'number' && index < 2;
+    const imgAttrs = isLcp
+        ? 'width="360" height="202" fetchpriority="high" loading="eager" decoding="async"'
+        : 'width="360" height="202" loading="lazy" decoding="async"';
+
     return `                <a href="${escapeHTML(videoUrl)}" class="card" aria-label="${safeTitle}">
                     <div class="card-img-wrapper">
                         ${badges}
-                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} thumbnail" width="360" height="202" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} thumbnail" ${imgAttrs} onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
@@ -78,7 +83,7 @@ async function prerenderHome() {
     const cleanVideos = data.videos.filter(v => !isHarmfulVideo(v)).slice(0, 24);
     if (cleanVideos.length === 0) throw new Error('No clean videos returned');
 
-    const cardsHtml = cleanVideos.map(generateCardHTML).join('\n');
+    const cardsHtml = cleanVideos.map((v, i) => generateCardHTML(v, i)).join('\n');
     let indexHtml = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
 
     // Replace cardGrid contents (anchored to <!-- PAGINATION --> to avoid terminating on nested </div>)

@@ -13,6 +13,10 @@
     <link rel="preconnect" href="https://www.eporner.com">
     <link rel="preconnect" href="https://static-ca-cdn.eporner.com">
 
+    <!-- Performance Preconnects: Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"></noscript>
@@ -54,6 +58,57 @@
             background: #000; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
             border: 1px solid var(--border);
+        }
+        
+        .video-facade {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+        .facade-poster {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .video-facade:hover .facade-poster {
+            transform: scale(1.02);
+            filter: brightness(0.9);
+        }
+        .facade-play-btn {
+            position: relative;
+            z-index: 2;
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff2a5f 0%, #a259ff 100%);
+            box-shadow: 0 0 35px rgba(255, 42, 95, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .video-facade:hover .facade-play-btn {
+            transform: scale(1.12);
+            box-shadow: 0 0 45px rgba(255, 42, 95, 0.9);
+        }
+        .facade-play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: #fff;
+            margin-left: 4px;
         }
         .video-wrapper iframe { 
             position: absolute; 
@@ -230,6 +285,23 @@
 
     <script>
         // Security Helper
+        
+        function playVideo(facadeEl) {
+            if (!facadeEl) return;
+            const embedUrl = facadeEl.getAttribute('data-embed');
+            if (!embedUrl || !isSafeUrl(embedUrl)) return;
+            const parent = facadeEl.parentElement;
+            const autoplayUrl = embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
+            parent.innerHTML = '<iframe src="' + escapeHtml(autoplayUrl) + '" frameborder="0" allowfullscreen="true" scrolling="no" title="Video Player" allow="autoplay; encrypted-media"></iframe>';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('video-facade')) {
+                e.preventDefault();
+                playVideo(e.target);
+            }
+        });
+
         function isSafeUrl(url) {
             if (!url || typeof url !== 'string') return false;
             try {
@@ -396,7 +468,15 @@
         if (!videoId) {
             showError('Video ID was not found in the URL.');
         } else {
-            fetchVideoData(videoId);
+            const existingFacade = document.getElementById('videoFacade');
+            if (existingFacade) {
+                // Video is already pre-rendered by Serverless SSR! Skip redundant re-fetch.
+                const firstTag = document.querySelector('.video-tag');
+                const queryTag = firstTag ? firstTag.textContent.trim() : 'indonesia';
+                fetchSimilarVideos({ id: videoId, keywords: queryTag });
+            } else {
+                fetchVideoData(videoId);
+            }
         }
 
         async function fetchVideoData(id) {
@@ -434,14 +514,40 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = 'video-wrapper';
                 
-                const iframe = document.createElement('iframe');
-                iframe.src = video.embed;
-                iframe.setAttribute('frameborder', '0');
-                iframe.setAttribute('allowfullscreen', 'true');
-                iframe.setAttribute('scrolling', 'no');
-                iframe.setAttribute('title', 'Video Player');
-                
-                wrapper.appendChild(iframe);
+                const thumbUrl = (video.default_thumb && video.default_thumb.src && isSafeUrl(video.default_thumb.src)) 
+                    ? video.default_thumb.src 
+                    : '';
+                const safeTitle = cleanFancyText(video.title || 'Video Player');
+
+                const facade = document.createElement('div');
+                facade.className = 'video-facade';
+                facade.id = 'videoFacade';
+                facade.setAttribute('data-embed', video.embed);
+                facade.setAttribute('role', 'button');
+                facade.setAttribute('aria-label', 'Play ' + safeTitle);
+                facade.setAttribute('tabindex', '0');
+                facade.onclick = function() { playVideo(this); };
+
+                if (thumbUrl) {
+                    const poster = document.createElement('img');
+                    poster.className = 'facade-poster';
+                    poster.src = thumbUrl;
+                    poster.alt = safeTitle;
+                    poster.width = 1280;
+                    poster.height = 720;
+                    poster.setAttribute('fetchpriority', 'high');
+                    poster.setAttribute('decoding', 'async');
+                    facade.appendChild(poster);
+                }
+
+                const playBtn = document.createElement('button');
+                playBtn.className = 'facade-play-btn';
+                playBtn.setAttribute('aria-hidden', 'true');
+                playBtn.setAttribute('tabindex', '-1');
+                playBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                facade.appendChild(playBtn);
+
+                wrapper.appendChild(facade);
                 container.appendChild(wrapper);
             } else {
                 console.error("Embed URL error. API response:", video);
@@ -653,14 +759,14 @@
                             '<div class="card-img-wrapper">' +
                                 (v.length_min ? '<span class="badge-duration">' + v.length_min + '</span>' : '') +
                                 (v.rate ? '<span class="badge-rating">⭐ ' + v.rate + '</span>' : '') +
-                                '<img src="' + thumb + '" alt="' + escapeHtml(title) + ' thumbnail" width="360" height="202" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\'); this.style.background=\'#333\';">' +
+                                '<img src="' + thumb + '" alt="' + escapeHtml(title) + ' thumbnail" width="360" height="202" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\'); this.style.background=\'#333\';">' +
                             '</div>' +
                             '<div class="card-meta">' +
                                 '<div class="card-date-views">' +
                                     '<span style="color:var(--text-secondary);">📅 ' + added + '</span>' +
                                     '<span style="color:var(--text-secondary);">👁 ' + views + '</span>' +
                                 '</div>' +
-                                '<div class="card-title" style="color:#fff;">' + title + '</div>' +
+                                '<h3 class="card-title" style="color:#fff;">' + title + '</h3>' +
                             '</div>';
                             
                         grid.appendChild(a);

@@ -89,6 +89,12 @@ function buildMetaDesc(rawTitle) {
     return base;
 }
 
+// Server-Side In-Memory Cache (Warm Lambdas)
+const memoryCache = new Map();
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour cache
+const NEGATIVE_CACHE_TTL_MS = 10 * 60 * 1000; // 10 min negative cache for 404s
+const MAX_CACHE_ENTRIES = 500;
+
 module.exports = async function handler(req, res) {
     const { videoTemplate: rawVideoTpl, notFoundTemplate: raw404Tpl } = getTemplates();
     const siteUrl = 'https://www.kumpulenak.my.id';
@@ -109,25 +115,51 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-        const apiUrl = `https://www.eporner.com/api/v2/video/id/?id=${encodeURIComponent(videoId)}&format=json`;
-        const apiRes = await fetch(apiUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
-
-        if (!apiRes.ok) {
-            throw new Error(`API response status ${apiRes.status}`);
+        let data = null;
+        const cached = memoryCache.get(videoId);
+        if (cached && Date.now() < cached.expires) {
+            if (cached.notFound) {
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+                res.status(404).send(raw404Tpl || '404 Video Not Found');
+                return;
+            }
+            data = cached.data;
         }
 
-        const data = await apiRes.json();
+        if (!data) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-        // Eporner returns empty array [] or data.error if not found or deleted
-        if (!data || data.error || (Array.isArray(data) && data.length === 0) || !data.id) {
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
-            res.status(404).send(raw404Tpl || '404 Video Not Found');
-            return;
+            const apiUrl = `https://www.eporner.com/api/v2/video/id/?id=${encodeURIComponent(videoId)}&format=json`;
+            const apiRes = await fetch(apiUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (!apiRes.ok) {
+                throw new Error(`API response status ${apiRes.status}`);
+            }
+
+            data = await apiRes.json();
+
+            // Eporner returns empty array [] or data.error if not found or deleted
+            if (!data || data.error || (Array.isArray(data) && data.length === 0) || !data.id) {
+                if (memoryCache.size >= MAX_CACHE_ENTRIES) {
+                    const oldest = memoryCache.keys().next().value;
+                    memoryCache.delete(oldest);
+                }
+                memoryCache.set(videoId, { notFound: true, expires: Date.now() + NEGATIVE_CACHE_TTL_MS });
+
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+                res.status(404).send(raw404Tpl || '404 Video Not Found');
+                return;
+            }
+
+            if (memoryCache.size >= MAX_CACHE_ENTRIES) {
+                const oldest = memoryCache.keys().next().value;
+                memoryCache.delete(oldest);
+            }
+            memoryCache.set(videoId, { data, expires: Date.now() + CACHE_TTL_MS });
         }
 
         const title = cleanFancyText(data.title || 'Trending Video');
@@ -241,7 +273,15 @@ module.exports = async function handler(req, res) {
             </nav>
             <a href="/" class="back-btn">← Back to Home</a>
             <div class="video-wrapper">
-                <iframe src="${escapeHtml(embedUrl)}" frameborder="0" allowfullscreen="true" scrolling="no" title="${safeTitle}" allow="autoplay; encrypted-media"></iframe>
+                <div class="video-facade" id="videoFacade" onclick="playVideo(this)" data-embed="${escapeHtml(embedUrl)}" role="button" aria-label="Play ${safeTitle}" tabindex="0">
+                    <img class="facade-poster" src="${escapeHtml(thumbUrl)}" alt="${safeTitle}" width="1280" height="720" fetchpriority="high" decoding="async">
+                    <button class="facade-play-btn" aria-hidden="true" tabindex="-1">
+                        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </button>
+                </div>
+                <noscript>
+                    <iframe src="${escapeHtml(embedUrl)}" frameborder="0" allowfullscreen="true" scrolling="no" title="${safeTitle}"></iframe>
+                </noscript>
             </div>
             <div class="video-details">
                 <h1 class="video-title">${safeTitle}</h1>

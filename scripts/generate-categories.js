@@ -150,7 +150,7 @@ async function fetchCategoryVideos(query) {
     return data.videos.filter(v => !isHarmfulVideo(v)).slice(0, 24);
 }
 
-function generateCardHTML(video) {
+function generateCardHTML(video, index) {
     const title = cleanFancyText(video.title || 'Untitled');
     const safeTitle = escapeHTML(title);
     const slug = title.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase().substring(0, 80);
@@ -165,11 +165,16 @@ function generateCardHTML(video) {
     if (length) badges += "<span class=\"badge-duration\">" + escapeHTML(length) + "</span>";
     if (rate) badges += "<span class=\"badge-rating\">⭐ " + escapeHTML(rate) + "</span>";
 
+    const isLcp = typeof index === 'number' && index < 2;
+    const imgAttrs = isLcp
+        ? "width=\"360\" height=\"202\" fetchpriority=\"high\" loading=\"eager\" decoding=\"async\""
+        : "width=\"360\" height=\"202\" loading=\"lazy\" decoding=\"async\"";
+
     return "" +
     "<a href=\"" + escapeHTML(videoUrl) + "\" class=\"card\" aria-label=\"" + safeTitle + "\">\n" +
     "    <div class=\"card-img-wrapper\">\n" +
     "        " + badges + "\n" +
-    "        <img src=\"" + escapeHTML(thumbUrl) + "\" alt=\"" + safeTitle + " thumbnail\" width=\"360\" height=\"202\" loading=\"lazy\" onload=\"this.classList.add('loaded')\" onerror=\"this.classList.add('loaded'); this.style.background='#333';\">\n" +
+    "        <img src=\"" + escapeHTML(thumbUrl) + "\" alt=\"" + safeTitle + " thumbnail\" " + imgAttrs + " onload=\"this.classList.add('loaded')\" onerror=\"this.classList.add('loaded'); this.style.background='#333';\">\n" +
     "    </div>\n" +
     "    <div class=\"card-meta\">\n" +
     "        <div class=\"card-date-views\">\n" +
@@ -249,7 +254,7 @@ function processTemplate(template, category, videos, allCategories) {
     
     let cardsHtml = '';
     if (videos.length > 0) {
-        cardsHtml = videos.map(generateCardHTML).join('\n                ');
+        cardsHtml = videos.map((v, i) => generateCardHTML(v, i)).join('\n                ');
     } else {
         cardsHtml = "<!-- API Fetch failed during build. gallery.js will attempt to fetch on client side -->";
     }

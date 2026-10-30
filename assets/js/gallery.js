@@ -887,7 +887,7 @@ function renderKategoriGrid() {
             escapeHTML(kat.query) + '\',\'' + escapeHTML(kat.order || 'most-popular') + '\')"';
         
         html += '<' + tag + href + ' class="kategori-card-btn"' + onclickAttr + '>' +
-            '<img src="' + escapeHTML(kat.img) + '" loading="lazy" class="kategori-img" alt="' + escapeHTML(kat.label) + '">' +
+            '<img src="' + escapeHTML(kat.img) + '" loading="lazy" decoding="async" class="kategori-img" alt="' + escapeHTML(kat.label) + '">' +
             '<div class="kategori-overlay"></div>' +
             '<div class="kategori-badge">#</div>' +
             '<div class="kategori-info">' +
@@ -992,7 +992,7 @@ function createCardElement(card, idx) {
         durationBadge +
         ratingBadge +
         '<div class="thumb-progress-bar"></div>' +
-        '<img src="' + escapeHTML(card.image) + '" alt="' + escapeHTML(card.name) + ' thumbnail" width="360" height="202" loading="lazy" ' +
+        '<img src="' + escapeHTML(card.image) + '" alt="' + escapeHTML(card.name) + ' thumbnail" width="360" height="202" loading="lazy" decoding="async" ' +
         'onload="handleImageLoad(this)" ' +
         'onerror="this.style.background=\'linear-gradient(135deg,#333,#555)\';this.style.minHeight=\'200px\';this.classList.add(\'loaded\');"></img>' +
         '</div>' +

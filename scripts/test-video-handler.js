@@ -33,7 +33,7 @@ async function testHandler() {
     assert.strictEqual(statusDeleted, 404, 'Deleted video should return 404');
     console.log('✅ Test 2 Passed: Deleted video returns 404 (eliminates Soft 404s)');
 
-    // Test 3: Active valid video returns 200 with pre-rendered HTML
+    // Test 3: Active valid video returns 200 with pre-rendered Facade and HTML
     let status200 = null;
     let body200 = '';
     const headers200 = {};
@@ -49,8 +49,17 @@ async function testHandler() {
     assert(body200.includes('VideoObject'), 'HTML should contain VideoObject JSON-LD schema');
     assert(body200.includes('<h1 class="video-title">'), 'HTML should contain <h1> video title');
     assert(body200.includes('https://www.kumpulenak.my.id/v/8XAT108xJ1o'), 'HTML should contain canonical link');
+    assert(body200.includes('class="video-facade"'), 'HTML should contain video-facade for LCP optimization');
+    assert(body200.includes('class="facade-poster"'), 'HTML should contain high-priority facade poster');
     assert.strictEqual(headers200['Referrer-Policy'], 'no-referrer-when-downgrade');
-    console.log('✅ Test 3 Passed: Active video returns complete pre-rendered HTML with VideoObject and <h1>');
+    console.log('✅ Test 3 Passed: Active video returns complete pre-rendered HTML with Video Facade and Schema');
+
+    // Test 4: Server-Side in-memory cache hit
+    const t0 = Date.now();
+    await handler({ url: '/v/8XAT108xJ1o-putinha-engolindo-tudo', query: { slug: '8XAT108xJ1o-putinha-engolindo-tudo' } }, res200);
+    const elapsed = Date.now() - t0;
+    assert(elapsed < 100, `Cached call took ${elapsed}ms, should be under 100ms`);
+    console.log(`✅ Test 4 Passed: Server in-memory cache hit in ${elapsed}ms`);
 
     console.log('All api/video.js tests passed!');
 }
