@@ -468,12 +468,15 @@
         if (!videoId) {
             showError('Video ID was not found in the URL.');
         } else {
-            const existingFacade = document.getElementById('videoFacade');
-            if (existingFacade) {
+            const existingPlayer = document.querySelector('.video-wrapper iframe') || document.getElementById('videoFacade');
+            if (existingPlayer) {
                 // Video is already pre-rendered by Serverless SSR! Skip redundant re-fetch.
-                const firstTag = document.querySelector('.video-tag');
-                const queryTag = firstTag ? firstTag.textContent.trim() : 'indonesia';
-                fetchSimilarVideos({ id: videoId, keywords: queryTag });
+                const similarGrid = document.getElementById('similarVideoGrid');
+                if (!similarGrid || similarGrid.children.length === 0) {
+                    const firstTag = document.querySelector('.video-tag');
+                    const queryTag = firstTag ? firstTag.textContent.trim() : 'indonesia';
+                    fetchSimilarVideos({ id: videoId, keywords: queryTag });
+                }
             } else {
                 fetchVideoData(videoId);
             }

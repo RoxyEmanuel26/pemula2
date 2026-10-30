@@ -13,6 +13,8 @@ Allow: /contact
 Allow: /privacy
 Allow: /terms
 Allow: /howto
+Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /sitemap_index.xml
 Allow: /sitemap.xml
 Allow: /sitemaps/
@@ -46,8 +48,11 @@ Disallow: /*.md$
 Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml
 Sitemap: https://www.kumpulenak.my.id/sitemap.xml
 
+# LLM Specification
+# https://www.kumpulenak.my.id/llms.txt
+
 # ==============================================
-# Bot-Specific Rules
+# Bot-Specific Rules: Search Engines
 # ==============================================
 
 User-agent: Googlebot
@@ -92,3 +97,47 @@ Disallow: /*?*query=
 Disallow: /*?*order=
 Disallow: /*?*tab=
 Crawl-delay: 2
+
+# ==============================================
+# AI Search & Answer Engine Bots (GEO / AEO)
+# ==============================================
+
+User-agent: GPTBot
+Allow: /
+Allow: /v/
+Allow: /category/
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /*?*q=
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /v/
+Allow: /category/
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /*?*q=
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /v/
+Allow: /category/
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /*?*q=
+
+User-agent: Google-Extended
+Allow: /
+Allow: /v/
+Allow: /category/
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /*?*q=
+
+User-agent: Applebot-Extended
+Allow: /
+Allow: /v/
+Allow: /category/
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /*?*q=

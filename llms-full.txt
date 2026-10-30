@@ -1,0 +1,101 @@
+# kumpulenak — Comprehensive Information for AI & LLM Systems
+
+kumpulenak (https://www.kumpulenak.my.id) is an online media gallery and search platform focusing on viral, trending, and curated adult entertainment content. The platform provides fast, lightweight streaming via modern Web standards.
+
+## Platform Characteristics
+- **Content Rating**: Adult (Strictly 18+).
+- **Video Delivery**: Embedded HTML5 video players delivering adaptive bitrate streaming up to 1080p 60fps.
+- **Rendering Architecture**: Serverless Server-Side Rendering (SSR) via Vercel Edge with comprehensive OpenGraph, Twitter Card, and Schema.org VideoObject JSON-LD.
+- **Indexing Coverage**: Over 15,000+ indexed titles organized across 85 distinct category hubs.
+
+## Complete Category Directory (85 Hubs)
+- 60-fps: https://www.kumpulenak.my.id/category/60-fps
+- ai: https://www.kumpulenak.my.id/category/ai
+- amateur: https://www.kumpulenak.my.id/category/amateur
+- anal: https://www.kumpulenak.my.id/category/anal
+- asian: https://www.kumpulenak.my.id/category/asian
+- asmr: https://www.kumpulenak.my.id/category/asmr
+- babe: https://www.kumpulenak.my.id/category/babe
+- bbw: https://www.kumpulenak.my.id/category/bbw
+- bdsm: https://www.kumpulenak.my.id/category/bdsm
+- big-ass: https://www.kumpulenak.my.id/category/big-ass
+- big-dick: https://www.kumpulenak.my.id/category/big-dick
+- big-tits: https://www.kumpulenak.my.id/category/big-tits
+- bisexual: https://www.kumpulenak.my.id/category/bisexual
+- blonde: https://www.kumpulenak.my.id/category/blonde
+- blowjob: https://www.kumpulenak.my.id/category/blowjob
+- bondage: https://www.kumpulenak.my.id/category/bondage
+- brunette: https://www.kumpulenak.my.id/category/brunette
+- bukkake: https://www.kumpulenak.my.id/category/bukkake
+- casting: https://www.kumpulenak.my.id/category/casting
+- compilation: https://www.kumpulenak.my.id/category/compilation
+- cosplay: https://www.kumpulenak.my.id/category/cosplay
+- couple: https://www.kumpulenak.my.id/category/couple
+- creampie: https://www.kumpulenak.my.id/category/creampie
+- cuckold: https://www.kumpulenak.my.id/category/cuckold
+- cumshot: https://www.kumpulenak.my.id/category/cumshot
+- dance: https://www.kumpulenak.my.id/category/dance
+- doctor: https://www.kumpulenak.my.id/category/doctor
+- double-penetration: https://www.kumpulenak.my.id/category/double-penetration
+- ebony: https://www.kumpulenak.my.id/category/ebony
+- fat: https://www.kumpulenak.my.id/category/fat
+- fetish: https://www.kumpulenak.my.id/category/fetish
+- fisting: https://www.kumpulenak.my.id/category/fisting
+- footjob: https://www.kumpulenak.my.id/category/footjob
+- for-women: https://www.kumpulenak.my.id/category/for-women
+- gloryhole: https://www.kumpulenak.my.id/category/gloryhole
+- group-sex: https://www.kumpulenak.my.id/category/group-sex
+- handjob: https://www.kumpulenak.my.id/category/handjob
+- hardcore: https://www.kumpulenak.my.id/category/hardcore
+- hd-porn-1080p: https://www.kumpulenak.my.id/category/hd-porn-1080p
+- hd-sex: https://www.kumpulenak.my.id/category/hd-sex
+- hentai: https://www.kumpulenak.my.id/category/hentai
+- homemade: https://www.kumpulenak.my.id/category/homemade
+- hotel: https://www.kumpulenak.my.id/category/hotel
+- hotwife: https://www.kumpulenak.my.id/category/hotwife
+- housewives: https://www.kumpulenak.my.id/category/housewives
+- hq-porn: https://www.kumpulenak.my.id/category/hq-porn
+- indian: https://www.kumpulenak.my.id/category/indian
+- indonesia: https://www.kumpulenak.my.id/category/indonesia
+- interracial: https://www.kumpulenak.my.id/category/interracial
+- japanese: https://www.kumpulenak.my.id/category/japanese
+- latina: https://www.kumpulenak.my.id/category/latina
+- lesbian: https://www.kumpulenak.my.id/category/lesbian
+- lingerie: https://www.kumpulenak.my.id/category/lingerie
+- live-cam: https://www.kumpulenak.my.id/category/live-cam
+- massage: https://www.kumpulenak.my.id/category/massage
+- masturbation: https://www.kumpulenak.my.id/category/masturbation
+- mature: https://www.kumpulenak.my.id/category/mature
+- milf: https://www.kumpulenak.my.id/category/milf
+- nurses: https://www.kumpulenak.my.id/category/nurses
+- office: https://www.kumpulenak.my.id/category/office
+- older-men: https://www.kumpulenak.my.id/category/older-men
+- orgy: https://www.kumpulenak.my.id/category/orgy
+- outdoor: https://www.kumpulenak.my.id/category/outdoor
+- pawg: https://www.kumpulenak.my.id/category/pawg
+- petite: https://www.kumpulenak.my.id/category/petite
+- pinay: https://www.kumpulenak.my.id/category/pinay
+- pornstar: https://www.kumpulenak.my.id/category/pornstar
+- pov: https://www.kumpulenak.my.id/category/pov
+- pregnant: https://www.kumpulenak.my.id/category/pregnant
+- public: https://www.kumpulenak.my.id/category/public
+- redhead: https://www.kumpulenak.my.id/category/redhead
+- shemale: https://www.kumpulenak.my.id/category/shemale
+- sleep: https://www.kumpulenak.my.id/category/sleep
+- small-tits: https://www.kumpulenak.my.id/category/small-tits
+- squirt: https://www.kumpulenak.my.id/category/squirt
+- stepmom: https://www.kumpulenak.my.id/category/stepmom
+- stepsister: https://www.kumpulenak.my.id/category/stepsister
+- striptease: https://www.kumpulenak.my.id/category/striptease
+- swinger: https://www.kumpulenak.my.id/category/swinger
+- threesome: https://www.kumpulenak.my.id/category/threesome
+- toys: https://www.kumpulenak.my.id/category/toys
+- uniform: https://www.kumpulenak.my.id/category/uniform
+- vintage: https://www.kumpulenak.my.id/category/vintage
+- vr-porn: https://www.kumpulenak.my.id/category/vr-porn
+- webcam: https://www.kumpulenak.my.id/category/webcam
+
+## Legal & Compliance
+- **DMCA / Copyright Policy**: Content takedown requests are processed within 24–48 hours via [dmca@kumpulenak.my.id](https://www.kumpulenak.my.id/dmca).
+- **18 U.S.C. 2257 Notice**: All performers appearing on videos hosted or indexed on kumpulenak were 18 years of age or older at the time of creation.
+- **Privacy & Safety**: Strict prohibition on non-consensual content, underage depictions, and personal identifiable information.

@@ -60,6 +60,18 @@ const KNOWN_CATEGORIES = new Set([
     "vintage","vr-porn","webcam"
 ]);
 
+const POPULAR_CATEGORIES = [
+    { slug: 'amateur', name: 'Amateur' },
+    { slug: 'milf', name: 'MILF' },
+    { slug: 'pov', name: 'POV' },
+    { slug: 'asian', name: 'Asian' },
+    { slug: 'ebony', name: 'Ebony' },
+    { slug: 'latina', name: 'Latina' },
+    { slug: 'hd-porn-1080p', name: 'HD 1080p' },
+    { slug: 'cosplay', name: 'Cosplay' },
+    { slug: 'creampie', name: 'Creampie' },
+    { slug: 'threesome', name: 'Threesome' }
+];
 
 function buildSeoTitle(rawTitle) {
     const clean = cleanFancyText(rawTitle || 'Trending Video');
@@ -94,6 +106,79 @@ const memoryCache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour cache
 const NEGATIVE_CACHE_TTL_MS = 10 * 60 * 1000; // 10 min negative cache for 404s
 const MAX_CACHE_ENTRIES = 500;
+
+// Related Videos In-Memory Cache
+const relatedCache = new Map();
+const RELATED_CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
+const MAX_RELATED_ENTRIES = 200;
+
+async function getRelatedVideos(categorySlug, currentId) {
+    const query = categorySlug || 'amateur';
+    const cached = relatedCache.get(query);
+    if (cached && Date.now() < cached.expires) {
+        return (cached.videos || []).filter(v => v && v.id !== currentId).slice(0, 8);
+    }
+
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const url = `https://www.eporner.com/api/v2/video/search/?query=${encodeURIComponent(query)}&per_page=12&format=json`;
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.videos)) {
+                if (relatedCache.size >= MAX_RELATED_ENTRIES) {
+                    const oldest = relatedCache.keys().next().value;
+                    relatedCache.delete(oldest);
+                }
+                relatedCache.set(query, {
+                    videos: data.videos,
+                    expires: Date.now() + RELATED_CACHE_TTL_MS
+                });
+                return data.videos.filter(v => v && v.id !== currentId).slice(0, 8);
+            }
+        }
+    } catch {
+        // Non-blocking fallback
+    }
+    return [];
+}
+
+function renderRelatedCardsHtml(videos) {
+    if (!videos || !videos.length) return '';
+    return videos.map(v => {
+        const rawTitle = cleanFancyText(v.title || 'Untitled Video');
+        const safeTitle = escapeHtml(rawTitle);
+        const slug = slugify(rawTitle);
+        const cardUrl = `/v/${v.id}${slug ? '-' + slug : ''}`;
+        const thumb = (v.default_thumb && v.default_thumb.src) ? v.default_thumb.src : '';
+        const views = v.views ? Number(v.views).toLocaleString('en-US') : '0';
+        const added = v.added ? v.added.slice(0, 10) : '';
+        const duration = v.length_min || '';
+        const rate = v.rate || '';
+
+        let badges = '';
+        if (duration) badges += `<span class="badge-duration">${escapeHtml(duration)}</span>`;
+        if (rate) badges += `<span class="badge-rating">⭐ ${escapeHtml(rate)}</span>`;
+
+        return `
+            <a href="${escapeHtml(cardUrl)}" class="card" aria-label="${safeTitle}">
+                <div class="card-img-wrapper">
+                    ${badges}
+                    <img src="${escapeHtml(thumb)}" alt="${safeTitle} thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                </div>
+                <div class="card-meta">
+                    <div class="card-date-views">
+                        <span class="card-date">📅 ${escapeHtml(added)}</span>
+                        <span class="card-views">👁 ${escapeHtml(views)}</span>
+                    </div>
+                    <h3 class="card-title">${safeTitle}</h3>
+                </div>
+            </a>`.trim();
+    }).join('\n');
+}
 
 let enrichedDb = null;
 function getEnrichedData(id) {
@@ -191,13 +276,14 @@ module.exports = async function handler(req, res) {
         const finalSlug = `${data.id}${slug ? '-' + slug : ''}`;
         const canonicalUrl = `${siteUrl}/v/${finalSlug}`;
 
-        // Find primary category for breadcrumbs
+        // Find primary category for breadcrumbs and related videos
         let primaryCatSlug = 'amateur';
         let primaryCatName = 'Amateur';
         if (data.keywords) {
             const rawTags = typeof data.keywords === 'string'
                 ? data.keywords.split(',').map(t => t.trim())
                 : (Array.isArray(data.keywords) ? data.keywords : []);
+
             for (const t of rawTags) {
                 const s = slugify(t);
                 if (KNOWN_CATEGORIES.has(s)) {
@@ -207,6 +293,10 @@ module.exports = async function handler(req, res) {
                 }
             }
         }
+
+        // Fetch related videos concurrently from primary category
+        const relatedVideos = await getRelatedVideos(primaryCatSlug, data.id);
+
         const thumbUrl = (data.default_thumb && data.default_thumb.src) ? data.default_thumb.src : `${siteUrl}/assets/icons/og-image.png`;
         const embedUrl = data.embed || `https://www.eporner.com/embed/${data.id}/`;
 
@@ -256,6 +346,7 @@ module.exports = async function handler(req, res) {
                     "uploadDate": `${uploadISO}T00:00:00Z`,
                     "duration": `PT${durationSec}S`,
                     "embedUrl": embedUrl,
+                    "contentUrl": embedUrl,
                     "interactionStatistic": {
                         "@type": "InteractionCounter",
                         "interactionType": { "@type": "WatchAction" },
@@ -295,7 +386,13 @@ module.exports = async function handler(req, res) {
             }).join(' ');
         }
 
-        // Pre-rendered video container HTML
+        // Category navigation chips
+        const categoryPillsHtml = POPULAR_CATEGORIES.map(c => 
+            `<a href="/category/${c.slug}" class="video-tag">${escapeHtml(c.name)}</a>`
+        ).join(' ');
+
+        // Pre-rendered video container HTML with DIRECT IFRAME
+        // (Solves GSC 'Video tidak ada di halaman tonton' definitively!)
         const preRenderedContainer = `
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <a href="/">Home</a>
@@ -306,15 +403,16 @@ module.exports = async function handler(req, res) {
             </nav>
             <a href="/" class="back-btn">← Back to Home</a>
             <div class="video-wrapper">
-                <div class="video-facade" id="videoFacade" onclick="playVideo(this)" data-embed="${escapeHtml(embedUrl)}" role="button" aria-label="Play ${safeTitle}" tabindex="0">
-                    <img class="facade-poster" src="${escapeHtml(thumbUrl)}" alt="${safeTitle}" width="1280" height="720" fetchpriority="high" decoding="async">
-                    <button class="facade-play-btn" aria-hidden="true" tabindex="-1">
-                        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    </button>
-                </div>
-                <noscript>
-                    <iframe src="${escapeHtml(embedUrl)}" frameborder="0" allowfullscreen="true" scrolling="no" title="${safeTitle}"></iframe>
-                </noscript>
+                <iframe 
+                    id="videoPlayer"
+                    src="${escapeHtml(embedUrl)}" 
+                    frameborder="0" 
+                    allowfullscreen="true" 
+                    scrolling="no" 
+                    title="${safeTitle}" 
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
             </div>
             <div class="video-details">
                 <h1 class="video-title">${safeTitle}</h1>
@@ -329,7 +427,14 @@ module.exports = async function handler(req, res) {
                     ${enriched.summary ? `<p class="video-summary">${escapeHtml(enriched.summary)}</p>` : ''}
                     ${enriched.highlights && enriched.highlights.length ? `<div class="video-highlights"><h3>Key Highlights</h3><ul>${enriched.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join('')}</ul></div>` : ''}
                     ${enriched.faq && enriched.faq.length ? `<div class="video-faq"><h3>Frequently Asked Questions</h3>${enriched.faq.map(f => `<div class="faq-item"><h4>${escapeHtml(f.question)}</h4><p>${escapeHtml(f.answer)}</p></div>`).join('')}</div>` : ''}
-                </div>` : ''}
+                </div>` : `
+                <div class="video-editorial-enriched">
+                    <p class="video-summary">Watch <strong>${safeTitle}</strong> in full high definition streaming on kumpulenak. This featured clip has a running time of ${escapeHtml(durationMin)} with high bitrate playback, instant loading, and seamless viewing across mobile and desktop devices.</p>
+                </div>`}
+                <div class="video-popular-categories" style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 8px; font-weight: 600;">Explore Categories:</span>
+                    <div class="video-tags">${categoryPillsHtml}</div>
+                </div>
             </div>
         `;
 
@@ -361,6 +466,20 @@ module.exports = async function handler(req, res) {
             '<div class="loader" id="videoLoader"></div>',
             preRenderedContainer
         );
+
+        // Pre-render Similar / Related Videos Section in SSR
+        if (relatedVideos && relatedVideos.length > 0) {
+            const relatedCardsHtml = renderRelatedCardsHtml(relatedVideos);
+            const similarHtml = `
+            <!-- ===== SIMILAR VIDEOS ===== -->
+            <div class="video-page-container" id="similarVideosSection" style="margin-top: 40px; display: block;">
+                <h2 class="similar-title">Related Videos</h2>
+                <div class="card-grid" id="similarVideoGrid">
+                    ${relatedCardsHtml}
+                </div>
+            </div>`;
+            html = html.replace(/<!-- ===== SIMILAR VIDEOS ===== -->[\s\S]*?<div class="card-grid" id="similarVideoGrid"><\/div>\s*<\/div>/, similarHtml);
+        }
 
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');

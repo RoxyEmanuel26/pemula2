@@ -1,0 +1,34 @@
+# kumpulenak
+
+> kumpulenak is a high-speed, mobile-responsive adult video curation and streaming platform delivering HD 1080p content across 85 curated categories with real-time indexing, rich metadata, and zero mandatory registration.
+
+## Core Content & Categories
+
+- [Home](https://www.kumpulenak.my.id/): Trending daily videos and search portal.
+- [Amateur](https://www.kumpulenak.my.id/category/amateur): Authentic home-recorded videos and real couples.
+- [MILF](https://www.kumpulenak.my.id/category/milf): Top mature and cougar HD scenes.
+- [POV](https://www.kumpulenak.my.id/category/pov): Point of View immersive experiences.
+- [Asian](https://www.kumpulenak.my.id/category/asian): High definition Asian video gallery.
+- [Ebony](https://www.kumpulenak.my.id/category/ebony): Curated ebony stars and hot scenes.
+- [Latina](https://www.kumpulenak.my.id/category/latina): Passionate adult videos from top Latina models.
+- [HD 1080p](https://www.kumpulenak.my.id/category/hd-porn-1080p): Full HD and high frame-rate collections.
+- [Cosplay](https://www.kumpulenak.my.id/category/cosplay): Anime, gaming, and costume adult roleplays.
+- [Creampie](https://www.kumpulenak.my.id/category/creampie): Premium compilations and authentic endings.
+- [Threesome](https://www.kumpulenak.my.id/category/threesome): Group dynamics, MFF and MFM video archives.
+
+## Information & Policies
+
+- [About Us](https://www.kumpulenak.my.id/about): Platform mission, technical architecture, and editorial standards.
+- [How to Download / Watch](https://www.kumpulenak.my.id/howto): Step-by-step playback optimization and resolution guide.
+- [DMCA & Content Removal](https://www.kumpulenak.my.id/dmca): Copyright infringement notices, 18 U.S.C. 2257 compliance, and content takedown process.
+- [Privacy Policy](https://www.kumpulenak.my.id/privacy): Data protection, cookie policies, and anonymity standards.
+- [Terms of Service](https://www.kumpulenak.my.id/terms): Platform usage terms and age-gate restrictions (18+ only).
+- [Contact Support](https://www.kumpulenak.my.id/contact): Webmaster and inquiries.
+
+## Technical Details
+
+- **Sitemap Index**: https://www.kumpulenak.my.id/sitemap_index.xml
+- **Primary Domain**: https://www.kumpulenak.my.id
+- **Target Audience**: Adults aged 18 and older.
+- **Video URL Scheme**: `/v/{id}-{slug}`
+- **Structured Data**: Schema.org VideoObject, BreadcrumbList, FAQPage.
