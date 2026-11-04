@@ -1546,9 +1546,29 @@ function updateSearchClearBtn() {
  * Buka video player modal
  * @param {Object} card - Objek card yang berisi embedUrl dan info lainnya
  */
+
+function getOrCreatePlayerIframe() {
+    var iframe = document.getElementById('playerIframe');
+    if (!iframe) {
+        var wrapper = document.getElementById('playerIframeWrapper') || document.querySelector('.player-iframe-wrapper');
+        if (wrapper) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'playerIframe';
+            iframe.width = '100%';
+            iframe.height = '400';
+            iframe.frameBorder = '0';
+            iframe.allowFullscreen = true;
+            iframe.setAttribute('allow', 'autoplay; encrypted-media');
+            iframe.loading = 'lazy';
+            wrapper.appendChild(iframe);
+        }
+    }
+    return iframe;
+}
+
 function openPlayerModal(card) {
     var modal = document.getElementById('playerModal');
-    var iframe = document.getElementById('playerIframe');
+    var iframe = getOrCreatePlayerIframe();
     var title = document.getElementById('playerTitle');
     var duration = document.getElementById('playerDuration');
     var views = document.getElementById('playerViews');
@@ -1640,7 +1660,7 @@ function closePlayerModal() {
     var iframe = document.getElementById('playerIframe');
 
     // Hentikan video dengan menghapus src
-    iframe.src = '';
+    if (iframe) { iframe.src = ''; iframe.remove(); }
     modal.classList.remove('show');
     document.body.style.overflow = '';
     clearPlayerAds();
@@ -2054,7 +2074,7 @@ var _originalOpenPlayerModal = null;
 
 function enhancedOpenPlayerModal(card) {
     var modal = document.getElementById('playerModal');
-    var iframe = document.getElementById('playerIframe');
+    var iframe = getOrCreatePlayerIframe();
     var title = document.getElementById('playerTitle');
     var duration = document.getElementById('playerDuration');
     var views = document.getElementById('playerViews');
@@ -2292,7 +2312,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=5.1.0';
+    scriptLoader.src = '/assets/js/loader.js?v=5.2.0';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
