@@ -8,6 +8,7 @@ const ROOT = __dirname;
 const SITEMAPS_DIR = path.join(ROOT, 'sitemaps');
 const STATE_FILE = path.join(ROOT, 'sitemap_state.json');
 const INDEX_FILE = path.join(ROOT, 'sitemap_index.xml');
+const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 const BASE_URL = 'https://www.kumpulenak.my.id';
 const API_URL = 'https://www.eporner.com/api/v2/video/search/';
 
@@ -489,7 +490,9 @@ async function generate(mode) {
     activeShards = [...activeShards, ...created]
         .sort((a, b) => a.date.localeCompare(b.date) || a.sequence - b.sequence);
     const changedNames = new Set([...created.map(item => item.name), ...capped.rewritten]);
-    writeAtomic(INDEX_FILE, buildIndex(activeShards, changedNames));
+    const indexContent = buildIndex(activeShards, changedNames);
+    writeAtomic(INDEX_FILE, indexContent);
+    writeAtomic(SITEMAP_FILE, indexContent);
     const validation = validateSitemaps({ allowEmpty: false });
     const summary = {
         version: 1,
