@@ -48,9 +48,8 @@ async function verifyAll() {
     assert(videoHtml.includes('<link rel="canonical" href="https://www.kumpulenak.my.id/v/8XAT108xJ1o'), 'Video canonical missing');
     assert(videoHtml.includes('"@type": "VideoObject"'), 'Video VideoObject schema missing');
     assert(videoHtml.includes('"@type": "BreadcrumbList"'), 'Video BreadcrumbList missing');
-    assert(videoHtml.includes('class="video-facade"'), 'Video Facade missing');
-    assert(videoHtml.includes('class="facade-poster"'), 'Video poster missing');
-    assert(videoHtml.includes('fetchpriority="high"'), 'Video poster fetchpriority missing');
+    assert(videoHtml.includes('class="video-wrapper"'), 'Video wrapper missing');
+    assert(videoHtml.includes('id="videoPlayer"'), 'Video player iframe missing');
     console.log('   ✅ SSR Video Handler passed all checks.\n');
 
     // 4. True 404 Response Verification
