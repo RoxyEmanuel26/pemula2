@@ -1046,55 +1046,7 @@ function renderCardsToGrid(cardsToRender) {
 
     // Use DocumentFragment for batch DOM insertion (1 reflow instead of 24+)
     var frag = document.createDocumentFragment();
-    var midIndex = Math.floor(cardsToRender.length / 2);
-
-    // Helper: buat in-grid banner element
-    // Helper: buat in-grid banner element
-    function createIngridBanner() {
-        var bannerWrapper = document.createElement('div');
-        bannerWrapper.className = 'ingrid-banner-ad';
-        
-        var container = document.createElement('div');
-        container.id = 'container-0dae6421659ccec66a169a9192f11484';
-        container.style.width = '100%';
-        container.style.display = 'block';
-        bannerWrapper.appendChild(container);
-        
-        // Dynamically load Adsterra Native Banner script in top window context
-        setTimeout(function() {
-            var oldScript = document.getElementById('adsterra-native-script');
-            if (oldScript) oldScript.remove();
-            
-            var s = document.createElement('script');
-            s.id = 'adsterra-native-script';
-            s.async = true;
-            s.setAttribute('data-cfasync', 'false');
-            s.src = 'https://biomanos.org/22/0dae6421659ccec66a169a9192f11484?t=' + Date.now();
-            s.onerror = function() {
-                console.log('[loader] Native banner script blocked by adblock.');
-                bannerWrapper.style.display = 'none';
-            };
-            document.body.appendChild(s);
-            
-            // Safety check: if container is empty after 3.5 seconds, hide the wrapper
-            setTimeout(function() {
-                if (container.children.length === 0) {
-                    console.log('[loader] Native banner failed to render. Hiding wrapper.');
-                    bannerWrapper.style.display = 'none';
-                }
-            }, 3500);
-        }, 100);
-        
-        bannerWrapper.addEventListener('click', function (e) {
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-        }, true);
-        
-        return bannerWrapper;
-    }
-
     cardsToRender.forEach(function (card, idx) {
-        if (idx === midIndex) frag.appendChild(createIngridBanner());
         frag.appendChild(createCardElement(card, idx));
     });
 
@@ -1107,7 +1059,7 @@ function renderCardsToGrid(cardsToRender) {
     // SEO: Inject VideoObject JSON-LD schema untuk Google Video Search
     injectVideoSchema(cardsToRender);
 
-    kLog('Rendered ' + cardsToRender.length + ' cards ke grid (dengan in-grid banner)');
+    kLog('Rendered ' + cardsToRender.length + ' cards ke grid');
 }
 
 // =====================================================
@@ -2312,7 +2264,7 @@ function injectVideoSchema(cardsToRender) {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=5.2.0';
+    scriptLoader.src = '/assets/js/loader.js?v=5.3.0';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();

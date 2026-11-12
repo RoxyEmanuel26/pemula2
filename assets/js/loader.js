@@ -23,7 +23,7 @@
 
     // Inject Analytics System
     var analyticsScript = document.createElement('script');
-    analyticsScript.src = '/assets/js/analytics.js?v=5.2.0';
+    analyticsScript.src = '/assets/js/analytics.js?v=5.3.0';
     analyticsScript.defer = true;
     document.head.appendChild(analyticsScript);
 
@@ -79,7 +79,9 @@
             var target = e.target;
             if (target.closest && (
                 target.closest('.player-overlay') ||
-                target.closest('.ingrid-banner-ad')
+                target.closest('.ingrid-banner-ad') ||
+                target.closest('.ad-native-space') ||
+                target.closest('#container-0dae6421659ccec66a169a9192f11484')
             )) {
                 return;
             }
