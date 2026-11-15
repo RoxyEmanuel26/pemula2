@@ -619,7 +619,10 @@ async function generate(mode) {
     let activeShards = sanitized.shards;
 
     if (mode === 'sanitize-only') {
-        const changedNames = new Set(sanitized.rewritten);
+        const capped = applyActiveCap(activeShards, []);
+        activeShards = capped.shards;
+        removeFiles(capped.removed);
+        const changedNames = new Set([...sanitized.rewritten, ...capped.rewritten]);
         const indexContent = buildIndex(activeShards, changedNames);
         const flatContent = buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards);
         writeAtomic(INDEX_FILE, indexContent);
