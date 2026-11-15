@@ -157,9 +157,9 @@ const KATEGORI_LIST = [
     { label: 'Stepmom', query: 'stepmom', img: 'https://static-sg-cdn.eporner.com/catimg/84.jpg', order: 'most-popular', slug: 'stepmom' },
     { label: 'Stepsister', query: 'stepsister', img: 'https://static-sg-cdn.eporner.com/catimg/85.jpg', order: 'most-popular', slug: 'stepsister' },
     { label: 'Striptease', query: 'striptease', img: 'https://static-sg-cdn.eporner.com/catimg/61.jpg', order: 'most-popular', slug: 'striptease' },
-    { label: 'Students', query: 'couple', img: 'https://static-sg-cdn.eporner.com/catimg/19.jpg', order: 'most-popular', slug: 'couple' },
+    { label: 'Couples', query: 'couple', img: 'https://static-sg-cdn.eporner.com/catimg/19.jpg', order: 'most-popular', slug: 'couple' },
     { label: 'Swinger', query: 'swinger', img: 'https://static-sg-cdn.eporner.com/catimg/32.jpg', order: 'most-popular', slug: 'swinger' },
-    { label: 'Teen', query: 'babe', img: 'https://static-sg-cdn.eporner.com/catimg/0.jpg', order: 'most-popular', slug: 'babe' },
+    { label: 'Babes', query: 'babe', img: 'https://static-sg-cdn.eporner.com/catimg/0.jpg', order: 'most-popular', slug: 'babe' },
     { label: 'Threesome', query: 'threesome', img: 'https://static-sg-cdn.eporner.com/catimg/9.jpg', order: 'most-popular', slug: 'threesome' },
     { label: 'Toys', query: 'toys', img: 'https://static-sg-cdn.eporner.com/catimg/30.jpg', order: 'most-popular', slug: 'toys' },
     { label: 'Uniform', query: 'uniform', img: 'https://static-sg-cdn.eporner.com/catimg/27.jpg', order: 'most-popular', slug: 'uniform' },
@@ -174,16 +174,22 @@ const KATEGORI_LIST = [
 // =====================================================
 const HARMFUL_KEYWORDS = [
     'teen', 'teenager', 'underage', 'minor', 'child', 'kid',
-    'young girl', 'young boy', 'loli', 'shota', 'preteen',
+    'young girl', 'young boy', 'loli', 'lolita', 'shota', 'preteen',
     'onlyfans', 'leaked', 'leak', 'student', 'school',
-    'college girl', 'high school', 'jailbait', 'barely legal'
+    'college girl', 'high school', 'jailbait', 'barely legal',
+    'abg', 'sma', 'esema', 'esemaa', 'smp', 'smk', 'bocil', 'bocah',
+    'pelajar', 'siswi', 'pramuka', 'perkosa', 'pemerkosaan', 'paksa',
+    'dipaksa', 'kesakitan', 'sampe nangi', 'rape', 'raped', 'forced',
+    'incest', 'sedarah', 'bestiality', 'zoophilia', 'drugged', 'unconscious'
 ];
+
+const HARMFUL_WORD_RE = /\b(teen|teens|kid|kids|school|student|students|abg|sma|smp|smk|bocah|adek|adik|paksa|rape|incest|loli|shota|minor|minors|underage|child|children|preteen)\b/i;
 
 function isHarmfulVideo(video) {
     const title = (video.title || video.name || '').toLowerCase();
     const keywords = (video.keywords || '').toLowerCase();
     const combined = title + ' ' + keywords;
-    return HARMFUL_KEYWORDS.some(kw => combined.includes(kw));
+    return HARMFUL_KEYWORDS.some(kw => combined.includes(kw)) || HARMFUL_WORD_RE.test(combined);
 }
 
 function filterHarmfulVideos(videos) {

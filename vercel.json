@@ -15,12 +15,12 @@
   ],
   "rewrites": [
     {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap_index.xml"
-    },
-    {
       "source": "/v/:path*",
       "destination": "/api/video?slug=:path*"
+    },
+    {
+      "source": "/directory",
+      "destination": "/directory.html"
     },
     {
       "source": "/about",
@@ -108,7 +108,7 @@
       ]
     },
     {
-      "source": "/(about|dmca|contact|privacy|terms|howto)(.*)",
+      "source": "/(about|dmca|contact|privacy|terms|howto|directory)(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -141,7 +141,15 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
+          "value": "public, max-age=86400, s-maxage=2592000, stale-while-revalidate=2592000"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, s-maxage=2592000, stale-while-revalidate=2592000"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "public, s-maxage=2592000, stale-while-revalidate=2592000"
         },
         {
           "key": "X-Content-Type-Options",
@@ -236,6 +244,27 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/sitemaps/(.*).xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
         }
       ]
     },

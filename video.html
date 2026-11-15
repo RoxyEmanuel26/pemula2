@@ -731,7 +731,7 @@
 
         async function fetchSimilarVideos(video) {
             try {
-                let query = 'indonesia';
+                let query = 'amateur';
                 if (video.keywords) {
                     const tagArray = typeof video.keywords === 'string' ? video.keywords.split(',').map(t => t.trim()) : video.keywords;
                     if (tagArray.length > 0 && tagArray[0]) query = tagArray[0];
@@ -821,6 +821,7 @@
     <footer class="footer">
         <div class="footer-links">
             <a href="/">Home</a>
+            <a href="/directory">Video Directory</a>
             <a href="/about">About Us</a>
             <a href="/howto">How to Download</a>
             <a href="/contact">Contact</a>

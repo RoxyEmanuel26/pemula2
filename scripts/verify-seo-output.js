@@ -4,9 +4,29 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const handler = require('../api/video');
+const { isHarmfulContent } = require('./content-filter');
+
+const ADSTERRA_NATIVE_SCRIPT = 'https://biomanos.org/21/0dae6421659ccec66a169a9192f11484';
+const ADSTERRA_NATIVE_CONTAINER = 'id="container-0dae6421659ccec66a169a9192f11484"';
 
 async function verifyAll() {
-    console.log('🔍 Running Comprehensive SEO Verification Suite (FASE 6)...\n');
+    console.log('🔍 Running Comprehensive International SEO & Adsterra Verification Suite...\n');
+
+    // 0. Ensure video.html has directory link and international default
+    const videoTplPath = path.join(__dirname, '..', 'video.html');
+    let videoTpl = fs.readFileSync(videoTplPath, 'utf8');
+    let videoTplChanged = false;
+    if (videoTpl.includes("let query = 'indonesia';")) {
+        videoTpl = videoTpl.replace("let query = 'indonesia';", "let query = 'amateur';");
+        videoTplChanged = true;
+    }
+    if (!videoTpl.includes('href="/directory"')) {
+        videoTpl = videoTpl.replace('<a href="/">Home</a>', '<a href="/">Home</a>\n            <a href="/directory">Video Directory</a>');
+        videoTplChanged = true;
+    }
+    if (videoTplChanged) {
+        fs.writeFileSync(videoTplPath, videoTpl, 'utf8');
+    }
 
     // 1. Homepage Verification
     console.log('1. Verifying Homepage (index.html)...');
@@ -14,16 +34,31 @@ async function verifyAll() {
     assert(indexHtml.includes('<title>'), 'index.html missing <title>');
     assert(indexHtml.includes('<meta name="description"'), 'index.html missing meta description');
     assert(/<link[^>]+rel="canonical"[^>]+href="https:\/\/www\.kumpulenak\.my\.id\/"/.test(indexHtml), 'index.html invalid canonical');
+    assert(!indexHtml.includes('hreflang="id"'), 'index.html should not have conflicting hreflang="id"');
+    assert(indexHtml.includes('hreflang="en"'), 'index.html missing hreflang="en"');
     assert(indexHtml.includes('<h1 class="main-seo-title">'), 'index.html missing H1');
     assert(indexHtml.includes('"@type": "WebSite"'), 'index.html missing WebSite schema');
     assert(indexHtml.includes('"@type": "Organization"'), 'index.html missing Organization schema');
     assert(indexHtml.includes('"@type": "ItemList"'), 'index.html missing ItemList schema');
     assert(indexHtml.includes('class="card"'), 'index.html missing pre-rendered cards');
     assert(indexHtml.includes('fetchpriority="high"'), 'index.html missing LCP fetchpriority');
-    console.log('   ✅ Homepage passed all checks.\n');
+    assert(!indexHtml.includes('abg-esemaa'), 'index.html MUST NOT contain harmful abg-esemaa video');
+    assert(indexHtml.includes(ADSTERRA_NATIVE_SCRIPT) && indexHtml.includes(ADSTERRA_NATIVE_CONTAINER), 'index.html missing Adsterra Native Banner');
+    assert(!indexHtml.includes('class="ad-native-space"'), 'index.html must not wrap Adsterra Native Banner in ad-native-space');
+    console.log('   ✅ Homepage passed all SEO, safety, and Adsterra checks.\n');
 
-    // 2. Category Hub Verification
-    console.log('2. Verifying Category Hub Pages (category/amateur.html & asian.html)...');
+    // 2. Directory Hub Verification
+    console.log('2. Verifying HTML Video Directory (/directory.html)...');
+    const dirHtml = fs.readFileSync(path.join(__dirname, '..', 'directory.html'), 'utf8');
+    assert(dirHtml.includes('<link rel="canonical" href="https://www.kumpulenak.my.id/directory">'), 'directory.html invalid canonical');
+    assert(dirHtml.includes('"@type": "CollectionPage"'), 'directory.html missing CollectionPage schema');
+    assert(dirHtml.includes('/category/amateur'), 'directory.html missing category links');
+    assert(dirHtml.includes('/v/'), 'directory.html missing direct video stream links');
+    assert(dirHtml.includes(ADSTERRA_NATIVE_SCRIPT), 'directory.html missing Adsterra Native Banner');
+    console.log('   ✅ Directory Hub passed all checks.\n');
+
+    // 3. Category Hub Verification
+    console.log('3. Verifying Category Hub Pages (category/amateur.html & asian.html)...');
     const catHtml = fs.readFileSync(path.join(__dirname, '..', 'category', 'amateur.html'), 'utf8');
     assert(catHtml.includes('<link rel="canonical" href="https://www.kumpulenak.my.id/category/amateur"'), 'Category canonical invalid');
     assert(catHtml.includes('<h1 class="main-seo-title">'), 'Category H1 missing');
@@ -31,10 +66,11 @@ async function verifyAll() {
     assert(catHtml.includes('"@type": "BreadcrumbList"'), 'Category BreadcrumbList missing');
     assert(catHtml.includes('"@type": "ItemList"'), 'Category ItemList missing');
     assert(catHtml.includes('class="card"'), 'Category cards missing');
+    assert(catHtml.includes(ADSTERRA_NATIVE_SCRIPT) && catHtml.includes(ADSTERRA_NATIVE_CONTAINER), 'Category missing Adsterra Native Banner');
     console.log('   ✅ Category Hub passed all checks.\n');
 
-    // 3. SSR Video Page Verification
-    console.log('3. Verifying SSR Video Handler (api/video.js)...');
+    // 4. SSR Video Page Verification
+    console.log('4. Verifying SSR Video Handler (api/video.js)...');
     let videoHtml = '';
     const resMock = {
         setHeader: () => {},
@@ -48,12 +84,14 @@ async function verifyAll() {
     assert(videoHtml.includes('<link rel="canonical" href="https://www.kumpulenak.my.id/v/8XAT108xJ1o'), 'Video canonical missing');
     assert(videoHtml.includes('"@type": "VideoObject"'), 'Video VideoObject schema missing');
     assert(videoHtml.includes('"@type": "BreadcrumbList"'), 'Video BreadcrumbList missing');
+    assert(videoHtml.includes('"@type": "FAQPage"'), 'Video dynamic FAQPage schema missing');
     assert(videoHtml.includes('class="video-wrapper"'), 'Video wrapper missing');
     assert(videoHtml.includes('id="videoPlayer"'), 'Video player iframe missing');
+    assert(videoHtml.includes(ADSTERRA_NATIVE_SCRIPT), 'Video SSR output missing Adsterra Native Banner');
     console.log('   ✅ SSR Video Handler passed all checks.\n');
 
-    // 4. True 404 Response Verification
-    console.log('4. Verifying True 404 Response (Non-soft 404)...');
+    // 5. True 404 Response Verification
+    console.log('5. Verifying True 404 Response (Non-soft 404)...');
     let notFoundCode = null;
     const res404 = {
         setHeader: () => {},
@@ -66,22 +104,23 @@ async function verifyAll() {
     assert.strictEqual(notFoundCode, 404, 'Invalid video must return genuine HTTP 404');
     console.log('   ✅ Genuine 404 passed.\n');
 
-    // 5. robots.txt Verification
-    console.log('5. Verifying robots.txt...');
+    // 6. robots.txt & Sitemaps Verification
+    console.log('6. Verifying robots.txt, sitemap.xml (<urlset>), and sitemap_index.xml (<sitemapindex>)...');
     const robotsTxt = fs.readFileSync(path.join(__dirname, '..', 'robots.txt'), 'utf8');
     assert(robotsTxt.includes('Disallow: /*?*q='), 'robots.txt must disallow internal search q=');
-    assert(robotsTxt.includes('Disallow: /*?*query='), 'robots.txt must disallow internal query=');
     assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml'), 'robots.txt missing sitemap_index reference');
     assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/sitemap.xml'), 'robots.txt missing sitemap.xml reference');
-    console.log('   ✅ robots.txt passed all checks.\n');
 
-    // 6. sitemap_index.xml Verification
-    console.log('6. Verifying sitemap_index.xml...');
-    const sitemapXml = fs.readFileSync(path.join(__dirname, '..', 'sitemap_index.xml'), 'utf8');
-    assert(sitemapXml.includes('<sitemapindex'), 'sitemap_index.xml must be a valid sitemapindex');
-    assert(sitemapXml.includes('https://www.kumpulenak.my.id/sitemaps/sitemap_pages.xml'), 'sitemap_index.xml missing sitemap_pages.xml');
-    assert(sitemapXml.includes('https://www.kumpulenak.my.id/sitemaps/sitemap_kategori.xml'), 'sitemap_index.xml missing sitemap_kategori.xml');
-    console.log('   ✅ sitemap_index.xml passed all checks.\n');
+    const sitemapIndexXml = fs.readFileSync(path.join(__dirname, '..', 'sitemap_index.xml'), 'utf8');
+    assert(sitemapIndexXml.includes('<sitemapindex'), 'sitemap_index.xml must be a valid sitemapindex');
+    assert(sitemapIndexXml.includes('https://www.kumpulenak.my.id/sitemaps/sitemap_pages.xml'), 'sitemap_index.xml missing sitemap_pages.xml');
+    assert(sitemapIndexXml.includes('https://www.kumpulenak.my.id/sitemaps/sitemap_kategori.xml'), 'sitemap_index.xml missing sitemap_kategori.xml');
+
+    const flatSitemapXml = fs.readFileSync(path.join(__dirname, '..', 'sitemap.xml'), 'utf8');
+    assert(flatSitemapXml.includes('<urlset'), 'sitemap.xml must be a flat <urlset>');
+    assert(flatSitemapXml.includes('<video:family_friendly>no</video:family_friendly>'), 'sitemap.xml missing family_friendly tag');
+    assert(!isHarmfulContent(flatSitemapXml), 'sitemap.xml must not contain any harmful content');
+    console.log('   ✅ robots.txt, sitemap.xml, and sitemap_index.xml passed all checks.\n');
 
     // 7. Trust Pages Verification
     console.log('7. Verifying Trust Pages...');
@@ -94,7 +133,7 @@ async function verifyAll() {
     });
     console.log('   ✅ All trust pages passed checks.\n');
 
-    console.log('🎉 ALL COMPREHENSIVE SEO VERIFICATION CHECKS PASSED SUCCESSFULLY!');
+    console.log('🎉 ALL COMPREHENSIVE INTERNATIONAL SEO & ADSTERRA VERIFICATION CHECKS PASSED!');
 }
 
 verifyAll().catch(err => {

@@ -3,6 +3,11 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const {
+    cleanVideoTitle,
+    isHarmfulContent,
+    isInternationalFriendly
+} = require('./scripts/content-filter');
 
 const ROOT = __dirname;
 const SITEMAPS_DIR = path.join(ROOT, 'sitemaps');
@@ -11,9 +16,11 @@ const INDEX_FILE = path.join(ROOT, 'sitemap_index.xml');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 const BASE_URL = 'https://www.kumpulenak.my.id';
 const API_URL = 'https://www.eporner.com/api/v2/video/search/';
+const INDEXNOW_KEY = 'e8f4a2b9c1d64e70a5f3b8c2d9e1f0a4';
 
 const MAX_ACTIVE_URLS = Number(process.env.SITEMAP_MAX_URLS || 45000);
 const MAX_FILE_URLS = Number(process.env.SITEMAP_SHARD_URLS || 5000);
+const MAX_FLAT_VIDEO_URLS = 500;
 const MAX_FILE_BYTES = 45 * 1024 * 1024;
 const RETENTION_DAYS = Number(process.env.SITEMAP_RETENTION_DAYS || 90);
 const DAILY_PAGES = Number(process.env.SITEMAP_DAILY_PAGES || 100);
@@ -84,7 +91,7 @@ function decodeHtmlEntities(value) {
 
 function repairMojibake(value) {
     let text = String(value || '');
-    const score = candidate => (candidate.match(/[\u00C2-\u00F4][\u0080-\u00BF]|�/g) || []).length;
+    const score = candidate => (candidate.match(/[\u00C2-\u00F4][\u0080-\u00BF]|\uFFFD/g) || []).length;
     for (let pass = 0; pass < 3; pass++) {
         if (score(text) === 0 || [...text].some(char => char.codePointAt(0) > 255)) break;
         const repaired = Buffer.from(text, 'latin1').toString('utf8');
@@ -105,15 +112,17 @@ function isHttpsUrl(value) {
 function normalizeVideo(video) {
     if (!video || typeof video !== 'object') return null;
     const id = typeof video.id === 'string' ? video.id.trim() : '';
-    const title = typeof video.title === 'string'
+    const rawTitle = typeof video.title === 'string'
         ? repairMojibake(decodeHtmlEntities(video.title)).trim()
         : '';
+    const title = cleanVideoTitle(rawTitle);
     const thumbnail = video.default_thumb && typeof video.default_thumb.src === 'string'
         ? video.default_thumb.src.trim()
         : '';
     const player = typeof video.embed === 'string' ? video.embed.trim() : '';
     const date = publicationDate(video.added);
     if (!/^[A-Za-z0-9]{6,32}$/.test(id) || !title || !date) return null;
+    if (isHarmfulContent({ title: rawTitle, keywords: video.keywords })) return null;
     if (!isHttpsUrl(thumbnail) || !isHttpsUrl(player)) return null;
     return {
         id,
@@ -141,6 +150,7 @@ function videoNode(video) {
         `      <video:description>${escapeXml(description)}</video:description>`,
         `      <video:player_loc>${escapeXml(video.player)}</video:player_loc>${duration}`,
         `      <video:publication_date>${video.date}</video:publication_date>`,
+        '      <video:family_friendly>no</video:family_friendly>',
         '    </video:video>',
         '  </url>'
     ].join('\n');
@@ -163,6 +173,71 @@ function parseVideoNodes(xml) {
         const idMatch = locMatch && decodeXml(locMatch[1]).match(/\/v\/([A-Za-z0-9]{6,32})(?:-|$)/);
         return { raw, id: idMatch ? idMatch[1] : null };
     }).filter(item => item.id);
+}
+
+function sanitizeVideoNodeRaw(raw) {
+    const titleMatch = raw.match(/<video:title>([^<]+)<\/video:title>/);
+    const locMatch = raw.match(/<loc>([^<]+)<\/loc>/);
+    const rawTitle = titleMatch ? decodeXml(titleMatch[1]) : '';
+    const locUrl = locMatch ? decodeXml(locMatch[1]) : '';
+    if (isHarmfulContent(rawTitle) || isHarmfulContent(locUrl)) {
+        return null;
+    }
+
+    const cleanedTitle = cleanVideoTitle(rawTitle);
+    if (!cleanedTitle) return null;
+
+    let updated = raw;
+    if (cleanedTitle !== rawTitle) {
+        const newDesc = `Watch ${cleanedTitle} in full HD for free on kumpulenak.`.slice(0, 2048);
+        updated = updated
+            .replace(/<video:title>[^<]*<\/video:title>/, `<video:title>${escapeXml(cleanedTitle)}</video:title>`)
+            .replace(/<video:description>[^<]*<\/video:description>/, `<video:description>${escapeXml(newDesc)}</video:description>`);
+    }
+    if (!updated.includes('<video:family_friendly>')) {
+        updated = updated.replace(
+            /(<video:publication_date>[^<]+<\/video:publication_date>)/,
+            '$1\n      <video:family_friendly>no</video:family_friendly>'
+        );
+    }
+    return updated;
+}
+
+function sanitizeExistingShards(shards) {
+    const rewritten = [];
+    let purgedNodes = 0;
+    const keptShards = [];
+
+    for (const shard of shards) {
+        const sanitizedNodes = [];
+        let changed = false;
+        for (const node of shard.nodes) {
+            const cleanRaw = sanitizeVideoNodeRaw(node.raw);
+            if (!cleanRaw) {
+                purgedNodes++;
+                changed = true;
+                continue;
+            }
+            if (cleanRaw !== node.raw) {
+                changed = true;
+            }
+            sanitizedNodes.push({ id: node.id, raw: cleanRaw });
+        }
+
+        if (sanitizedNodes.length === 0) {
+            if (fs.existsSync(shard.fullPath)) fs.unlinkSync(shard.fullPath);
+            continue;
+        }
+
+        if (changed) {
+            shard.nodes = sanitizedNodes;
+            writeAtomic(shard.fullPath, videoSitemap(sanitizedNodes.map(n => n.raw)));
+            rewritten.push(shard.name);
+        }
+        keptShards.push(shard);
+    }
+
+    return { shards: keptShards, rewritten, purgedNodes };
 }
 
 function writeAtomic(filePath, content) {
@@ -197,6 +272,7 @@ function standardSitemap(nodes) {
 function generateStaticSitemaps() {
     const pages = [
         ['/', 'index.html'],
+        ['/directory', 'directory.html'],
         ['/about', 'about.html'],
         ['/contact', 'contact.html'],
         ['/privacy', 'privacy.html'],
@@ -225,6 +301,34 @@ function generateStaticSitemaps() {
         ].join('\n');
     });
     writeAtomic(path.join(SITEMAPS_DIR, 'sitemap_kategori.xml'), standardSitemap(categoryNodes));
+
+    return { pageNodes, categoryNodes };
+}
+
+function buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards) {
+    const videoNodes = [];
+    const seenIds = new Set();
+
+    // Pick newest international-friendly videos first from active shards (newest to oldest)
+    const reversedShards = [...activeShards].reverse();
+    for (const shard of reversedShards) {
+        if (videoNodes.length >= MAX_FLAT_VIDEO_URLS) break;
+        for (const node of shard.nodes) {
+            if (videoNodes.length >= MAX_FLAT_VIDEO_URLS) break;
+            if (seenIds.has(node.id)) continue;
+            const titleMatch = node.raw.match(/<video:title>([^<]+)<\/video:title>/);
+            const title = titleMatch ? decodeXml(titleMatch[1]) : '';
+            if (!isInternationalFriendly({ title })) continue;
+            seenIds.add(node.id);
+            videoNodes.push(node.raw);
+        }
+    }
+
+    return videoSitemap([
+        ...pageNodes,
+        ...categoryNodes,
+        ...videoNodes
+    ]);
 }
 
 function listVideoShards() {
@@ -359,7 +463,6 @@ function applyActiveCap(shards, newVideos) {
         }
     }
     if (newVideos.length > MAX_ACTIVE_URLS) {
-        // API pages are ordered newest-first; retain the leading candidates.
         newVideos.splice(MAX_ACTIVE_URLS);
     }
     return { shards, newVideos, removed, rewritten, total };
@@ -417,6 +520,32 @@ function buildIndex(shards, changedNames = new Set()) {
     ].join('\n');
 }
 
+async function pingIndexNow(urls) {
+    if (!urls || urls.length === 0) return { submitted: 0, status: 'skipped' };
+    const batch = urls.slice(0, 1000);
+    const payload = {
+        host: 'www.kumpulenak.my.id',
+        key: INDEXNOW_KEY,
+        keyLocation: `${BASE_URL}/${INDEXNOW_KEY}.txt`,
+        urlList: batch
+    };
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+        const res = await fetch('https://api.indexnow.org/indexnow', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+        return { submitted: batch.length, status: res.status };
+    } catch (err) {
+        return { submitted: 0, status: `warning: ${err.message}` };
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
 function validateSitemaps(options = {}) {
     const errors = [];
     const index = fs.existsSync(INDEX_FILE) ? fs.readFileSync(INDEX_FILE, 'utf8') : '';
@@ -430,6 +559,15 @@ function validateSitemaps(options = {}) {
         if (!references.includes(required)) errors.push(`Indeks tidak mereferensikan ${required}`);
     }
     if (references.includes('sitemap_tags.xml')) errors.push('Indeks masih mereferensikan sitemap_tags.xml');
+
+    // Validate flat priority /sitemap.xml
+    const flatSitemap = fs.existsSync(SITEMAP_FILE) ? fs.readFileSync(SITEMAP_FILE, 'utf8') : '';
+    if (!flatSitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
+        errors.push('sitemap.xml tidak memiliki deklarasi XML UTF-8');
+    }
+    if (!flatSitemap.includes('<urlset') || !flatSitemap.includes('</urlset>')) {
+        errors.push('sitemap.xml harus berupa flat <urlset> langsung agar mudah dibaca GSC');
+    }
 
     const allIds = new Set();
     let videoUrls = 0;
@@ -449,7 +587,7 @@ function validateSitemaps(options = {}) {
             const nodes = parseVideoNodes(xml);
             if (nodes.length !== count) errors.push(`${name} memiliki URL video yang tidak canonical`);
             for (const node of nodes) {
-                for (const tag of ['video:thumbnail_loc', 'video:title', 'video:description', 'video:player_loc', 'video:publication_date']) {
+                for (const tag of ['video:thumbnail_loc', 'video:title', 'video:description', 'video:player_loc', 'video:publication_date', 'video:family_friendly']) {
                     if (!node.raw.includes(`<${tag}>`)) errors.push(`${name}: ${node.id} tidak memiliki ${tag}`);
                 }
                 if (allIds.has(node.id)) errors.push(`Duplikat video ID: ${node.id}`);
@@ -472,10 +610,25 @@ function removeFiles(shards) {
 
 async function generate(mode) {
     fs.mkdirSync(SITEMAPS_DIR, { recursive: true });
-    generateStaticSitemaps();
+    const { pageNodes, categoryNodes } = generateStaticSitemaps();
     const retention = pruneExpiredShards(listVideoShards());
     removeFiles(retention.removed);
-    let activeShards = retention.active;
+
+    // Sanitize all existing shards (purges harmful URLs, cleans Zalgo/junk, ensures family_friendly=no)
+    const sanitized = sanitizeExistingShards(retention.active);
+    let activeShards = sanitized.shards;
+
+    if (mode === 'sanitize-only') {
+        const changedNames = new Set(sanitized.rewritten);
+        const indexContent = buildIndex(activeShards, changedNames);
+        const flatContent = buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards);
+        writeAtomic(INDEX_FILE, indexContent);
+        writeAtomic(SITEMAP_FILE, flatContent);
+        const validation = validateSitemaps({ allowEmpty: false });
+        console.log(`[SANITIZE] Purged ${sanitized.purgedNodes} harmful URLs across ${sanitized.rewritten.length} shards. Active URLs: ${validation.videoUrls}`);
+        return validation;
+    }
+
     const existingIds = new Set(activeShards.flatMap(shard => shard.nodes.map(node => node.id)));
     const pageLimit = mode === 'bootstrap' ? BOOTSTRAP_MAX_PAGES : DAILY_PAGES;
     const stopAt = mode === 'bootstrap' ? MAX_ACTIVE_URLS : Infinity;
@@ -489,24 +642,36 @@ async function generate(mode) {
     const created = createDailyShards(capped.newVideos, activeShards, date);
     activeShards = [...activeShards, ...created]
         .sort((a, b) => a.date.localeCompare(b.date) || a.sequence - b.sequence);
-    const changedNames = new Set([...created.map(item => item.name), ...capped.rewritten]);
+    const changedNames = new Set([...created.map(item => item.name), ...capped.rewritten, ...sanitized.rewritten]);
     const indexContent = buildIndex(activeShards, changedNames);
+    const flatContent = buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards);
     writeAtomic(INDEX_FILE, indexContent);
-    writeAtomic(SITEMAP_FILE, indexContent);
+    writeAtomic(SITEMAP_FILE, flatContent);
     const validation = validateSitemaps({ allowEmpty: false });
+
+    // Ping IndexNow for instant indexing on Bing, Yandex, DuckDuckGo, Naver, Seznam
+    const urlsToPing = [
+        `${BASE_URL}/`,
+        `${BASE_URL}/directory`,
+        ...capped.newVideos.slice(0, 500).map(v => `${BASE_URL}/v/${v.id}${v.slug ? '-' + v.slug : ''}`)
+    ];
+    const indexNowResult = await pingIndexNow(urlsToPing);
+
     const summary = {
-        version: 1,
+        version: 2,
         lastSuccessfulAt: new Date().toISOString(),
         mode,
         requests: fetched.requests,
         candidates: fetched.videos.length,
         added: capped.newVideos.length,
         duplicates: duplicateCount,
+        harmfulPurged: sanitized.purgedNodes,
         expiredShardsRemoved: retention.removed.length,
         capacityShardsRemoved: capped.removed.length,
         shardsCreated: created.length,
         activeShards: activeShards.length,
-        activeVideoUrls: validation.videoUrls
+        activeVideoUrls: validation.videoUrls,
+        indexNow: indexNowResult
     };
     writeAtomic(STATE_FILE, `${JSON.stringify(summary, null, 2)}\n`);
     console.log(`[DONE] ${JSON.stringify(summary)}`);
@@ -519,8 +684,12 @@ async function main() {
         console.log(JSON.stringify(validateSitemaps({ allowEmpty: process.argv.includes('--allow-empty') }), null, 2));
         return;
     }
+    if (arg === '--sanitize') {
+        await generate('sanitize-only');
+        return;
+    }
     if (!['--daily', '--bootstrap'].includes(arg)) {
-        throw new Error('Gunakan --daily, --bootstrap, atau --validate');
+        throw new Error('Gunakan --daily, --bootstrap, --sanitize, atau --validate');
     }
     await generate(arg.slice(2));
 }

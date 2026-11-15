@@ -22,8 +22,9 @@ try {
     run('scripts/test-video-handler.js');
     run('scripts/test-enrichment.js');
 
-    // 2. Pre-render home cards
+    // 2. Pre-render home cards & directory hub
     run('scripts/prerender-home.js');
+    run('scripts/generate-directory.js');
 
     // 3. Comprehensive SEO verification
     run('scripts/verify-seo-output.js');
