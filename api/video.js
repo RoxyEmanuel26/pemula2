@@ -501,13 +501,35 @@ module.exports = async function handler(req, res) {
             ]
         };
 
-        // Build tags HTML
-        const tagsHtml = cleanTagList.map(tag => {
-            const tagSlug = slugify(tag);
-            if (KNOWN_CATEGORIES.has(tagSlug)) {
-                return `<a href="/category/${tagSlug}" class="video-tag">${escapeHtml(tag)}</a>`;
+        // Smart Tag-to-Category Resolver (eliminates crawlable /?q= links while strengthening internal /category/ linking)
+        const TAG_SYNONYMS = {
+            '1080p': 'hd-porn-1080p', 'hd': 'hd-porn-1080p', 'full-hd': 'hd-porn-1080p', '4k': 'hd-porn-1080p',
+            '60fps': '60-fps', 'jav': 'japanese', 'japan': 'japanese', 'hispanic': 'latina', 'latin': 'latina',
+            'black': 'ebony', 'african': 'ebony', 'cougar': 'milf', 'mom': 'milf', 'mother': 'milf',
+            'boobs': 'big-tits', 'busty': 'big-tits', 'tits': 'big-tits', 'booty': 'big-ass', 'ass': 'big-ass',
+            'cam': 'webcam', 'camgirl': 'webcam', 'livecam': 'live-cam', 'wife': 'hotwife', 'couples': 'couple',
+            'babes': 'babe', 'model': 'babe', 'vr': 'vr-porn', 'virtual-reality': 'vr-porn', ' Indo ': 'indonesia'
+        };
+        function resolveTagCategory(rawTag) {
+            const s = slugify(rawTag);
+            if (!s) return null;
+            if (KNOWN_CATEGORIES.has(s)) return s;
+            if (TAG_SYNONYMS[s]) return TAG_SYNONYMS[s];
+            const parts = s.split('-');
+            for (const p of parts) {
+                if (KNOWN_CATEGORIES.has(p)) return p;
+                if (TAG_SYNONYMS[p]) return TAG_SYNONYMS[p];
             }
-            return `<a href="/?q=${encodeURIComponent(tag)}" rel="nofollow" class="video-tag">${escapeHtml(tag)}</a>`;
+            return null;
+        }
+
+        // Build tags HTML (zero <a href="/?q=..."> links for crawlers)
+        const tagsHtml = cleanTagList.map(tag => {
+            const matchedCat = resolveTagCategory(tag);
+            if (matchedCat) {
+                return `<a href="/category/${matchedCat}" class="video-tag">${escapeHtml(tag)}</a>`;
+            }
+            return `<span class="video-tag" role="button" tabindex="0" onclick="window.location.href='/?q=${encodeURIComponent(tag)}'" style="cursor:pointer;">${escapeHtml(tag)}</span>`;
         }).join(' ');
 
         // Category navigation chips + Directory link

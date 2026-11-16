@@ -1,12 +1,14 @@
 # ==============================================
 # robots.txt — kumpulenak.my.id
-# Optimized for maximum SEO crawl coverage & crawl budget
+# Optimized for maximum SEO crawl coverage & WRS rendering
 # ==============================================
 
 User-agent: *
 Allow: /
+Allow: /directory
 Allow: /v/
 Allow: /category/
+Allow: /assets/
 Allow: /about
 Allow: /dmca
 Allow: /contact
@@ -19,125 +21,46 @@ Allow: /sitemap_index.xml
 Allow: /sitemap.xml
 Allow: /sitemaps/
 
-# Block internal search parameters & query variations from wasting crawl budget
-Disallow: /*?*q=
-Disallow: /*?*query=
-Disallow: /*?*order=
-Disallow: /*?*tab=
-
-# Disallow ad scripts and internal build/system files
-Disallow: /assets/js/ads.js
-Disallow: /assets/js/loader.js
-Disallow: /.env
-Disallow: /.git/
-Disallow: /api/
-Disallow: /scripts/
-Disallow: /fix_state.js
-Disallow: /generate_sitemap.ps1
-Disallow: /generate-sitemap.bat
-Disallow: /generate_sitemap_fast.js
-Disallow: /bump-version.bat
-Disallow: /bump-version.js
-Disallow: /output.log
-Disallow: /*.json$
-Disallow: /*.bat$
-Disallow: /*.log$
-Disallow: /*.md$
-
-# Sitemap index
+# Sitemaps
 Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml
 Sitemap: https://www.kumpulenak.my.id/sitemap.xml
 
-# LLM Specification
-# https://www.kumpulenak.my.id/llms.txt
-
 # ==============================================
-# Bot-Specific Rules: Search Engines
+# Bot-Specific Rules: Search Engines & AI Bots
 # ==============================================
 
 User-agent: Googlebot
 Allow: /
-Allow: /v/
-Allow: /category/
-Disallow: /*?*q=
-Disallow: /*?*query=
-Disallow: /*?*order=
-Disallow: /*?*tab=
-Crawl-delay: 0
 
 User-agent: Googlebot-Image
-Allow: /assets/icons/
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
 
 User-agent: Bingbot
 Allow: /
-Allow: /v/
-Allow: /category/
-Disallow: /*?*q=
-Disallow: /*?*query=
-Disallow: /*?*order=
-Disallow: /*?*tab=
-Crawl-delay: 1
 
 User-agent: Yandex
 Allow: /
-Allow: /v/
-Allow: /category/
-Disallow: /*?*q=
-Disallow: /*?*query=
-Disallow: /*?*order=
-Disallow: /*?*tab=
-Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
 
 User-agent: Baiduspider
 Allow: /
-Allow: /v/
-Allow: /category/
-Disallow: /*?*q=
-Disallow: /*?*query=
-Disallow: /*?*order=
-Disallow: /*?*tab=
-Crawl-delay: 2
-
-# ==============================================
-# AI Search & Answer Engine Bots (GEO / AEO)
-# ==============================================
 
 User-agent: GPTBot
 Allow: /
-Allow: /v/
-Allow: /category/
-Allow: /llms.txt
-Allow: /llms-full.txt
-Disallow: /*?*q=
 
 User-agent: PerplexityBot
 Allow: /
-Allow: /v/
-Allow: /category/
-Allow: /llms.txt
-Allow: /llms-full.txt
-Disallow: /*?*q=
 
 User-agent: ClaudeBot
 Allow: /
-Allow: /v/
-Allow: /category/
-Allow: /llms.txt
-Allow: /llms-full.txt
-Disallow: /*?*q=
 
 User-agent: Google-Extended
 Allow: /
-Allow: /v/
-Allow: /category/
-Allow: /llms.txt
-Allow: /llms-full.txt
-Disallow: /*?*q=
 
 User-agent: Applebot-Extended
 Allow: /
-Allow: /v/
-Allow: /category/
-Allow: /llms.txt
-Allow: /llms-full.txt
-Disallow: /*?*q=

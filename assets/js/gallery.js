@@ -45,7 +45,7 @@ let DATA_SOURCE = "api";
 //  Setiap tab punya parameter API sendiri
 // =====================================================
 const TAB_CONFIG = {
-    popular: { order: 'most-popular', query: 'indo' },
+    popular: { order: 'most-popular', query: 'all' },
     viral: { order: 'latest', query: 'all' },
     kategori: { order: 'top-weekly', query: 'all' }
 };
@@ -1878,7 +1878,7 @@ function initThumbnailPreview() {
 // =====================================================
 
 /** @type {string} Urutan sorting aktif saat ini */
-var currentSortOrder = 'indo';
+var currentSortOrder = 'most-popular';
 
 /**
  * Render sort bar di bawah section label
@@ -2336,29 +2336,47 @@ function injectMissavPromo() {
     // Override openPlayerModal with enhanced version
     window.openPlayerModal = enhancedOpenPlayerModal;
 
-    // Check if this is a pre-rendered static category page
+    // Check URL query parameters (?page= and ?q=) and pre-rendered SSR cards
     var urlParams = new URLSearchParams(window.location.search);
     var pageParam = parseInt(urlParams.get('page'), 10);
     if (!isNaN(pageParam) && pageParam >= 1) {
         currentPage = pageParam;
     }
+    var qParam = (urlParams.get('q') || urlParams.get('query') || '').trim();
 
     var staticCategory = document.body.getAttribute('data-static-category');
-    if (staticCategory && currentPage === 1) {
-        kLog('Static category page detected: ' + staticCategory);
-        currentQuery = staticCategory;
+    var hasPrerenderedCards = document.querySelectorAll('#cardGrid .card').length > 0;
+
+    if (qParam) {
+        currentQuery = qParam;
         isSearchActive = true;
-        
-        // Render pagination manually since we skip loadAndRender for page 1
-        renderPagination(50); // Eporner has many pages, 50 is a good max
-        
+        var searchInputEl = document.getElementById('searchInput');
+        if (searchInputEl) searchInputEl.value = qParam;
+        updateSearchClearBtn();
+        loadAndRender();
+    } else if (hasPrerenderedCards && currentPage === 1) {
+        if (staticCategory) {
+            kLog('Static category page detected: ' + staticCategory);
+            currentQuery = staticCategory;
+            isSearchActive = true;
+        } else {
+            kLog('Pre-rendered homepage cards detected; preserving SSR DOM for instant LCP & SEO.');
+        }
+
+        // Render pagination manually since we preserve pre-rendered cards for page 1
+        renderPagination(50);
+
         // Ensure skeletons on existing images are removed
         document.querySelectorAll('.card img').forEach(function(img) {
             img.onload = function() { this.classList.add('loaded'); };
             if (img.complete) img.classList.add('loaded');
         });
     } else {
-        // Load and render data on first load
+        if (staticCategory) {
+            currentQuery = staticCategory;
+            isSearchActive = true;
+        }
+        // Load and render data when on page > 1 or when no pre-rendered cards exist
         loadAndRender();
     }
 

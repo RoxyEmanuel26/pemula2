@@ -12,7 +12,7 @@ const ADSTERRA_NATIVE_CONTAINER = 'id="container-0dae6421659ccec66a169a9192f1148
 async function verifyAll() {
     console.log('🔍 Running Comprehensive International SEO & Adsterra Verification Suite...\n');
 
-    // 0. Ensure video.html has directory link and international default
+    // 0. Ensure video.html has directory link, international default, and zero <a href="/?q="> crawler links
     const videoTplPath = path.join(__dirname, '..', 'video.html');
     let videoTpl = fs.readFileSync(videoTplPath, 'utf8');
     let videoTplChanged = false;
@@ -22,6 +22,22 @@ async function verifyAll() {
     }
     if (!videoTpl.includes('href="/directory"')) {
         videoTpl = videoTpl.replace('<a href="/">Home</a>', '<a href="/">Home</a>\n            <a href="/directory">Video Directory</a>');
+        videoTplChanged = true;
+    }
+    if (videoTpl.includes("tagLink.href = '/?q=' + encodeURIComponent(tag);")) {
+        videoTpl = videoTpl.replace(
+            /const tagLink = document\.createElement\('a'\);\s*tagLink\.className = 'video-tag';\s*const tagSlug = tag\.toLowerCase\(\)\.replace\(\/\[\^a-z0-9\]\+\/g, '-'\)\.replace\(\/\^-\+\|-\+\$\/g, ''\);\s*if \(KNOWN_CATEGORIES\.has\(tagSlug\)\) \{\s*tagLink\.href = '\/category\/' \+ tagSlug;\s*\} else \{\s*tagLink\.href = '\/\?q=' \+ encodeURIComponent\(tag\);\s*tagLink\.rel = 'nofollow';\s*\}/,
+            `const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                    const isCat = KNOWN_CATEGORIES.has(tagSlug);
+                    const tagLink = document.createElement(isCat ? 'a' : 'span');
+                    tagLink.className = 'video-tag';
+                    if (isCat) {
+                        tagLink.href = '/category/' + tagSlug;
+                    } else {
+                        tagLink.style.cursor = 'pointer';
+                        tagLink.onclick = function() { window.location.href = '/?q=' + encodeURIComponent(tag); };
+                    }`
+        );
         videoTplChanged = true;
     }
     if (videoTplChanged) {
@@ -87,6 +103,7 @@ async function verifyAll() {
     assert(videoHtml.includes('"@type": "FAQPage"'), 'Video dynamic FAQPage schema missing');
     assert(videoHtml.includes('class="video-wrapper"'), 'Video wrapper missing');
     assert(videoHtml.includes('id="videoPlayer"'), 'Video player iframe missing');
+    assert(!videoHtml.includes('<a href="/?q='), 'Video SSR output must not contain crawlable <a href="/?q=..."> links');
     assert(videoHtml.includes(ADSTERRA_NATIVE_SCRIPT), 'Video SSR output missing Adsterra Native Banner');
     console.log('   ✅ SSR Video Handler passed all checks.\n');
 
@@ -104,12 +121,17 @@ async function verifyAll() {
     assert.strictEqual(notFoundCode, 404, 'Invalid video must return genuine HTTP 404');
     console.log('   ✅ Genuine 404 passed.\n');
 
-    // 6. robots.txt & Sitemaps Verification
-    console.log('6. Verifying robots.txt, sitemap.xml (<urlset>), and sitemap_index.xml (<sitemapindex>)...');
+    // 6. robots.txt, vercel.json & Sitemaps Verification
+    console.log('6. Verifying robots.txt, vercel.json Edge Rules, sitemap.xml (<urlset>), and sitemap_index.xml (<sitemapindex>)...');
     const robotsTxt = fs.readFileSync(path.join(__dirname, '..', 'robots.txt'), 'utf8');
-    assert(robotsTxt.includes('Disallow: /*?*q='), 'robots.txt must disallow internal search q=');
+    assert(!robotsTxt.includes('Disallow: /*?*q='), 'robots.txt must NOT disallow /*?*q= so GSC validation passes and sees 301/noindex headers');
+    assert(!robotsTxt.includes('Disallow: /assets/js/loader.js'), 'robots.txt must NOT block loader.js');
     assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml'), 'robots.txt missing sitemap_index reference');
     assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/sitemap.xml'), 'robots.txt missing sitemap.xml reference');
+
+    const vercelJson = fs.readFileSync(path.join(__dirname, '..', 'vercel.json'), 'utf8');
+    assert(vercelJson.includes('https://www.kumpulenak.my.id/category/:cat'), 'vercel.json missing 301 redirect from /?q=<category> to /category/:cat');
+    assert(vercelJson.includes('noindex, follow'), 'vercel.json missing X-Robots-Tag: noindex, follow for query parameters');
 
     const sitemapIndexXml = fs.readFileSync(path.join(__dirname, '..', 'sitemap_index.xml'), 'utf8');
     assert(sitemapIndexXml.includes('<sitemapindex'), 'sitemap_index.xml must be a valid sitemapindex');

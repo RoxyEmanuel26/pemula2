@@ -603,14 +603,15 @@
 
                 tagArray.forEach(tag => {
                     if (!tag) return;
-                    const tagLink = document.createElement('a');
-                    tagLink.className = 'video-tag';
                     const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                    if (KNOWN_CATEGORIES.has(tagSlug)) {
+                    const isCat = KNOWN_CATEGORIES.has(tagSlug);
+                    const tagLink = document.createElement(isCat ? 'a' : 'span');
+                    tagLink.className = 'video-tag';
+                    if (isCat) {
                         tagLink.href = '/category/' + tagSlug;
                     } else {
-                        tagLink.href = '/?q=' + encodeURIComponent(tag);
-                        tagLink.rel = 'nofollow';
+                        tagLink.style.cursor = 'pointer';
+                        tagLink.onclick = function() { window.location.href = '/?q=' + encodeURIComponent(tag); };
                     }
                     tagLink.textContent = tag;
                     tagsContainer.appendChild(tagLink);

@@ -11,6 +11,18 @@
       ],
       "destination": "https://www.kumpulenak.my.id/:path*",
       "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "q",
+          "value": "(?<cat>60-fps|ai|amateur|anal|asian|asmr|babe|bbw|bdsm|big-ass|big-dick|big-tits|bisexual|blonde|blowjob|bondage|brunette|bukkake|casting|compilation|cosplay|couple|creampie|cuckold|cumshot|dance|doctor|double-penetration|ebony|fat|fetish|fisting|footjob|for-women|gloryhole|group-sex|handjob|hardcore|hd-porn-1080p|hd-sex|hentai|homemade|hotel|hotwife|housewives|hq-porn|indian|indonesia|interracial|japanese|latina|lesbian|lingerie|live-cam|massage|masturbation|mature|milf|nurses|office|older-men|orgy|outdoor|pawg|petite|pinay|pornstar|pov|pregnant|public|redhead|shemale|sleep|small-tits|squirt|stepmom|stepsister|striptease|swinger|threesome|toys|uniform|vintage|vr-porn|webcam)"
+        }
+      ],
+      "destination": "https://www.kumpulenak.my.id/category/:cat",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -278,6 +290,66 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "query",
+          "key": "q"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "query",
+          "key": "query"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "query",
+          "key": "order"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "query",
+          "key": "tab"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
         }
       ]
     }
