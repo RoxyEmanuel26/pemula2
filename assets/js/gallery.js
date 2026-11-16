@@ -958,10 +958,12 @@ function createCardElement(card, idx) {
 
     if (card.embedUrl) {
         // Buat slug bersih yang sama dengan generator sitemap Node.js.
-        const safeTitle = (card.title || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+        const rawTitle = card.name || card.title || '';
+        const vid = card.videoId || card.id || '';
+        const safeTitle = rawTitle.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
         const trimmedSlug = safeTitle.length > 80 ? safeTitle.substring(0, 80).replace(/-+$/, '') : safeTitle;
         // Gunakan format rewrite Vercel /v/ID-slug
-        cardEl.href = '/v/' + card.id + (trimmedSlug ? '-' + trimmedSlug : '');
+        cardEl.href = '/v/' + vid + (trimmedSlug ? '-' + trimmedSlug : '');
     } else {
         // Link eksternal (Ads/Promoted)
         cardEl.href = card.link || '#';
@@ -2180,71 +2182,13 @@ function filterRemovedVideos(cards) {
 // =====================================================
 
 /**
- * Inject VideoObject JSON-LD schema ke <head> halaman
- * Hanya inject untuk card yang punya embedUrl (video dari API)
- * @param {Object[]} cardsToRender - Array card objects
+ * Gallery/Homepage & Category listing pages must ONLY use ItemList (pointing to /v/ID-slug),
+ * NEVER @type: VideoObject. Injecting VideoObject on non-watch pages triggers
+ * Google Search Console "Video tidak ada di halaman tonton" (Video isn't on a watch page).
  */
-function injectVideoSchema(cardsToRender) {
-    // Hapus schema lama jika ada
+function injectVideoSchema() {
     var oldSchema = document.getElementById('videoObjectSchema');
     if (oldSchema) oldSchema.remove();
-
-    // Filter hanya video cards (yang punya embedUrl)
-    var videoCards = cardsToRender.filter(function (card) {
-        return card.embedUrl && card.name;
-    });
-
-    if (videoCards.length === 0) return;
-
-    // Batasi max 12 video per halaman untuk schema
-    var schemaCards = videoCards.slice(0, 12);
-
-    var schemaItems = schemaCards.map(function (card) {
-        // Parse durasi dari format "MM:SS" atau "HH:MM:SS" ke ISO 8601
-        var isoDuration = 'PT0S';
-        if (card.length) {
-            var parts = card.length.split(':').map(Number);
-            if (parts.length === 3) {
-                isoDuration = 'PT' + parts[0] + 'H' + parts[1] + 'M' + parts[2] + 'S';
-            } else if (parts.length === 2) {
-                isoDuration = 'PT' + parts[0] + 'M' + parts[1] + 'S';
-            }
-        }
-
-        return {
-            '@type': 'VideoObject',
-            'name': card.name,
-            'description': card.name + ' - Free streaming video on kumpulenak',
-            'thumbnailUrl': card.image || '',
-            'uploadDate': card.date ? card.date + 'T00:00:00Z' : '2026-01-01T00:00:00Z',
-            'duration': isoDuration,
-            'contentUrl': 'https://www.kumpulenak.my.id/',
-            'embedUrl': card.embedUrl || '',
-            'interactionStatistic': {
-                '@type': 'InteractionCounter',
-                'interactionType': { '@type': 'WatchAction' },
-                'userInteractionCount': parseInt(String(card.views || '0').replace(/\D/g, '')) || 0
-            }
-        };
-    });
-
-    var schemaData = {
-        '@context': 'https://schema.org',
-        '@type': 'ItemList',
-        'itemListElement': schemaItems.map(function (item, idx) {
-            return {
-                '@type': 'ListItem',
-                'position': idx + 1,
-                'item': item
-            };
-        })
-    };
-
-    var script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'videoObjectSchema';
-    script.textContent = JSON.stringify(schemaData);
-    document.head.appendChild(script);
 }
 
 // =====================================================

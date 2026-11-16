@@ -50,7 +50,7 @@ async function testHandler() {
     assert(body200.includes('<h1 class="video-title">'), 'HTML should contain <h1> video title');
     assert(body200.includes('https://www.kumpulenak.my.id/v/8XAT108xJ1o'), 'HTML should contain canonical link');
     assert(body200.includes('id="videoPlayer"'), 'HTML should contain direct video player iframe for Google Video Indexing compliance');
-    assert(body200.includes('loading="lazy"'), 'HTML should contain lazy-loaded video iframe');
+    assert(body200.includes('width="1280"'), 'HTML should contain explicit player dimensions for above-the-fold prominence');
     assert(body200.includes('Related Videos'), 'HTML should contain pre-rendered Related Videos section');
     assert(body200.includes('Explore Categories:'), 'HTML should contain Explore Categories section');
     assert.strictEqual(headers200['Referrer-Policy'], 'no-referrer-when-downgrade');

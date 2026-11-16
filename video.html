@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kumpulenak — Watch Trending Viral Video</title>
     <meta name="description" content="Watch trending viral adult videos in full HD for free on kumpulenak. Fast streaming with no download required.">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="noindex, follow">
     <meta name="rating" content="adult">
 
     <!-- Performance Preconnects -->
@@ -525,35 +525,17 @@
                     : '';
                 const safeTitle = cleanFancyText(video.title || 'Video Player');
 
-                const facade = document.createElement('div');
-                facade.className = 'video-facade';
-                facade.id = 'videoFacade';
-                facade.setAttribute('data-embed', video.embed);
-                facade.setAttribute('role', 'button');
-                facade.setAttribute('aria-label', 'Play ' + safeTitle);
-                facade.setAttribute('tabindex', '0');
-                facade.onclick = function() { playVideo(this); };
-
-                if (thumbUrl) {
-                    const poster = document.createElement('img');
-                    poster.className = 'facade-poster';
-                    poster.src = thumbUrl;
-                    poster.alt = safeTitle;
-                    poster.width = 1280;
-                    poster.height = 720;
-                    poster.setAttribute('fetchpriority', 'high');
-                    poster.setAttribute('decoding', 'async');
-                    facade.appendChild(poster);
-                }
-
-                const playBtn = document.createElement('button');
-                playBtn.className = 'facade-play-btn';
-                playBtn.setAttribute('aria-hidden', 'true');
-                playBtn.setAttribute('tabindex', '-1');
-                playBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
-                facade.appendChild(playBtn);
-
-                wrapper.appendChild(facade);
+                const iframe = document.createElement('iframe');
+                iframe.id = 'videoPlayer';
+                iframe.src = video.embed;
+                iframe.width = '1280';
+                iframe.height = '720';
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', 'true');
+                iframe.setAttribute('scrolling', 'no');
+                iframe.title = safeTitle;
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                wrapper.appendChild(iframe);
                 container.appendChild(wrapper);
             } else {
                 console.error("Embed URL error. API response:", video);
@@ -717,7 +699,7 @@
                         "thumbnailUrl": (video.default_thumb && video.default_thumb.src) ? [video.default_thumb.src] : [],
                         "uploadDate": uploadISO,
                         "duration": "PT" + (video.length_sec || 0) + "S",
-                        "embedUrl": video.embed || window.location.href,
+                        "embedUrl": video.embed || "",
                         "interactionStatistic": {
                             "@type": "InteractionCounter",
                             "interactionType": { "@type": "WatchAction" },

@@ -478,7 +478,7 @@ module.exports = async function handler(req, res) {
                     "uploadDate": `${uploadISO}T00:00:00Z`,
                     "duration": `PT${durationSec}S`,
                     "embedUrl": embedUrl,
-                    "contentUrl": embedUrl,
+                    "url": canonicalUrl,
                     "isFamilyFriendly": false,
                     "inLanguage": "en",
                     "interactionStatistic": {
@@ -565,11 +565,12 @@ module.exports = async function handler(req, res) {
                 <iframe 
                     id="videoPlayer"
                     src="${escapeHtml(embedUrl)}" 
+                    width="1280"
+                    height="720"
                     frameborder="0" 
                     allowfullscreen="true" 
                     scrolling="no" 
                     title="${safeTitle}" 
-                    loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
                 </iframe>
             </div>
@@ -606,6 +607,7 @@ module.exports = async function handler(req, res) {
         // Replace metadata
         html = html.replace(/<title>.*?<\/title>/s, `<title>${safeSeoTitle}</title>`);
         html = html.replace(/<meta name="description"[\s\S]*?>/s, `<meta name="description" content="${safeDesc}">`);
+        html = html.replace(/<meta name="robots"[\s\S]*?>/s, `<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">`);
         html = html.replace(
             /<link rel="canonical"[\s\S]*?>/s,
             `<link rel="canonical" href="${canonicalUrl}">\n    <link rel="alternate" hreflang="en" href="${canonicalUrl}">\n    <link rel="alternate" hreflang="x-default" href="${canonicalUrl}">`

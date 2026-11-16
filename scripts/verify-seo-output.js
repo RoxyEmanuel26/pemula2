@@ -40,13 +40,41 @@ async function verifyAll() {
         );
         videoTplChanged = true;
     }
+    if (videoTpl.includes('<meta name="robots" content="index, follow">')) {
+        videoTpl = videoTpl.replace('<meta name="robots" content="index, follow">', '<meta name="robots" content="noindex, follow">');
+        videoTplChanged = true;
+    }
+    if (videoTpl.includes('"embedUrl": video.embed || window.location.href,')) {
+        videoTpl = videoTpl.replace('"embedUrl": video.embed || window.location.href,', '"embedUrl": video.embed || "",');
+        videoTplChanged = true;
+    }
+    if (videoTpl.includes("facade.className = 'video-facade';")) {
+        videoTpl = videoTpl.replace(
+            /const facade = document\.createElement\('div'\);[\s\S]*?wrapper\.appendChild\(facade\);/,
+            `const iframe = document.createElement('iframe');
+                iframe.id = 'videoPlayer';
+                iframe.src = video.embed;
+                iframe.width = '1280';
+                iframe.height = '720';
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', 'true');
+                iframe.setAttribute('scrolling', 'no');
+                iframe.title = safeTitle;
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                wrapper.appendChild(iframe);`
+        );
+        videoTplChanged = true;
+    }
     if (videoTplChanged) {
         fs.writeFileSync(videoTplPath, videoTpl, 'utf8');
     }
 
-    // 1. Homepage Verification
-    console.log('1. Verifying Homepage (index.html)...');
+    // 1. Homepage & Gallery JS Verification
+    console.log('1. Verifying Homepage (index.html) & Gallery JS (gallery.js)...');
+    const galleryJs = fs.readFileSync(path.join(__dirname, '..', 'assets', 'js', 'gallery.js'), 'utf8');
+    assert(!galleryJs.includes("'contentUrl': 'https://www.kumpulenak.my.id/'"), 'gallery.js MUST NOT inject VideoObject with homepage contentUrl');
     const indexHtml = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+    assert(!indexHtml.includes('"@type": "VideoObject"'), 'index.html MUST NOT declare VideoObject on non-watch gallery page');
     assert(indexHtml.includes('<title>'), 'index.html missing <title>');
     assert(indexHtml.includes('<meta name="description"'), 'index.html missing meta description');
     assert(/<link[^>]+rel="canonical"[^>]+href="https:\/\/www\.kumpulenak\.my\.id\/"/.test(indexHtml), 'index.html invalid canonical');
