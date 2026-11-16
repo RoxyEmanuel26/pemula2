@@ -191,7 +191,7 @@ function generateDirectoryPage() {
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
     <link rel="manifest" href="/assets/icons/site.webmanifest">
 
-    <link rel="stylesheet" href="/assets/css/gallery.css?v=5.3.0">
+    <link rel="stylesheet" href="/assets/css/gallery.css?v=5.4.0">
     <script type="application/ld+json">
 ${JSON.stringify(schema, null, 2)}
     </script>
@@ -274,7 +274,7 @@ ${videosHtml}
         <p>All resources are shared by their respective owners. &copy; 2026 kumpulenak</p>
     </footer>
 
-    <script src="/assets/js/loader.js?v=5.3.0" defer></script>
+    <script src="/assets/js/loader.js?v=5.4.0" defer></script>
 </body>
 </html>
 `;
