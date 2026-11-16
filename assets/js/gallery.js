@@ -2347,6 +2347,14 @@ function injectMissavPromo() {
     var staticCategory = document.body.getAttribute('data-static-category');
     var hasPrerenderedCards = document.querySelectorAll('#cardGrid .card').length > 0;
 
+    // If redirected from /?q=<cat> to /category/<cat>?q=<cat>, strip redundant ?q= and preserve SSR cards
+    if (staticCategory && qParam && qParam.toLowerCase() === staticCategory.toLowerCase()) {
+        qParam = '';
+        try {
+            window.history.replaceState(null, '', window.location.pathname);
+        } catch (e) {}
+    }
+
     if (qParam) {
         currentQuery = qParam;
         isSearchActive = true;

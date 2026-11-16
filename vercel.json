@@ -294,7 +294,7 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/",
       "has": [
         {
           "type": "query",
@@ -309,7 +309,7 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/",
       "has": [
         {
           "type": "query",
@@ -324,7 +324,7 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/",
       "has": [
         {
           "type": "query",
@@ -339,7 +339,7 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/",
       "has": [
         {
           "type": "query",
