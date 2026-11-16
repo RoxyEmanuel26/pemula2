@@ -14,10 +14,10 @@ function generateWebSiteSchema() {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "kumpulenak",
-        "alternateName": "kumpulenak Gallery",
+        "alternateName": "kumpulenak HD Adult Video Hub",
         "url": BASE_URL,
-        "description": "Premium 18+ NSFW Gallery — Trending viral videos and exclusive adult content.",
-        "inLanguage": ["en"],
+        "description": "Free Full HD 1080p Adult Video Hub for US & Europe — Watch trending viral clips across 95+ international categories with zero registration.",
+        "inLanguage": ["en", "en-US", "en-GB", "de", "fr", "es", "it"],
         "potentialAction": {
             "@type": "SearchAction",
             "target": {
@@ -36,13 +36,14 @@ function generateOrganizationSchema() {
         "name": "kumpulenak",
         "url": BASE_URL,
         "logo": `${BASE_URL}/assets/icons/android-chrome-512x512.png`,
-        "description": "The largest premium 18+ adult gallery platform.",
+        "description": "International 18+ Full HD adult video streaming directory serving viewers in the United States, United Kingdom, and Europe.",
         "foundingDate": "2026",
+        "areaServed": ["US", "GB", "CA", "AU", "DE", "FR", "ES", "IT", "NL", "SE", "PL", "EU"],
         "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "customer service",
             "email": "admin@kumpulenak.my.id",
-            "availableLanguage": ["English"]
+            "availableLanguage": ["English", "German", "French", "Spanish", "Italian", "Dutch"]
         }
     };
 }
@@ -97,7 +98,9 @@ function generateVideoSchema({
         "thumbnailUrl": Array.isArray(thumbnailUrl) ? thumbnailUrl : [String(thumbnailUrl)],
         "uploadDate": isoDate,
         "duration": `PT${duration}S`,
-        "embedUrl": embedUrl || `https://www.eporner.com/embed/${id}/`
+        "embedUrl": embedUrl || `https://www.eporner.com/embed/${id}/`,
+        "contentRating": "18+",
+        "regionsAllowed": ["US", "GB", "CA", "AU", "IE", "DE", "FR", "ES", "IT", "NL", "SE", "PL", "EU"]
     };
 
     if (viewsCount > 0) {
@@ -140,8 +143,33 @@ function generateItemListSchema(listName, listDesc, items) {
     };
 }
 
+function buildHreflangBlock(canonicalUrl) {
+    return [
+        '    <!-- Hreflang — Tier-1 US, UK, CA, AU & EU Regional Targeting -->',
+        `    <link rel="alternate" hreflang="en" href="${canonicalUrl}">`,
+        `    <link rel="alternate" hreflang="en-US" href="${canonicalUrl}">`,
+        `    <link rel="alternate" hreflang="en-GB" href="${canonicalUrl}">`,
+        `    <link rel="alternate" hreflang="en-CA" href="${canonicalUrl}">`,
+        `    <link rel="alternate" hreflang="en-AU" href="${canonicalUrl}">`,
+        `    <link rel="alternate" hreflang="en-IE" href="${canonicalUrl}">`,
+        `    <link rel="alternate" hreflang="x-default" href="${canonicalUrl}">`
+    ].join('\n');
+}
+
+const OG_ALTERNATE_LOCALES = [
+    '    <meta property="og:locale:alternate" content="en_GB">',
+    '    <meta property="og:locale:alternate" content="en_CA">',
+    '    <meta property="og:locale:alternate" content="de_DE">',
+    '    <meta property="og:locale:alternate" content="fr_FR">',
+    '    <meta property="og:locale:alternate" content="es_ES">',
+    '    <meta property="og:locale:alternate" content="it_IT">',
+    '    <meta property="og:locale:alternate" content="nl_NL">'
+].join('\n');
+
 module.exports = {
     BASE_URL,
+    OG_ALTERNATE_LOCALES,
+    buildHreflangBlock,
     generateWebSiteSchema,
     generateOrganizationSchema,
     generateBreadcrumbSchema,

@@ -61,6 +61,9 @@ const INDO_QUERIES = ['amateur', 'babe', 'milf', 'pov', 'blonde', 'ebony'];
 //  VIRAL TAGS — Daftar tag/keyword untuk tab "viral"
 // =====================================================
 const VIRAL_TAGS = [
+    { label: '🇺🇸 American', query: 'american', slug: 'american' },
+    { label: '🇪🇺 European', query: 'european', slug: 'european' },
+    { label: '🇬🇧 British', query: 'british', slug: 'british' },
     { label: '🏠 Amateur', query: 'amateur', slug: 'amateur' },
     { label: '💃 Dance', query: 'dance', slug: 'dance' },
     { label: '👩 MILF', query: 'milf', slug: 'milf' },
@@ -69,20 +72,32 @@ const VIRAL_TAGS = [
     { label: '👱 Blonde', query: 'blonde', slug: 'blonde' },
     { label: '👩🏿 Ebony', query: 'ebony', slug: 'ebony' },
     { label: '💃 Latina', query: 'latina', slug: 'latina' },
-    { label: '🎌 Hentai', query: 'hentai' },
+    { label: '🎌 Hentai', query: 'hentai', slug: 'hentai' },
     { label: '🍑 Big Ass', query: 'big ass', slug: 'big-ass' },
     { label: '🍒 Big Tits', query: 'big tits', slug: 'big-tits' },
     { label: '💑 Couples', query: 'couple', slug: 'couple' },
     { label: '🎭 Cosplay', query: 'cosplay', slug: 'cosplay' },
-    { label: '👄 Blowjob', query: 'blowjob' },
-    { label: '💦 Creampie', query: 'creampie' },
-    { label: '🔞 Uncensored', query: 'uncensored' }
+    { label: '👄 Blowjob', query: 'blowjob', slug: 'blowjob' },
+    { label: '💦 Creampie', query: 'creampie', slug: 'creampie' },
+    { label: '❤️ Romantic', query: 'romantic', slug: 'romantic' }
 ];
 
 // =====================================================
-//  KATEGORI LIST — Daftar semua kategori video
+//  KATEGORI LIST — Daftar semua kategori video (95 Hubs incl. US & EU)
 // =====================================================
 const KATEGORI_LIST = [
+    { label: 'American', query: 'american', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/5/59/592/5928764/1_360.jpg', order: 'most-popular', slug: 'american' },
+    { label: 'European', query: 'european', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/6/63/639/6393607/11_360.jpg', order: 'most-popular', slug: 'european' },
+    { label: 'British', query: 'british', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/6/63/639/6393607/11_360.jpg', order: 'most-popular', slug: 'british' },
+    { label: 'German', query: 'german', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/1/10/104/10441763/13_360.jpg', order: 'most-popular', slug: 'german' },
+    { label: 'French', query: 'french', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/9/92/921/9215738/12_360.jpg', order: 'most-popular', slug: 'french' },
+    { label: 'Spanish', query: 'spanish', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/1/14/149/14926542/1_360.jpg', order: 'most-popular', slug: 'spanish' },
+    { label: 'Italian', query: 'italian', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/7/71/713/7130105/10_360.jpg', order: 'most-popular', slug: 'italian' },
+    { label: 'Czech', query: 'czech', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/1/10/104/10441763/13_360.jpg', order: 'most-popular', slug: 'czech' },
+    { label: 'Russian', query: 'russian', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/1/10/109/10910523/7_360.jpg', order: 'most-popular', slug: 'russian' },
+    { label: 'Romantic', query: 'romantic', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/1/13/138/13801869/11_360.jpg', order: 'most-popular', slug: 'romantic' },
+    { label: 'Dance', query: 'dance', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/9/95/957/9573569/15_360.jpg', order: 'most-popular', slug: 'dance' },
+    { label: 'Live Cam', query: 'live cam', img: 'https://static-ca-cdn.eporner.com/thumbs/static4/1/16/165/16546350/15_360.jpg', order: 'most-popular', slug: 'live-cam' },
     { label: 'Indonesia', query: 'indonesia', img: 'https://static-sg-cdn.eporner.com/catimg/80.jpg', order: 'most-popular', slug: 'indonesia' },
     { label: 'Japanese', query: 'japanese', img: 'https://static-sg-cdn.eporner.com/catimg/52.jpg', order: 'most-popular', slug: 'japanese' },
     { label: 'Asian', query: 'asian', img: 'https://static-sg-cdn.eporner.com/catimg/11.jpg', order: 'most-popular', slug: 'asian' },

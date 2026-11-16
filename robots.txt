@@ -5,6 +5,7 @@
 
 User-agent: *
 Allow: /
+Allow: /trending
 Allow: /directory
 Allow: /v/
 Allow: /category/
@@ -19,11 +20,15 @@ Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /sitemap_index.xml
 Allow: /sitemap.xml
+Allow: /sitemap.txt
+Allow: /rss.xml
 Allow: /sitemaps/
 
-# Sitemaps
-Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml
+# Sitemaps & Discovery Feeds
 Sitemap: https://www.kumpulenak.my.id/sitemap.xml
+Sitemap: https://www.kumpulenak.my.id/sitemap.txt
+Sitemap: https://www.kumpulenak.my.id/rss.xml
+Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml
 
 # ==============================================
 # Bot-Specific Rules: Search Engines & AI Bots

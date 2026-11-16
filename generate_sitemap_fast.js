@@ -14,6 +14,8 @@ const SITEMAPS_DIR = path.join(ROOT, 'sitemaps');
 const STATE_FILE = path.join(ROOT, 'sitemap_state.json');
 const INDEX_FILE = path.join(ROOT, 'sitemap_index.xml');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
+const SITEMAP_TXT_FILE = path.join(ROOT, 'sitemap.txt');
+const RSS_FILE = path.join(ROOT, 'rss.xml');
 const BASE_URL = 'https://www.kumpulenak.my.id';
 const API_URL = 'https://www.eporner.com/api/v2/video/search/';
 const INDEXNOW_KEY = 'e8f4a2b9c1d64e70a5f3b8c2d9e1f0a4';
@@ -21,6 +23,8 @@ const INDEXNOW_KEY = 'e8f4a2b9c1d64e70a5f3b8c2d9e1f0a4';
 const MAX_ACTIVE_URLS = Number(process.env.SITEMAP_MAX_URLS || 45000);
 const MAX_FILE_URLS = Number(process.env.SITEMAP_SHARD_URLS || 5000);
 const MAX_FLAT_VIDEO_URLS = 500;
+const MAX_TXT_VIDEO_URLS = 1000;
+const MAX_RSS_VIDEO_URLS = 100;
 const MAX_FILE_BYTES = 45 * 1024 * 1024;
 const RETENTION_DAYS = Number(process.env.SITEMAP_RETENTION_DAYS || 90);
 const DAILY_PAGES = Number(process.env.SITEMAP_DAILY_PAGES || 100);
@@ -138,7 +142,9 @@ function normalizeVideo(video) {
 function videoNode(video) {
     const suffix = video.slug ? `-${video.slug}` : '';
     const loc = `${BASE_URL}/v/${video.id}${suffix}`;
-    const description = `Watch ${video.title} in full HD for free on kumpulenak.`.slice(0, 2048);
+    const safeXmlTitle = video.title.slice(0, 100).trim();
+    const durMin = video.duration > 0 ? ` (${Math.floor(video.duration / 60)}m ${video.duration % 60}s)` : '';
+    const description = `Watch ${video.title}${durMin} in 1080p Full HD free across the USA, UK & Europe on kumpulenak.`.slice(0, 2048);
     const duration = video.duration > 0 ? `\n      <video:duration>${video.duration}</video:duration>` : '';
     return [
         '  <url>',
@@ -146,7 +152,7 @@ function videoNode(video) {
         `    <lastmod>${video.date}</lastmod>`,
         '    <video:video>',
         `      <video:thumbnail_loc>${escapeXml(video.thumbnail)}</video:thumbnail_loc>`,
-        `      <video:title>${escapeXml(video.title)}</video:title>`,
+        `      <video:title>${escapeXml(safeXmlTitle)}</video:title>`,
         `      <video:description>${escapeXml(description)}</video:description>`,
         `      <video:player_loc>${escapeXml(video.player)}</video:player_loc>${duration}`,
         `      <video:publication_date>${video.date}</video:publication_date>`,
@@ -176,8 +182,9 @@ function parseVideoNodes(xml) {
 }
 
 function sanitizeVideoNodeRaw(raw) {
-    const titleMatch = raw.match(/<video:title>([^<]+)<\/video:title>/);
-    const locMatch = raw.match(/<loc>([^<]+)<\/loc>/);
+    let normalized = String(raw || '').replace(/\r\n/g, '\n');
+    const titleMatch = normalized.match(/<video:title>([^<]+)<\/video:title>/);
+    const locMatch = normalized.match(/<loc>([^<]+)<\/loc>/);
     const rawTitle = titleMatch ? decodeXml(titleMatch[1]) : '';
     const locUrl = locMatch ? decodeXml(locMatch[1]) : '';
     if (isHarmfulContent(rawTitle) || isHarmfulContent(locUrl)) {
@@ -186,12 +193,13 @@ function sanitizeVideoNodeRaw(raw) {
 
     const cleanedTitle = cleanVideoTitle(rawTitle);
     if (!cleanedTitle) return null;
+    const cappedTitle = cleanedTitle.slice(0, 100).trim();
 
-    let updated = raw;
-    if (cleanedTitle !== rawTitle) {
-        const newDesc = `Watch ${cleanedTitle} in full HD for free on kumpulenak.`.slice(0, 2048);
+    let updated = normalized;
+    if (cappedTitle !== rawTitle) {
+        const newDesc = `Watch ${cleanedTitle} in 1080p Full HD free across the USA, UK & Europe on kumpulenak.`.slice(0, 2048);
         updated = updated
-            .replace(/<video:title>[^<]*<\/video:title>/, `<video:title>${escapeXml(cleanedTitle)}</video:title>`)
+            .replace(/<video:title>[^<]*<\/video:title>/, `<video:title>${escapeXml(cappedTitle)}</video:title>`)
             .replace(/<video:description>[^<]*<\/video:description>/, `<video:description>${escapeXml(newDesc)}</video:description>`);
     }
     if (!updated.includes('<video:family_friendly>')) {
@@ -272,6 +280,7 @@ function standardSitemap(nodes) {
 function generateStaticSitemaps() {
     const pages = [
         ['/', 'index.html'],
+        ['/trending', 'trending.html'],
         ['/directory', 'directory.html'],
         ['/about', 'about.html'],
         ['/contact', 'contact.html'],
@@ -305,30 +314,99 @@ function generateStaticSitemaps() {
     return { pageNodes, categoryNodes };
 }
 
-function buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards) {
-    const videoNodes = [];
+function collectInternationalVideosForFeeds(activeShards, limit) {
+    const picked = [];
     const seenIds = new Set();
-
-    // Pick newest international-friendly videos first from active shards (newest to oldest)
     const reversedShards = [...activeShards].reverse();
     for (const shard of reversedShards) {
-        if (videoNodes.length >= MAX_FLAT_VIDEO_URLS) break;
+        if (picked.length >= limit) break;
         for (const node of shard.nodes) {
-            if (videoNodes.length >= MAX_FLAT_VIDEO_URLS) break;
+            if (picked.length >= limit) break;
             if (seenIds.has(node.id)) continue;
+            const locMatch = node.raw.match(/<loc>([^<]+)<\/loc>/);
             const titleMatch = node.raw.match(/<video:title>([^<]+)<\/video:title>/);
-            const title = titleMatch ? decodeXml(titleMatch[1]) : '';
+            const dateMatch = node.raw.match(/<lastmod>([^<]+)<\/lastmod>/);
+            const descMatch = node.raw.match(/<video:description>([^<]+)<\/video:description>/);
+            if (!locMatch || !titleMatch) continue;
+            const title = decodeXml(titleMatch[1]);
             if (!isInternationalFriendly({ title })) continue;
             seenIds.add(node.id);
-            videoNodes.push(node.raw);
+            picked.push({
+                id: node.id,
+                loc: decodeXml(locMatch[1]),
+                title,
+                date: dateMatch ? dateMatch[1] : todayUtc(),
+                description: descMatch ? decodeXml(descMatch[1]) : `Watch ${title} in 1080p Full HD on kumpulenak.`
+            });
         }
     }
+    return picked;
+}
 
-    return videoSitemap([
-        ...pageNodes,
-        ...categoryNodes,
-        ...videoNodes
+function extractLocs(nodes) {
+    return nodes
+        .map(raw => {
+            const m = raw.match(/<loc>([^<]+)<\/loc>/);
+            return m ? decodeXml(m[1]) : null;
+        })
+        .filter(Boolean);
+}
+
+function buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards) {
+    const topVideos = collectInternationalVideosForFeeds(activeShards, MAX_FLAT_VIDEO_URLS);
+    const cleanVideoUrlNodes = topVideos.map(v => [
+        '  <url>',
+        `    <loc>${escapeXml(v.loc)}</loc>`,
+        `    <lastmod>${v.date}</lastmod>`,
+        '  </url>'
+    ].join('\n'));
+
+    return standardSitemap([
+        ...pageNodes.map(n => n.replace(/\r\n/g, '\n')),
+        ...categoryNodes.map(n => n.replace(/\r\n/g, '\n')),
+        ...cleanVideoUrlNodes
     ]);
+}
+
+function buildPlainTextSitemap(pageNodes, categoryNodes, activeShards) {
+    const staticLocs = [
+        ...extractLocs(pageNodes),
+        ...extractLocs(categoryNodes)
+    ];
+    const videoLocs = collectInternationalVideosForFeeds(activeShards, MAX_TXT_VIDEO_URLS).map(v => v.loc);
+    return [...new Set([...staticLocs, ...videoLocs])].join('\n') + '\n';
+}
+
+function buildRssFeed(activeShards) {
+    const items = collectInternationalVideosForFeeds(activeShards, MAX_RSS_VIDEO_URLS);
+    const buildDate = new Date().toUTCString();
+    const itemsXml = items.map(v => {
+        const pubDate = new Date(`${v.date}T00:00:00Z`).toUTCString();
+        return [
+            '    <item>',
+            `      <title>${escapeXml(v.title)}</title>`,
+            `      <link>${escapeXml(v.loc)}</link>`,
+            `      <guid isPermaLink="true">${escapeXml(v.loc)}</guid>`,
+            `      <pubDate>${pubDate}</pubDate>`,
+            `      <description>${escapeXml(v.description)}</description>`,
+            '    </item>'
+        ].join('\n');
+    });
+    return [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+        '  <channel>',
+        '    <title>kumpulenak — Latest US &amp; European 1080p Full HD Videos</title>',
+        `    <link>${BASE_URL}/</link>`,
+        '    <description>Daily updated Full HD 1080p adult video releases for the USA, UK &amp; Europe.</description>',
+        '    <language>en-us</language>',
+        `    <lastBuildDate>${buildDate}</lastBuildDate>`,
+        `    <atom:link href="${BASE_URL}/rss.xml" rel="self" type="application/rss+xml" />`,
+        ...itemsXml,
+        '  </channel>',
+        '</rss>',
+        ''
+    ].join('\n');
 }
 
 function listVideoShards() {
@@ -560,13 +638,26 @@ function validateSitemaps(options = {}) {
     }
     if (references.includes('sitemap_tags.xml')) errors.push('Indeks masih mereferensikan sitemap_tags.xml');
 
-    // Validate flat priority /sitemap.xml
+    // Validate flat priority /sitemap.xml (pure standard <urlset> with LF line endings)
     const flatSitemap = fs.existsSync(SITEMAP_FILE) ? fs.readFileSync(SITEMAP_FILE, 'utf8') : '';
     if (!flatSitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
         errors.push('sitemap.xml tidak memiliki deklarasi XML UTF-8');
     }
-    if (!flatSitemap.includes('<urlset') || !flatSitemap.includes('</urlset>')) {
-        errors.push('sitemap.xml harus berupa flat <urlset> langsung agar mudah dibaca GSC');
+    if (!flatSitemap.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">') || !flatSitemap.includes('</urlset>')) {
+        errors.push('sitemap.xml harus berupa standard <urlset> murni');
+    }
+    if (flatSitemap.includes('\r')) {
+        errors.push('sitemap.xml mengandung CRLF (\\r); gunakan LF murni');
+    }
+
+    // Validate plain-text sitemap (/sitemap.txt) and RSS feed (/rss.xml)
+    const txtSitemap = fs.existsSync(SITEMAP_TXT_FILE) ? fs.readFileSync(SITEMAP_TXT_FILE, 'utf8') : '';
+    if (!txtSitemap.includes(`${BASE_URL}/trending`)) {
+        errors.push('sitemap.txt tidak valid atau belum berisi URL utama');
+    }
+    const rssFeed = fs.existsSync(RSS_FILE) ? fs.readFileSync(RSS_FILE, 'utf8') : '';
+    if (!rssFeed.includes('<rss version="2.0"') || !rssFeed.includes('</rss>')) {
+        errors.push('rss.xml bukan RSS 2.0 feed yang valid');
     }
 
     const allIds = new Set();
@@ -625,8 +716,12 @@ async function generate(mode) {
         const changedNames = new Set([...sanitized.rewritten, ...capped.rewritten]);
         const indexContent = buildIndex(activeShards, changedNames);
         const flatContent = buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards);
+        const txtContent = buildPlainTextSitemap(pageNodes, categoryNodes, activeShards);
+        const rssContent = buildRssFeed(activeShards);
         writeAtomic(INDEX_FILE, indexContent);
         writeAtomic(SITEMAP_FILE, flatContent);
+        writeAtomic(SITEMAP_TXT_FILE, txtContent);
+        writeAtomic(RSS_FILE, rssContent);
         const validation = validateSitemaps({ allowEmpty: false });
         console.log(`[SANITIZE] Purged ${sanitized.purgedNodes} harmful URLs across ${sanitized.rewritten.length} shards. Active URLs: ${validation.videoUrls}`);
         return validation;
@@ -648,14 +743,26 @@ async function generate(mode) {
     const changedNames = new Set([...created.map(item => item.name), ...capped.rewritten, ...sanitized.rewritten]);
     const indexContent = buildIndex(activeShards, changedNames);
     const flatContent = buildFlatPrioritySitemap(pageNodes, categoryNodes, activeShards);
+    const txtContent = buildPlainTextSitemap(pageNodes, categoryNodes, activeShards);
+    const rssContent = buildRssFeed(activeShards);
     writeAtomic(INDEX_FILE, indexContent);
     writeAtomic(SITEMAP_FILE, flatContent);
+    writeAtomic(SITEMAP_TXT_FILE, txtContent);
+    writeAtomic(RSS_FILE, rssContent);
     const validation = validateSitemaps({ allowEmpty: false });
 
     // Ping IndexNow for instant indexing on Bing, Yandex, DuckDuckGo, Naver, Seznam
     const urlsToPing = [
         `${BASE_URL}/`,
+        `${BASE_URL}/trending`,
         `${BASE_URL}/directory`,
+        `${BASE_URL}/category/european`,
+        `${BASE_URL}/category/british`,
+        `${BASE_URL}/category/german`,
+        `${BASE_URL}/category/french`,
+        `${BASE_URL}/category/spanish`,
+        `${BASE_URL}/category/italian`,
+        `${BASE_URL}/category/american`,
         ...capped.newVideos.slice(0, 500).map(v => `${BASE_URL}/v/${v.id}${v.slug ? '-' + v.slug : ''}`)
     ];
     const indexNowResult = await pingIndexNow(urlsToPing);

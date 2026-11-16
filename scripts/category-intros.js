@@ -104,6 +104,102 @@ const EDITORIAL_INTROS = {
             'Powered by modern encoding standards, our HD player delivers instant video start times, minimal buffering, and responsive touch controls on both iOS and Android devices.',
             'Explore thousands of verified full HD scenes spanning all genres, organized cleanly by popularity, release date, and community ratings.'
         ]
+    },
+    'european': {
+        heading: 'European HD Adult Videos & Continental Performers',
+        paragraphs: [
+            'Discover Europe\'s finest adult entertainment in our dedicated European HD category. Featuring acclaimed models and authentic amateur couples from Germany, France, Italy, Spain, the Czech Republic, Scandinavia, and across the EU, this hub delivers passionate, uninhibited performances.',
+            'Every European clip streams in full 1080p HD via fast European and US edge CDN nodes, ensuring instant buffering and sharp visuals on mobile phones, tablets, and desktop screens.',
+            'Updated daily with trending Euro productions, public adventures, and intimate private recordings — stream completely free with zero mandatory sign-ups.'
+        ]
+    },
+    'british': {
+        heading: 'British & UK Pornstars, Amateurs & HD Scenes',
+        paragraphs: [
+            'Enjoy an authentic taste of the UK with our curated British adult video collection. Showcasing glamorous English models, Scottish and Irish creators, and candid amateur UK couples filmed in London, Manchester, and beyond.',
+            'All British scenes are delivered in adaptive high definition with crystal-clear audio and fast UK/EU edge streaming performance across iOS, Android, and desktop browsers.',
+            'Browse top-rated UK homemade releases and iconic British studio features updated daily at no cost.'
+        ]
+    },
+    'german': {
+        heading: 'German / Deutsch HD Adult Videos & Amateur Scenes',
+        paragraphs: [
+            'Welcome to our German (Deutsch) HD adult hub featuring popular performers, authentic German amateur couples (Deutsche Pornos & Amateure), and renowned European studio productions filmed in Berlin, Munich, and Hamburg.',
+            'Each German-language and continental scene is encoded for ultra-fast European streaming up to 1080p Full HD with responsive playback controls and zero registration barriers.',
+            'From spontaneous reality encounters to high-energy group productions, explore the most-watched Deutsche HD clips updated daily.'
+        ]
+    },
+    'french': {
+        heading: 'French / Français Chic Adult Cinema & Amateur Clips',
+        paragraphs: [
+            'Experience sensual Parisian passion and bold French adult cinema (Vidéos X Françaises) in our dedicated French category. Featuring celebrated French performers and passionate amateur lovers, these clips blend elegance, chemistry, and unrestrained desire.',
+            'Stream every French production in full high definition with rapid EU edge delivery, smooth scrubbing, and seamless compatibility across all modern smartphones and computers.',
+            'Refreshed daily with trending French releases, romantic encounters, and intimate homemade clips free of charge.'
+        ]
+    },
+    'spanish': {
+        heading: 'Spanish / Español Fiery HD Adult Videos',
+        paragraphs: [
+            'Dive into the intensity of our Spanish (Vídeos Porno en Español) collection, spotlighting passionate performers from Spain and international Hispanic creators. Expect uninhibited chemistry, sun-drenched settings, and authentic pleasure.',
+            'Every Spanish HD clip is optimized for fast streaming across Europe, the United States, and Latin America with zero buffering delays and crystal-clear 1080p playback.',
+            'Browse top-rated Spanish scenes and fresh daily uploads privately and completely free.'
+        ]
+    },
+    'italian': {
+        heading: 'Italian / Italiano Sensual HD Videos & Classic Gems',
+        paragraphs: [
+            'Explore timeless Mediterranean allure in our Italian (Video Porno Italiani) hub. Showcasing charismatic Italian models, real couples, and iconic European productions, this collection celebrates romantic intensity and unbridled passion.',
+            'Delivered in high-bitrate HTML5 video up to 1080p HD, every Italian release plays instantaneously on both mobile and widescreen displays across Europe and North America.',
+            'Discover trending Italian favorites and curated full-length scenes updated every day with zero sign-up required.'
+        ]
+    },
+    'czech': {
+        heading: 'Czech HD Productions, Street Castings & Amateur Gems',
+        paragraphs: [
+            'Renowned across Europe and the United States for raw authenticity and stunning models, our Czech HD category brings together popular Prague castings, reality scenarios, and charismatic Central European performers.',
+            'Stream crystal-clear full HD scenes with rapid loading times and smooth adaptive quality across smartphones, tablets, and desktops.',
+            'Daily curated updates highlight the highest-rated Czech releases, all accessible freely and anonymously.'
+        ]
+    },
+    'russian': {
+        heading: 'Russian Models, Eastern European Beauties & HD Clips',
+        paragraphs: [
+            'Browse stunning Eastern European talent in our Russian HD adult video hub. Featuring captivating Russian models, glamorous solo showcases, and passionate couple performances, this category ranks among our most popular global collections.',
+            'Optimized for rapid 1080p streaming across EU and US servers, every video delivers vivid detail, reliable playback, and mobile-first responsiveness.',
+            'Explore thousands of high-rated clips updated around the clock with no registration fees.'
+        ]
+    },
+    'american': {
+        heading: 'American / USA Pornstars, College Party & 1080p HD Clips',
+        paragraphs: [
+            'Stream top-tier US adult entertainment in our American HD hub, uniting Hollywood-grade studios, famous US pornstars, and authentic American amateur creators from Los Angeles, Miami, Las Vegas, and New York.',
+            'Every American video supports instant HTML5 playback up to 1080p Full HD and 60 FPS, served via low-latency North American and European edge networks.',
+            'Stay up to date with daily viral US releases, trending scenes, and viewer favorites with 100% free access.'
+        ]
+    },
+    'romantic': {
+        heading: 'Romantic, Sensual & Female-Friendly Full HD Scenes',
+        paragraphs: [
+            'Tailored for viewers seeking genuine chemistry, tender foreplay, and passionate intimacy, our Romantic & Female-Friendly category features artistic lighting, real-couple closeness, and story-driven scenes.',
+            'Stream soothing, cinematic 1080p HD encounters with crystal-clear audio and uninterrupted playback on any device.',
+            'Hand-curated daily to highlight emotional connection alongside full-resolution adult cinematography with zero sign-up hurdles.'
+        ]
+    },
+    'dance': {
+        heading: 'Sensual Dance, Striptease & Twerk HD Videos',
+        paragraphs: [
+            'Watch mesmerizing strip dances, erotic choreography, and rhythmic twerk performances in crystal-clear high definition. Featuring charismatic solo performers and playful party clips from around the world.',
+            'Optimized for smooth high-frame-rate playback up to 60 FPS on iOS, Android, and desktop screens.',
+            'Updated daily with trending dance and striptease highlights free to stream anytime.'
+        ]
+    },
+    'live-cam': {
+        heading: 'Recorded Live Webcam Shows & Interactive Cam Clips',
+        paragraphs: [
+            'Enjoy unscripted excitement in our Live Cam archive, showcasing recorded interactive webcam shows, solo cam models, and spontaneous live-stream highlights from performers in the US and Europe.',
+            'Every cam recording plays immediately in HD HTML5 format without pop-up registration forms or token paywalls.',
+            'Check back daily for fresh cam highlights and top-rated interactive performances.'
+        ]
     }
 };
 

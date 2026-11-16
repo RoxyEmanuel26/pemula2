@@ -104,57 +104,63 @@ function slugify(title) {
 }
 
 const KNOWN_CATEGORIES = new Set([
-    "60-fps","ai","amateur","anal","asian","asmr","babe","bbw","bdsm","big-ass",
-    "big-dick","big-tits","bisexual","blonde","blowjob","bondage","brunette","bukkake",
-    "casting","compilation","cosplay","couple","creampie","cuckold","cumshot","dance",
-    "doctor","double-penetration","ebony","fat","fetish","fisting","footjob","for-women",
-    "gloryhole","group-sex","handjob","hardcore","hd-porn-1080p","hd-sex","hentai",
-    "homemade","hotel","hotwife","housewives","hq-porn","indian","indonesia","interracial",
+    "60-fps","ai","amateur","american","anal","asian","asmr","babe","bbw","bdsm","big-ass",
+    "big-dick","big-tits","bisexual","blonde","blowjob","bondage","british","brunette","bukkake",
+    "casting","compilation","cosplay","couple","creampie","cuckold","cumshot","czech","dance",
+    "doctor","double-penetration","ebony","european","fat","fetish","fisting","footjob","for-women",
+    "french","german","gloryhole","group-sex","handjob","hardcore","hd-porn-1080p","hd-sex","hentai",
+    "homemade","hotel","hotwife","housewives","hq-porn","indian","indonesia","interracial","italian",
     "japanese","latina","lesbian","lingerie","live-cam","massage","masturbation","mature",
     "milf","nurses","office","older-men","orgy","outdoor","pawg","petite","pinay",
-    "pornstar","pov","pregnant","public","redhead","shemale","sleep","small-tits",
-    "squirt","stepmom","stepsister","striptease","swinger","threesome","toys","uniform",
+    "pornstar","pov","pregnant","public","redhead","romantic","russian","shemale","sleep","small-tits",
+    "spanish","squirt","stepmom","stepsister","striptease","swinger","threesome","toys","uniform",
     "vintage","vr-porn","webcam"
 ]);
 
 const POPULAR_CATEGORIES = [
+    { slug: 'american', name: 'American / USA' },
+    { slug: 'european', name: 'European' },
+    { slug: 'british', name: 'British / UK' },
+    { slug: 'german', name: 'German / Deutsch' },
+    { slug: 'french', name: 'French' },
     { slug: 'amateur', name: 'Amateur' },
     { slug: 'milf', name: 'MILF' },
     { slug: 'pov', name: 'POV' },
     { slug: 'hd-porn-1080p', name: 'Full HD 1080p' },
     { slug: '60-fps', name: '60 FPS' },
-    { slug: 'asian', name: 'Asian' },
-    { slug: 'japanese', name: 'Japanese' },
-    { slug: 'ebony', name: 'Ebony' },
-    { slug: 'latina', name: 'Latina' },
     { slug: 'blonde', name: 'Blonde' },
-    { slug: 'cosplay', name: 'Cosplay' },
-    { slug: 'creampie', name: 'Creampie' },
-    { slug: 'threesome', name: 'Threesome' }
+    { slug: 'latina', name: 'Latina' },
+    { slug: 'ebony', name: 'Ebony' },
+    { slug: 'asian', name: 'Asian' },
+    { slug: 'romantic', name: 'Romantic' }
 ];
 
 function buildSeoTitle(rawTitle, categoryName, durationMin) {
     const clean = cleanFancyText(rawTitle || 'Trending HD Video');
-    const brand = ' | kumpulenak';
     const targetMax = 60;
-    const maxLen = targetMax - brand.length; // 46 chars
-    if (clean.length > maxLen) {
-        return clean.slice(0, maxLen - 3).trim() + '...' + brand;
+    const durSuffix = durationMin ? ` (${durationMin} Full HD)` : ' - Full HD 1080p Video';
+    if ((clean + durSuffix).length <= targetMax) {
+        return clean + durSuffix;
     }
-    const withCatAndDur = `${clean} (${durationMin || 'HD'} ${categoryName || 'HD'})` + brand;
-    if (withCatAndDur.length <= 60) return withCatAndDur;
-    if (clean.length < 32) {
-        const withSuffix = clean + ' - Watch Free HD' + brand;
-        if (withSuffix.length <= 60) return withSuffix;
+    const hdSuffix = ' - Full HD Video';
+    if ((clean + hdSuffix).length <= targetMax) {
+        return clean + hdSuffix;
     }
-    return clean + brand;
+    const catSuffix = ` | ${categoryName || 'HD Video'}`;
+    if ((clean + catSuffix).length <= targetMax) {
+        return clean + catSuffix;
+    }
+    if (clean.length <= targetMax) {
+        return clean;
+    }
+    return clean.slice(0, targetMax - 3).trim() + '...';
 }
 
 function buildMetaDesc(rawTitle, categoryName, durationMin) {
     const clean = cleanFancyText(rawTitle || 'Trending Video');
     const catLabel = categoryName || 'Adult';
     const durLabel = durationMin ? ` (${durationMin})` : '';
-    const base = `Watch ${clean}${durLabel} in full 1080p HD for free on kumpulenak. Stream ${catLabel} clips with instant playback, zero registration, and daily updates.`;
+    const base = `Watch ${clean}${durLabel} in 1080p Full HD free. Instant ${catLabel} streaming across the USA, UK & Europe with fast HTML5 playback and no sign-up.`;
     if (base.length > 158) {
         return base.slice(0, 155).trim() + '...';
     }
@@ -163,21 +169,21 @@ function buildMetaDesc(rawTitle, categoryName, durationMin) {
 
 function buildProgrammaticEditorial(title, primaryCatName, primaryCatSlug, durationMin, uploadISO, viewsCount, ratingVal, tagNames) {
     const topTags = (tagNames || []).slice(0, 5).join(', ') || primaryCatName;
-    const summary1 = `Stream ${title} in crystal-clear 1080p Full HD on kumpulenak. Featured in our international ${primaryCatName} collection, this ${durationMin} release (published ${uploadISO}) has garnered ${viewsCount} views with a ${ratingVal}/5 community rating.`;
-    const summary2 = `Every video in our ${primaryCatName} archive is optimized for adaptive high-bitrate HTML5 streaming across iOS, Android, and desktop browsers with no account sign-up required. Explore related scenes tagged with ${topTags}.`;
+    const summary1 = `Stream ${title} in crystal-clear 1080p Full HD on kumpulenak. Featured in our international ${primaryCatName} collection, this ${durationMin} release (published ${uploadISO}) has garnered ${viewsCount} views with a ${ratingVal}/5 community rating across viewers in the United States, United Kingdom, and Europe.`;
+    const summary2 = `Delivered via low-latency US and European edge servers for adaptive HTML5 streaming on iOS, Android, and desktop browsers with zero registration. Browse related scenes tagged with ${topTags} or explore our Top 100 US & EU chart.`;
 
     const faq = [
         {
             question: `What is the duration and resolution of "${title}"?`,
-            answer: `"${title}" has a full runtime of ${durationMin} and streams in adaptive high-definition (up to 1080p HD) directly in your web browser with instant buffering.`
+            answer: `"${title}" has a full runtime of ${durationMin} and streams in adaptive high-definition (up to 1080p 60FPS Full HD) directly in your web browser with instant buffering.`
         },
         {
             question: `Which category and tags are featured in "${title}"?`,
-            answer: `This video is cataloged under the ${primaryCatName} category and includes scenes related to ${topTags}. You can browse more clips like this in our ${primaryCatName} hub or full Video Directory.`
+            answer: `This video is cataloged under the ${primaryCatName} category and includes scenes related to ${topTags}. You can discover similar HD clips in our ${primaryCatName} collection, Top 100 US & EU chart, or complete Video Directory.`
         },
         {
-            question: `Can I watch "${title}" for free on mobile devices?`,
-            answer: `Yes, kumpulenak streams "${title}" 100% free on iPhone, iPad, Android smartphones, tablets, and desktop computers with no registration or software download required.`
+            question: `Can viewers in the US, UK & Europe watch "${title}" free on mobile?`,
+            answer: `Yes, kumpulenak streams "${title}" 100% free across the United States, United Kingdom, Germany, France, Spain, Italy, Canada, and worldwide on iPhone, iPad, Android, and desktop browsers with no account required.`
         }
     ];
 
@@ -479,12 +485,20 @@ module.exports = async function handler(req, res) {
                     "duration": `PT${durationSec}S`,
                     "embedUrl": embedUrl,
                     "url": canonicalUrl,
+                    "genre": primaryCatName,
+                    "keywords": cleanTagList.slice(0, 12).join(', '),
+                    "contentRating": "18+",
+                    "regionsAllowed": ["US", "GB", "CA", "AU", "IE", "DE", "FR", "ES", "IT", "NL", "SE", "PL", "EU"],
                     "isFamilyFriendly": false,
                     "inLanguage": "en",
                     "interactionStatistic": {
                         "@type": "InteractionCounter",
                         "interactionType": { "@type": "WatchAction" },
                         "userInteractionCount": Number(data.views || 0)
+                    },
+                    "potentialAction": {
+                        "@type": "WatchAction",
+                        "target": canonicalUrl
                     }
                 },
                 {
@@ -508,7 +522,11 @@ module.exports = async function handler(req, res) {
             'black': 'ebony', 'african': 'ebony', 'cougar': 'milf', 'mom': 'milf', 'mother': 'milf',
             'boobs': 'big-tits', 'busty': 'big-tits', 'tits': 'big-tits', 'booty': 'big-ass', 'ass': 'big-ass',
             'cam': 'webcam', 'camgirl': 'webcam', 'livecam': 'live-cam', 'wife': 'hotwife', 'couples': 'couple',
-            'babes': 'babe', 'model': 'babe', 'vr': 'vr-porn', 'virtual-reality': 'vr-porn', ' Indo ': 'indonesia'
+            'babes': 'babe', 'model': 'babe', 'vr': 'vr-porn', 'virtual-reality': 'vr-porn', 'indo': 'indonesia',
+            'euro': 'european', 'europe': 'european', 'uk': 'british', 'england': 'british', 'english': 'british',
+            'deutsch': 'german', 'germany': 'german', 'francais': 'french', 'france': 'french',
+            'espanol': 'spanish', 'spain': 'spanish', 'italiano': 'italian', 'italy': 'italian',
+            'usa': 'american', 'america': 'american', 'prague': 'czech', 'sensual': 'romantic', 'passionate': 'romantic'
         };
         function resolveTagCategory(rawTag) {
             const s = slugify(rawTag);
@@ -532,9 +550,10 @@ module.exports = async function handler(req, res) {
             return `<span class="video-tag" role="button" tabindex="0" onclick="window.location.href='/?q=${encodeURIComponent(tag)}'" style="cursor:pointer;">${escapeHtml(tag)}</span>`;
         }).join(' ');
 
-        // Category navigation chips + Directory link
+        // Category navigation chips + Trending + Directory links
         const categoryPillsHtml = [
-            `<a href="/directory" class="video-tag" style="border-color: var(--accent); font-weight: 700;">📂 All 85+ Categories</a>`,
+            `<a href="/trending" class="video-tag" style="border-color: #ff6b9d; font-weight: 700;">🔥 Top 100 US &amp; EU</a>`,
+            `<a href="/directory" class="video-tag" style="border-color: var(--accent); font-weight: 700;">📂 All 95 Categories</a>`,
             ...POPULAR_CATEGORIES.map(c => `<a href="/category/${c.slug}" class="video-tag">${escapeHtml(c.name)}</a>`)
         ].join(' ');
 
@@ -547,7 +566,7 @@ module.exports = async function handler(req, res) {
                     <div><strong style="color: var(--text-secondary); display: block;">Category</strong><a href="/category/${escapeHtml(primaryCatSlug)}" style="color: var(--accent); text-decoration: none; font-weight: 600;">${escapeHtml(primaryCatName)}</a></div>
                     <div><strong style="color: var(--text-secondary); display: block;">Runtime</strong><span>${escapeHtml(durationMin)} (${durationSec}s)</span></div>
                     <div><strong style="color: var(--text-secondary); display: block;">Quality</strong><span>Full HD 1080p</span></div>
-                    <div><strong style="color: var(--text-secondary); display: block;">Release Date</strong><span>${escapeHtml(uploadISO)}</span></div>
+                    <div><strong style="color: var(--text-secondary); display: block;">Regions</strong><span>USA, UK &amp; Europe HD</span></div>
                     <div><strong style="color: var(--text-secondary); display: block;">Rating</strong><span>⭐ ${escapeHtml(String(ratingVal))} / 5.0</span></div>
                 </div>`;
 
@@ -608,13 +627,23 @@ module.exports = async function handler(req, res) {
         html = html.replace(/<title>.*?<\/title>/s, `<title>${safeSeoTitle}</title>`);
         html = html.replace(/<meta name="description"[\s\S]*?>/s, `<meta name="description" content="${safeDesc}">`);
         html = html.replace(/<meta name="robots"[\s\S]*?>/s, `<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">`);
-        html = html.replace(
-            /<link rel="canonical"[\s\S]*?>/s,
-            `<link rel="canonical" href="${canonicalUrl}">\n    <link rel="alternate" hreflang="en" href="${canonicalUrl}">\n    <link rel="alternate" hreflang="x-default" href="${canonicalUrl}">`
-        );
+        const watchHreflang = [
+            `<link rel="canonical" href="${canonicalUrl}">`,
+            `<link rel="alternate" hreflang="en" href="${canonicalUrl}">`,
+            `<link rel="alternate" hreflang="en-US" href="${canonicalUrl}">`,
+            `<link rel="alternate" hreflang="en-GB" href="${canonicalUrl}">`,
+            `<link rel="alternate" hreflang="en-CA" href="${canonicalUrl}">`,
+            `<link rel="alternate" hreflang="en-AU" href="${canonicalUrl}">`,
+            `<link rel="alternate" hreflang="en-IE" href="${canonicalUrl}">`,
+            `<link rel="alternate" hreflang="x-default" href="${canonicalUrl}">`
+        ].join('\n    ');
+        html = html.replace(/<link rel="canonical"[\s\S]*?>/s, watchHreflang);
 
         // Replace Open Graph
-        html = html.replace(/<meta id="ogTitle" property="og:title" content=".*?">/s, `<meta id="ogTitle" property="og:title" content="${safeSeoTitle}">`);
+        html = html.replace(
+            /<meta id="ogTitle" property="og:title" content=".*?">/s,
+            `<meta property="og:locale" content="en_US">\n    <meta property="og:locale:alternate" content="en_GB">\n    <meta property="og:locale:alternate" content="de_DE">\n    <meta property="og:locale:alternate" content="fr_FR">\n    <meta property="og:locale:alternate" content="es_ES">\n    <meta id="ogTitle" property="og:title" content="${safeSeoTitle}">`
+        );
         html = html.replace(/<meta id="ogDesc" property="og:description" content=".*?">/s, `<meta id="ogDesc" property="og:description" content="${safeDesc}">`);
         html = html.replace(/<meta id="ogImage" property="og:image" content=".*?">/s, `<meta id="ogImage" property="og:image" content="${escapeHtml(thumbUrl)}">`);
         html = html.replace(/<meta id="ogUrl" property="og:url" content=".*?">/s, `<meta id="ogUrl" property="og:url" content="${canonicalUrl}">`);

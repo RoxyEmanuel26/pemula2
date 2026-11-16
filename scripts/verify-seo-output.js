@@ -79,39 +79,53 @@ async function verifyAll() {
     assert(indexHtml.includes('<meta name="description"'), 'index.html missing meta description');
     assert(/<link[^>]+rel="canonical"[^>]+href="https:\/\/www\.kumpulenak\.my\.id\/"/.test(indexHtml), 'index.html invalid canonical');
     assert(!indexHtml.includes('hreflang="id"'), 'index.html should not have conflicting hreflang="id"');
-    assert(indexHtml.includes('hreflang="en"'), 'index.html missing hreflang="en"');
+    assert(indexHtml.includes('hreflang="en-US"'), 'index.html missing hreflang="en-US"');
+    assert(indexHtml.includes('hreflang="en-GB"'), 'index.html missing hreflang="en-GB"');
+    assert(indexHtml.includes('href="/trending"'), 'index.html missing link to /trending');
     assert(indexHtml.includes('<h1 class="main-seo-title">'), 'index.html missing H1');
     assert(indexHtml.includes('"@type": "WebSite"'), 'index.html missing WebSite schema');
     assert(indexHtml.includes('"@type": "Organization"'), 'index.html missing Organization schema');
+    assert(indexHtml.includes('"areaServed"'), 'index.html Organization missing areaServed US/EU');
     assert(indexHtml.includes('"@type": "ItemList"'), 'index.html missing ItemList schema');
     assert(indexHtml.includes('class="card"'), 'index.html missing pre-rendered cards');
     assert(indexHtml.includes('fetchpriority="high"'), 'index.html missing LCP fetchpriority');
     assert(!indexHtml.includes('abg-esemaa'), 'index.html MUST NOT contain harmful abg-esemaa video');
     assert(indexHtml.includes(ADSTERRA_NATIVE_SCRIPT) && indexHtml.includes(ADSTERRA_NATIVE_CONTAINER), 'index.html missing Adsterra Native Banner');
     assert(!indexHtml.includes('class="ad-native-space"'), 'index.html must not wrap Adsterra Native Banner in ad-native-space');
-    console.log('   ✅ Homepage passed all SEO, safety, and Adsterra checks.\n');
+    console.log('   ✅ Homepage passed all SEO, US/EU geotargeting, safety, and Adsterra checks.\n');
 
-    // 2. Directory Hub Verification
-    console.log('2. Verifying HTML Video Directory (/directory.html)...');
+    // 2. Directory & Trending Hub Verification
+    console.log('2. Verifying HTML Video Directory (/directory.html) & Top 100 US/EU Chart (/trending.html)...');
     const dirHtml = fs.readFileSync(path.join(__dirname, '..', 'directory.html'), 'utf8');
     assert(dirHtml.includes('<link rel="canonical" href="https://www.kumpulenak.my.id/directory">'), 'directory.html invalid canonical');
+    assert(dirHtml.includes('hreflang="en-US"'), 'directory.html missing hreflang="en-US"');
     assert(dirHtml.includes('"@type": "CollectionPage"'), 'directory.html missing CollectionPage schema');
-    assert(dirHtml.includes('/category/amateur'), 'directory.html missing category links');
+    assert(dirHtml.includes('/category/european'), 'directory.html missing new EU categories');
+    assert(dirHtml.includes('/category/american'), 'directory.html missing new US category');
     assert(dirHtml.includes('/v/'), 'directory.html missing direct video stream links');
     assert(dirHtml.includes(ADSTERRA_NATIVE_SCRIPT), 'directory.html missing Adsterra Native Banner');
-    console.log('   ✅ Directory Hub passed all checks.\n');
 
-    // 3. Category Hub Verification
-    console.log('3. Verifying Category Hub Pages (category/amateur.html & asian.html)...');
-    const catHtml = fs.readFileSync(path.join(__dirname, '..', 'category', 'amateur.html'), 'utf8');
-    assert(catHtml.includes('<link rel="canonical" href="https://www.kumpulenak.my.id/category/amateur"'), 'Category canonical invalid');
-    assert(catHtml.includes('<h1 class="main-seo-title">'), 'Category H1 missing');
-    assert(catHtml.includes('class="category-editorial"'), 'Category editorial hub section missing');
-    assert(catHtml.includes('"@type": "BreadcrumbList"'), 'Category BreadcrumbList missing');
-    assert(catHtml.includes('"@type": "ItemList"'), 'Category ItemList missing');
-    assert(catHtml.includes('class="card"'), 'Category cards missing');
-    assert(catHtml.includes(ADSTERRA_NATIVE_SCRIPT) && catHtml.includes(ADSTERRA_NATIVE_CONTAINER), 'Category missing Adsterra Native Banner');
-    console.log('   ✅ Category Hub passed all checks.\n');
+    const trendHtml = fs.readFileSync(path.join(__dirname, '..', 'trending.html'), 'utf8');
+    assert(trendHtml.includes('<link rel="canonical" id="canonicalLink" href="https://www.kumpulenak.my.id/trending">'), 'trending.html invalid canonical');
+    assert(trendHtml.includes('hreflang="en-US"'), 'trending.html missing hreflang="en-US"');
+    assert(trendHtml.includes('"@type": "ItemList"'), 'trending.html missing ItemList schema');
+    assert(trendHtml.includes(ADSTERRA_NATIVE_SCRIPT) && trendHtml.includes(ADSTERRA_NATIVE_CONTAINER), 'trending.html missing Adsterra Native Banner');
+    console.log('   ✅ Directory & Trending Top 100 Hub passed all checks.\n');
+
+    // 3. Category Hub Verification (including new US & EU hubs)
+    console.log('3. Verifying Category Hub Pages (amateur, european, british, german, american)...');
+    for (const slug of ['amateur', 'european', 'british', 'german', 'american']) {
+        const catHtml = fs.readFileSync(path.join(__dirname, '..', 'category', `${slug}.html`), 'utf8');
+        assert(catHtml.includes(`<link rel="canonical" href="https://www.kumpulenak.my.id/category/${slug}"`), `${slug} canonical invalid`);
+        assert(catHtml.includes('hreflang="en-US"'), `${slug} missing hreflang="en-US"`);
+        assert(catHtml.includes('<h1 class="main-seo-title">'), `${slug} H1 missing`);
+        assert(catHtml.includes('class="category-editorial"'), `${slug} editorial hub section missing`);
+        assert(catHtml.includes('"@type": "BreadcrumbList"'), `${slug} BreadcrumbList missing`);
+        assert(catHtml.includes('"@type": "ItemList"'), `${slug} ItemList missing`);
+        assert(catHtml.includes('class="card"'), `${slug} cards missing`);
+        assert(catHtml.includes(ADSTERRA_NATIVE_SCRIPT) && catHtml.includes(ADSTERRA_NATIVE_CONTAINER), `${slug} missing Adsterra Native Banner`);
+    }
+    console.log('   ✅ All checked US/EU & core Category Hubs passed all checks.\n');
 
     // 4. SSR Video Page Verification
     console.log('4. Verifying SSR Video Handler (api/video.js)...');
@@ -150,16 +164,25 @@ async function verifyAll() {
     console.log('   ✅ Genuine 404 passed.\n');
 
     // 6. robots.txt, vercel.json & Sitemaps Verification
-    console.log('6. Verifying robots.txt, vercel.json Edge Rules, sitemap.xml (<urlset>), and sitemap_index.xml (<sitemapindex>)...');
+    console.log('6. Verifying robots.txt, vercel.json Edge Rules, sitemap.xml, sitemap.txt, rss.xml, and sitemap_index.xml...');
     const robotsTxt = fs.readFileSync(path.join(__dirname, '..', 'robots.txt'), 'utf8');
     assert(!robotsTxt.includes('Disallow: /*?*q='), 'robots.txt must NOT disallow /*?*q= so GSC validation passes and sees 301/noindex headers');
     assert(!robotsTxt.includes('Disallow: /assets/js/loader.js'), 'robots.txt must NOT block loader.js');
     assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/sitemap_index.xml'), 'robots.txt missing sitemap_index reference');
     assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/sitemap.xml'), 'robots.txt missing sitemap.xml reference');
+    assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/sitemap.txt'), 'robots.txt missing sitemap.txt reference');
+    assert(robotsTxt.includes('Sitemap: https://www.kumpulenak.my.id/rss.xml'), 'robots.txt missing rss.xml reference');
 
-    const vercelJson = fs.readFileSync(path.join(__dirname, '..', 'vercel.json'), 'utf8');
+    const vercelConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'vercel.json'), 'utf8'));
+    const vercelJson = JSON.stringify(vercelConfig);
     assert(vercelJson.includes('https://www.kumpulenak.my.id/category/:cat'), 'vercel.json missing 301 redirect from /?q=<category> to /category/:cat');
     assert(vercelJson.includes('noindex, follow'), 'vercel.json missing X-Robots-Tag: noindex, follow for query parameters');
+    for (const hBlock of vercelConfig.headers || []) {
+        if (hBlock.source && hBlock.source.includes('sitemap') && hBlock.source.endsWith('.xml')) {
+            const hasNoindex = (hBlock.headers || []).some(h => h.key.toLowerCase() === 'x-robots-tag');
+            assert(!hasNoindex, `vercel.json must NOT send X-Robots-Tag header on ${hBlock.source}`);
+        }
+    }
 
     const sitemapIndexXml = fs.readFileSync(path.join(__dirname, '..', 'sitemap_index.xml'), 'utf8');
     assert(sitemapIndexXml.includes('<sitemapindex'), 'sitemap_index.xml must be a valid sitemapindex');
@@ -167,18 +190,28 @@ async function verifyAll() {
     assert(sitemapIndexXml.includes('https://www.kumpulenak.my.id/sitemaps/sitemap_kategori.xml'), 'sitemap_index.xml missing sitemap_kategori.xml');
 
     const flatSitemapXml = fs.readFileSync(path.join(__dirname, '..', 'sitemap.xml'), 'utf8');
-    assert(flatSitemapXml.includes('<urlset'), 'sitemap.xml must be a flat <urlset>');
-    assert(flatSitemapXml.includes('<video:family_friendly>no</video:family_friendly>'), 'sitemap.xml missing family_friendly tag');
+    assert(flatSitemapXml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'), 'sitemap.xml must be a pure standard <urlset>');
+    assert(!flatSitemapXml.includes('\r'), 'sitemap.xml must use clean LF line endings without CRLF');
     assert(!isHarmfulContent(flatSitemapXml), 'sitemap.xml must not contain any harmful content');
-    console.log('   ✅ robots.txt, sitemap.xml, and sitemap_index.xml passed all checks.\n');
+
+    const txtSitemap = fs.readFileSync(path.join(__dirname, '..', 'sitemap.txt'), 'utf8');
+    assert(txtSitemap.includes('https://www.kumpulenak.my.id/trending'), 'sitemap.txt missing /trending');
+    assert(txtSitemap.includes('https://www.kumpulenak.my.id/category/european'), 'sitemap.txt missing EU categories');
+
+    const rssXml = fs.readFileSync(path.join(__dirname, '..', 'rss.xml'), 'utf8');
+    assert(rssXml.includes('<rss version="2.0"'), 'rss.xml must be valid RSS 2.0');
+    assert(rssXml.includes('<item>'), 'rss.xml must contain items');
+    console.log('   ✅ robots.txt, vercel.json, sitemap.xml, sitemap.txt, rss.xml, and sitemap_index.xml passed all checks.\n');
 
     // 7. Trust Pages Verification
     console.log('7. Verifying Trust Pages...');
-    const trustFiles = ['about.html', 'dmca.html', 'contact.html', 'privacy.html', 'terms.html'];
+    const trustFiles = ['about.html', 'dmca.html', 'contact.html', 'privacy.html', 'terms.html', 'howto.html'];
     trustFiles.forEach(tf => {
         const content = fs.readFileSync(path.join(__dirname, '..', tf), 'utf8');
         assert(content.includes('<title>'), `${tf} missing title`);
         assert(content.includes('<link rel="canonical"'), `${tf} missing canonical`);
+        assert(!content.includes('hreflang="id"'), `${tf} must not have hreflang="id"`);
+        assert(content.includes('hreflang="en-US"'), `${tf} missing hreflang="en-US"`);
         assert(content.includes('<h1'), `${tf} missing H1`);
     });
     console.log('   ✅ All trust pages passed checks.\n');

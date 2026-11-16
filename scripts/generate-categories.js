@@ -2,7 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const { generateBreadcrumbSchema, generateItemListSchema } = require('./schema-helper');
+const {
+    generateBreadcrumbSchema,
+    generateItemListSchema,
+    buildHreflangBlock,
+    OG_ALTERNATE_LOCALES
+} = require('./schema-helper');
 const { getCategoryEditorial } = require('./category-intros');
 const { cleanVideoTitle, isHarmfulContent, isInternationalFriendly } = require('./content-filter');
 
@@ -11,6 +16,16 @@ const { cleanVideoTitle, isHarmfulContent, isInternationalFriendly } = require('
 // ============================================================================
 
 const CUSTOM_METADATA = {
+    'european': { title: 'European Full HD Adult Videos', desc: 'Watch the finest European adult videos featuring UK, German, French, Italian, and Czech performers in crisp 1080p HD on kumpulenak.' },
+    'british': { title: 'British & UK Full HD Adult Videos', desc: 'Stream top-rated British & UK amateur and studio adult clips in 1080p HD resolution with zero registration on kumpulenak.' },
+    'german': { title: 'German / Deutsch HD Adult Videos', desc: 'Watch authentic German (Deutsch) amateur and studio adult videos in 1080p Full HD streaming fast across Europe on kumpulenak.' },
+    'french': { title: 'French / Français Chic HD Videos', desc: 'Stream passionate French adult cinema (Vidéos X Françaises) and Parisian amateur scenes in full HD on kumpulenak.' },
+    'spanish': { title: 'Spanish / Español Hot HD Videos', desc: 'Enjoy fiery Spanish (Vídeos Porno en Español) adult performances in 1080p Full HD with instant EU/US playback on kumpulenak.' },
+    'italian': { title: 'Italian / Italiano Sensual HD Videos', desc: 'Watch charismatic Italian models and real couples (Video Porno Italiani) in crystal-clear full HD resolution on kumpulenak.' },
+    'czech': { title: 'Czech HD Productions & Amateur Clips', desc: 'Browse authentic Czech castings, street adventures, and Central European HD adult videos with fast streaming on kumpulenak.' },
+    'russian': { title: 'Russian Beauties & Eastern Euro HD', desc: 'Stream gorgeous Russian models and Eastern European performers in crisp 1080p Full HD resolution free on kumpulenak.' },
+    'american': { title: 'American / USA Stars & 1080p HD', desc: 'Watch blockbuster US studios, top American performers, and viral USA amateur scenes in 1080p HD on kumpulenak.' },
+    'romantic': { title: 'Romantic & Female-Friendly HD Scenes', desc: 'Stream sensual, story-driven romantic and female-friendly intimate videos in 1080p Full HD free on kumpulenak.' },
     'amateur': { title: 'Amateur & Homemade Adult Videos', desc: 'Watch the best amateur and homemade adult videos in full HD. Real couples, authentic bedroom clips, and daily viral releases on kumpulenak.' },
     'babe': { title: 'Hot Babes & Beautiful Models HD', desc: 'Stream full HD videos featuring the hottest babes, glamorous models, and stunning girls with fast playback on kumpulenak.' },
     'milf': { title: 'Premium MILF & Cougar HD Videos', desc: 'Browse our exclusive collection of MILF and experienced mature women adult videos in full 1080p HD resolution on kumpulenak.' },
@@ -198,10 +213,15 @@ function processTemplate(template, category, videos, allCategories) {
     html = html.replace(/<meta name="twitter:description"[\s\S]*?>/s, '<meta name="twitter:description" content="' + escapeHTML(seoDesc) + '">');
     html = html.replace(/<link rel="canonical"[^>]*href=".*?">/s, '<link rel="canonical" href="' + categoryUrl + '">');
 
-    // Replace homepage hreflang tags with category-specific international hreflang tags
+    // Replace homepage hreflang tags with category-specific Tier-1 US & EU hreflang cluster
     html = html.replace(
         /<!-- Hreflang[\s\S]*?-->\s*(<link rel="alternate"[\s\S]*?>\s*)+/g,
-        '<!-- Hreflang — International English indexing -->\n    <link rel="alternate" hreflang="en" href="' + categoryUrl + '">\n    <link rel="alternate" hreflang="x-default" href="' + categoryUrl + '">\n\n    '
+        buildHreflangBlock(categoryUrl) + '\n\n    '
+    );
+    html = html.replace(/<meta property="og:locale:alternate"[^>]*>\s*/g, '');
+    html = html.replace(
+        /<meta property="og:locale" content="en_US">/,
+        `<meta property="og:locale" content="en_US">\n${OG_ALTERNATE_LOCALES}`
     );
 
     // Remove any existing BreadcrumbList & ItemList from template
@@ -321,8 +341,8 @@ async function main() {
 
     const indexTemplate = fs.readFileSync(INDEX_HTML_PATH, 'utf-8');
 
-    // Process in concurrent batches of 6 to make regeneration fast
-    const BATCH_SIZE = 6;
+    // Process in concurrent batches of 3 with brief cooldown to avoid API rate limiting across 95 hubs
+    const BATCH_SIZE = 3;
     for (let i = 0; i < allCategories.length; i += BATCH_SIZE) {
         const batch = allCategories.slice(i, i + BATCH_SIZE);
         await Promise.all(batch.map(async (category) => {
@@ -332,6 +352,9 @@ async function main() {
             fs.writeFileSync(outputPath, finalHtml, 'utf-8');
             console.log(`✅ [${category.slug}] Saved (${videos.length} clean videos)`);
         }));
+        if (i + BATCH_SIZE < allCategories.length) {
+            await new Promise(r => setTimeout(r, 250));
+        }
     }
 
     console.log('\n🎉 Generation complete! ' + allCategories.length + ' category pages created in /category/');

@@ -4,11 +4,22 @@ kumpulenak (https://www.kumpulenak.my.id) is an online media gallery and search 
 
 ## Platform Characteristics
 - **Content Rating**: Adult (Strictly 18+).
+- **Target Regions**: United States (en-US), United Kingdom (en-GB), Canada (en-CA), Australia (en-AU), Germany, France, Spain, Italy, and European Union.
 - **Video Delivery**: Embedded HTML5 video players delivering adaptive bitrate streaming up to 1080p 60fps.
-- **Rendering Architecture**: Serverless Server-Side Rendering (SSR) via Vercel Edge with comprehensive OpenGraph, Twitter Card, and Schema.org VideoObject JSON-LD.
-- **Indexing Coverage**: Over 15,000+ indexed titles organized across 85 distinct category hubs.
+- **Rendering Architecture**: Serverless Server-Side Rendering (SSR) via Vercel Edge with comprehensive OpenGraph, Twitter Card, Tier-1 multi-region hreflang, and Schema.org VideoObject / FAQPage JSON-LD.
+- **Indexing Coverage**: Over 43,000+ curated titles organized across 95 distinct category hubs, Top 100 Chart (`/trending`), and Directory Hub (`/directory`).
 
-## Complete Category Directory (85 Hubs)
+## Complete Category Directory (95 Hubs)
+- american: https://www.kumpulenak.my.id/category/american
+- british: https://www.kumpulenak.my.id/category/british
+- czech: https://www.kumpulenak.my.id/category/czech
+- european: https://www.kumpulenak.my.id/category/european
+- french: https://www.kumpulenak.my.id/category/french
+- german: https://www.kumpulenak.my.id/category/german
+- italian: https://www.kumpulenak.my.id/category/italian
+- romantic: https://www.kumpulenak.my.id/category/romantic
+- russian: https://www.kumpulenak.my.id/category/russian
+- spanish: https://www.kumpulenak.my.id/category/spanish
 - 60-fps: https://www.kumpulenak.my.id/category/60-fps
 - ai: https://www.kumpulenak.my.id/category/ai
 - amateur: https://www.kumpulenak.my.id/category/amateur

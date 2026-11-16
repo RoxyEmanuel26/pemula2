@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { buildHreflangBlock, OG_ALTERNATE_LOCALES } = require('./schema-helper');
 const { cleanVideoTitle, isHarmfulContent, isInternationalFriendly } = require('./content-filter');
 
 const ROOT_DIR = path.join(__dirname, '..');
@@ -168,21 +169,21 @@ function generateDirectoryPage() {
     <meta charset="UTF-8">
     <meta name="referrer" content="no-referrer-when-downgrade">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete HD Video Directory &amp; All 85+ Categories | kumpulenak</title>
-    <meta name="description" content="Explore the complete A-Z directory of 85+ full HD 1080p adult video categories and trending international video archives on kumpulenak.">
+    <title>Complete US &amp; European HD Video Directory &amp; ${categories.length} Categories | kumpulenak</title>
+    <meta name="description" content="Explore the complete A-Z directory of ${categories.length} full HD 1080p adult video categories and trending US &amp; European video archives on kumpulenak.">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="rating" content="adult">
     <meta name="language" content="English">
 
     <link rel="canonical" href="https://www.kumpulenak.my.id/directory">
-    <link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/directory">
-    <link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/directory">
+${buildHreflangBlock('https://www.kumpulenak.my.id/directory')}
 
     <meta property="og:locale" content="en_US">
+${OG_ALTERNATE_LOCALES}
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="kumpulenak">
-    <meta property="og:title" content="Complete HD Video Directory &amp; All 85+ Categories | kumpulenak">
-    <meta property="og:description" content="Explore the complete A-Z directory of 85+ full HD 1080p adult video categories and trending international video archives on kumpulenak.">
+    <meta property="og:title" content="Complete US &amp; European HD Video Directory &amp; ${categories.length} Categories | kumpulenak">
+    <meta property="og:description" content="Explore the complete A-Z directory of ${categories.length} full HD 1080p adult video categories and trending US &amp; European video archives on kumpulenak.">
     <meta property="og:url" content="https://www.kumpulenak.my.id/directory">
     <meta property="og:image" content="https://www.kumpulenak.my.id/assets/icons/og-image.png">
 
@@ -217,6 +218,7 @@ ${JSON.stringify(schema, null, 2)}
             <div class="logo" onclick="window.location='/'">kumpul<span>enak</span></div>
             <nav class="nav-tabs">
                 <a href="/" class="nav-tab" style="text-decoration:none;">Popular</a>
+                <a href="/trending" class="nav-tab" style="text-decoration:none;">Top 100 US &amp; EU</a>
                 <a href="/directory" class="nav-tab active" style="text-decoration:none;">Directory</a>
                 <a href="/category/hd-porn-1080p" class="nav-tab" style="text-decoration:none;">1080p HD</a>
             </nav>
@@ -263,6 +265,7 @@ ${videosHtml}
     <footer class="footer">
         <div class="footer-links">
             <a href="/">Home</a>
+            <a href="/trending">Top 100 US &amp; EU</a>
             <a href="/directory">Video Directory</a>
             <a href="/about">About Us</a>
             <a href="/howto">How to Download</a>

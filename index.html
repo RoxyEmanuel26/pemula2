@@ -16,7 +16,7 @@
     <meta name="revisit-after" content="1 days">
     <meta name="language" content="English">
     <meta name="geo.region" content="US">
-    <meta name="geo.placename" content="Global">
+    <meta name="geo.placename" content="United States, Europe, Global">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="format-detection" content="telephone=no">
     <meta name="google-site-verification" content="ZWXt6iUKeLflaJlvJjRc47gZJ5N2JLz8i_NpYaPnwRM" />
@@ -48,6 +48,13 @@
 
     <!-- Open Graph / SEO -->
     <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="en_GB">
+    <meta property="og:locale:alternate" content="en_CA">
+    <meta property="og:locale:alternate" content="de_DE">
+    <meta property="og:locale:alternate" content="fr_FR">
+    <meta property="og:locale:alternate" content="es_ES">
+    <meta property="og:locale:alternate" content="it_IT">
+    <meta property="og:locale:alternate" content="nl_NL">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="kumpulenak">
     <meta property="og:title" content="Trending Viral Videos &amp; Free HD Adult Clips | kumpulenak">
@@ -75,9 +82,15 @@
         })();
     </script>
 
-    <!-- Hreflang — International English indexing -->
+            <!-- Hreflang — Tier-1 US, UK, CA, AU & EU Regional Targeting -->
     <link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/">
+    <link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/">
+    <link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/">
+    <link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/">
+    <link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/">
+    <link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/">
     <link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/">
+    <link rel="alternate" type="application/rss+xml" title="kumpulenak US &amp; EU HD Video Feed" href="https://www.kumpulenak.my.id/rss.xml">
 
     <!-- Preload Critical Resources -->
     <link rel="preload" href="/assets/css/gallery.css?v=5.4.0" as="style" fetchpriority="high">
@@ -89,42 +102,71 @@
 
     <!-- JSON-LD Structured Data: WebSite + SearchAction -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "kumpulenak",
-        "alternateName": "kumpulenak Gallery",
-        "url": "https://www.kumpulenak.my.id",
-        "description": "Premium 18+ NSFW Gallery — Trending viral videos and exclusive adult content.",
-        "inLanguage": "en",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": {
-                "@type": "EntryPoint",
-                "urlTemplate": "https://www.kumpulenak.my.id/?q={search_term_string}"
-            },
-            "query-input": "required name=search_term_string"
-        }
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "kumpulenak",
+    "alternateName": "kumpulenak HD Adult Video Hub",
+    "url": "https://www.kumpulenak.my.id",
+    "description": "Free Full HD 1080p Adult Video Hub for US & Europe — Watch trending viral clips across 95+ international categories with zero registration.",
+    "inLanguage": [
+        "en",
+        "en-US",
+        "en-GB",
+        "de",
+        "fr",
+        "es",
+        "it"
+    ],
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://www.kumpulenak.my.id/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
     }
+}
     </script>
 
     <!-- JSON-LD Structured Data: Organization -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "kumpulenak",
-        "url": "https://www.kumpulenak.my.id",
-        "logo": "https://www.kumpulenak.my.id/assets/icons/android-chrome-512x512.png",
-        "description": "The largest premium 18+ adult gallery platform.",
-        "foundingDate": "2026",
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "customer service",
-            "email": "admin@kumpulenak.my.id",
-            "availableLanguage": ["English", "Indonesian"]
-        }
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "kumpulenak",
+    "url": "https://www.kumpulenak.my.id",
+    "logo": "https://www.kumpulenak.my.id/assets/icons/android-chrome-512x512.png",
+    "description": "International 18+ Full HD adult video streaming directory serving viewers in the United States, United Kingdom, and Europe.",
+    "foundingDate": "2026",
+    "areaServed": [
+        "US",
+        "GB",
+        "CA",
+        "AU",
+        "DE",
+        "FR",
+        "ES",
+        "IT",
+        "NL",
+        "SE",
+        "PL",
+        "EU"
+    ],
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "admin@kumpulenak.my.id",
+        "availableLanguage": [
+            "English",
+            "German",
+            "French",
+            "Spanish",
+            "Italian",
+            "Dutch"
+        ]
     }
+}
     </script>
 
     <!-- JSON-LD BreadcrumbList -->
@@ -149,44 +191,44 @@
 {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "name": "Trending Viral HD Videos",
-  "description": "Watch trending viral full HD 1080p videos and exclusive adult clips on kumpulenak.",
+  "name": "Trending US & European HD Videos",
+  "description": "Watch trending viral full HD 1080p videos and exclusive adult clips across US & Europe on kumpulenak.",
   "numberOfItems": 24,
   "itemListElement": [
     {
       "@type": "ListItem",
       "position": 1,
-      "name": "Caught Cheating On My Husband's Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde",
-      "url": "https://www.kumpulenak.my.id/v/GFJC6IIE9aF-caught-cheating-on-my-husband-s-cuckold-with-a-handsome-young-man-with-a-big-coc",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18840414/11_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Goyangan Cici",
-      "url": "https://www.kumpulenak.my.id/v/dNJ8jMki9hA-goyangan-cici",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18856861/10_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Petualangan Roni Minta Jatah Kerumah Mantannya",
-      "url": "https://www.kumpulenak.my.id/v/1XLjgs7u6ee-petualangan-roni-minta-jatah-kerumah-mantannya",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908610/12_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 4,
       "name": "Napalaban Agad Ang Baddie Sa Meet Up",
       "url": "https://www.kumpulenak.my.id/v/ZfZ5g0AdJiX-napalaban-agad-ang-baddie-sa-meet-up",
       "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908446/12_360.jpg"
     },
     {
       "@type": "ListItem",
-      "position": 5,
+      "position": 2,
+      "name": "Petualangan Roni Minta Jatah Kerumah Mantannya",
+      "url": "https://www.kumpulenak.my.id/v/1XLjgs7u6ee-petualangan-roni-minta-jatah-kerumah-mantannya",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908610/12_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Caught Cheating On My Husband's Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde",
+      "url": "https://www.kumpulenak.my.id/v/GFJC6IIE9aF-caught-cheating-on-my-husband-s-cuckold-with-a-handsome-young-man-with-a-big-coc",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18840414/11_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
       "name": "Indian Couple",
       "url": "https://www.kumpulenak.my.id/v/roS9meK6gcx-indian-couple",
       "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18830564/13_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "name": "Goyangan Cici",
+      "url": "https://www.kumpulenak.my.id/v/dNJ8jMki9hA-goyangan-cici",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18856861/10_360.jpg"
     },
     {
       "@type": "ListItem",
@@ -198,44 +240,44 @@
     {
       "@type": "ListItem",
       "position": 7,
-      "name": "(ENG SUB UNCENSORED) I'll Double Your Salary If You Let Me Grab Your Breasts Despite The Owner's Outrageous Request, She Gave Herself To Him For The Sake Of Her Family's Finances",
-      "url": "https://www.kumpulenak.my.id/v/63SMd9nXtWn-eng-sub-uncensored-i-ll-double-your-salary-if-you-let-me-grab-your-breasts-despi",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18849923/6_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 8,
       "name": "Threesome Ni Jacky",
       "url": "https://www.kumpulenak.my.id/v/cmKmbQJqL5Z-threesome-ni-jacky",
       "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/186/18683432/6_360.jpg"
     },
     {
       "@type": "ListItem",
-      "position": 9,
+      "position": 8,
       "name": "(Chi Und) The Wife's Body Was Used As Financial Collateral...Ouka Rin",
       "url": "https://www.kumpulenak.my.id/v/DDhv46kiGX9-chi-und-the-wife-s-body-was-used-as-financial-collateral-ouka-rin",
       "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/180/18050639/10_360.jpg"
     },
     {
       "@type": "ListItem",
-      "position": 10,
-      "name": "Ibu Ayah Depan Anak, Anaknya Malah Ikutan",
-      "url": "https://www.kumpulenak.my.id/v/96MJmnjfyyh-ibu-ayah-depan-anak-anaknya-malah-ikutan",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/183/18345184/9_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 11,
+      "position": 9,
       "name": "Muntik Mahuli Napa Tiktok Bigla",
       "url": "https://www.kumpulenak.my.id/v/Ym5a1wu1YpY-muntik-mahuli-napa-tiktok-bigla",
       "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/17/178/17826266/14_360.jpg"
     },
     {
       "@type": "ListItem",
-      "position": 12,
+      "position": 10,
       "name": "Alfidini Dientot Keponakan Sendiri",
       "url": "https://www.kumpulenak.my.id/v/ITP5083nv60-alfidini-dientot-keponakan-sendiri",
       "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18850374/3_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 11,
+      "name": "Ibu Ayah Depan Anak, Anaknya Malah Ikutan",
+      "url": "https://www.kumpulenak.my.id/v/96MJmnjfyyh-ibu-ayah-depan-anak-anaknya-malah-ikutan",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/183/18345184/9_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 12,
+      "name": "AUNT SARA INDIAN XXX 05",
+      "url": "https://www.kumpulenak.my.id/v/z88t31zyGfR-aunt-sara-indian-xxx-05",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18783138/10_360.jpg"
     },
     {
       "@type": "ListItem",
@@ -247,79 +289,79 @@
     {
       "@type": "ListItem",
       "position": 14,
-      "name": "Indo Aihh",
-      "url": "https://www.kumpulenak.my.id/v/XAKfOJHzf7J-indo-aihh",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18842777/7_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 15,
-      "name": "AUNT SARA INDIAN XXX 05",
-      "url": "https://www.kumpulenak.my.id/v/z88t31zyGfR-aunt-sara-indian-xxx-05",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18783138/10_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 16,
-      "name": "Indian Hot NRI Girl Hardcore Fucked By Boyfriend Mms Xxx",
-      "url": "https://www.kumpulenak.my.id/v/YFecUZAqiEQ-indian-hot-nri-girl-hardcore-fucked-by-boyfriend-mms-xxx",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/185/18586743/8_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 17,
-      "name": "Desi Sexy Randi Fuck Video",
-      "url": "https://www.kumpulenak.my.id/v/9LE33wfvyO6-desi-sexy-randi-fuck-video",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/186/18653231/4_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 18,
-      "name": "Ceweknya Bilang Lama Gak Dimasukin (2)",
-      "url": "https://www.kumpulenak.my.id/v/A9Q48PheUa5-ceweknya-bilang-lama-gak-dimasukin-2",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18706571/13_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 19,
-      "name": "BANGVAN - Alluring Chubby MILF Whore Kathy Deep Horny Xxx Movie",
-      "url": "https://www.kumpulenak.my.id/v/UTgwKJbkxhg-bangvan-alluring-chubby-milf-whore-kathy-deep-horny-xxx-movie",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18735048/4_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 20,
-      "name": "Petualangan Roni Hasrat Membara Di Dalam Lift",
-      "url": "https://www.kumpulenak.my.id/v/mqQoZgLXqGg-petualangan-roni-hasrat-membara-di-dalam-lift",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908761/10_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 21,
-      "name": "Gadis Chubby Bergoyang Sambil Nyanyi",
-      "url": "https://www.kumpulenak.my.id/v/YxggUzK8EKM-gadis-chubby-bergoyang-sambil-nyanyi",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18749598/13_360.jpg"
-    },
-    {
-      "@type": "ListItem",
-      "position": 22,
       "name": "Petualangan Roni Dan Ci Fani Di Kamar Mandi",
       "url": "https://www.kumpulenak.my.id/v/1FT7NTS1Mht-petualangan-roni-dan-ci-fani-di-kamar-mandi",
       "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18931309/10_360.jpg"
     },
     {
       "@type": "ListItem",
+      "position": 15,
+      "name": "Indo Aihh",
+      "url": "https://www.kumpulenak.my.id/v/XAKfOJHzf7J-indo-aihh",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18842777/7_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 16,
+      "name": "Ceweknya Bilang Lama Gak Dimasukin (2)",
+      "url": "https://www.kumpulenak.my.id/v/A9Q48PheUa5-ceweknya-bilang-lama-gak-dimasukin-2",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18706571/13_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 17,
+      "name": "Indo Aihh 2",
+      "url": "https://www.kumpulenak.my.id/v/gFlZNFXwJeN-indo-aihh-2",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18921783/8_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 18,
+      "name": "Indian Hot NRI Girl Hardcore Fucked By Boyfriend Mms Xxx",
+      "url": "https://www.kumpulenak.my.id/v/YFecUZAqiEQ-indian-hot-nri-girl-hardcore-fucked-by-boyfriend-mms-xxx",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/185/18586743/8_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 19,
+      "name": "A384TID",
+      "url": "https://www.kumpulenak.my.id/v/tN4uJ2RtCxE-a384tid",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18890605/15_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 20,
+      "name": "Desi Sexy Randi Fuck Video",
+      "url": "https://www.kumpulenak.my.id/v/9LE33wfvyO6-desi-sexy-randi-fuck-video",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/186/18653231/4_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 21,
+      "name": "Petualangan Roni Hasrat Membara Di Dalam Lift",
+      "url": "https://www.kumpulenak.my.id/v/mqQoZgLXqGg-petualangan-roni-hasrat-membara-di-dalam-lift",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908761/10_360.jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 22,
+      "name": "BANGVAN - Alluring Chubby MILF Whore Kathy Deep Horny Xxx Movie",
+      "url": "https://www.kumpulenak.my.id/v/UTgwKJbkxhg-bangvan-alluring-chubby-milf-whore-kathy-deep-horny-xxx-movie",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18735048/4_360.jpg"
+    },
+    {
+      "@type": "ListItem",
       "position": 23,
-      "name": "Petualangan Roni Urgen Pengen Crot Ama Ibu Penjual Gorengan",
-      "url": "https://www.kumpulenak.my.id/v/AEjauwIhhBp-petualangan-roni-urgen-pengen-crot-ama-ibu-penjual-gorengan",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18743775/14_360.jpg"
+      "name": "竹内瞳-A sexy young woman stayed at her friend's house and would often flirt with her friend's husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house.",
+      "url": "https://www.kumpulenak.my.id/v/YvF0Ji6DLc8-a-sexy-young-woman-stayed-at-her-friend-s-house-and-would-often-flirt-with-her-f",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/17/176/17606949/1_360.jpg"
     },
     {
       "@type": "ListItem",
       "position": 24,
-      "name": "竹内瞳-A sexy young woman stayed at her friend's house and would often flirt with her friend's husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house.",
-      "url": "https://www.kumpulenak.my.id/v/YvF0Ji6DLc8-a-sexy-young-woman-stayed-at-her-friend-s-house-and-would-often-flirt-with-her-f",
-      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/17/176/17606949/1_360.jpg"
+      "name": "Gadis Chubby Bergoyang Sambil Nyanyi",
+      "url": "https://www.kumpulenak.my.id/v/YxggUzK8EKM-gadis-chubby-bergoyang-sambil-nyanyi",
+      "image": "https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18749598/13_360.jpg"
     }
   ]
 }
@@ -405,56 +447,43 @@
 
             <h2 class="section-label" id="sectionLabel">Best Trending Videos</h2>
             <div class="card-grid" id="cardGrid">
-                <a href="/v/GFJC6IIE9aF-caught-cheating-on-my-husband-s-cuckold-with-a-handsome-young-man-with-a-big-coc" class="card" aria-label="Caught Cheating On My Husband&#39;s Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">10:33</span><span class="badge-rating">⭐ 4.25</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18840414/11_360.jpg" alt="Caught Cheating On My Husband&#39;s Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde HD Video Thumbnail" width="360" height="202" fetchpriority="high" loading="eager" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-10-31</span>
-                            <span class="card-views">👁 289,283</span>
-                        </div>
-                        <h3 class="card-title">Caught Cheating On My Husband&#39;s Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde</h3>
-                    </div>
-                </a>
-                <a href="/v/dNJ8jMki9hA-goyangan-cici" class="card" aria-label="Goyangan Cici">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">7:12</span><span class="badge-rating">⭐ 4.40</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18856861/10_360.jpg" alt="Goyangan Cici HD Video Thumbnail" width="360" height="202" fetchpriority="high" loading="eager" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-11-02</span>
-                            <span class="card-views">👁 363,018</span>
-                        </div>
-                        <h3 class="card-title">Goyangan Cici</h3>
-                    </div>
-                </a>
-                <a href="/v/1XLjgs7u6ee-petualangan-roni-minta-jatah-kerumah-mantannya" class="card" aria-label="Petualangan Roni Minta Jatah Kerumah Mantannya">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">4:51</span><span class="badge-rating">⭐ 4.57</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908610/12_360.jpg" alt="Petualangan Roni Minta Jatah Kerumah Mantannya HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-11-08</span>
-                            <span class="card-views">👁 271,984</span>
-                        </div>
-                        <h3 class="card-title">Petualangan Roni Minta Jatah Kerumah Mantannya</h3>
-                    </div>
-                </a>
                 <a href="/v/ZfZ5g0AdJiX-napalaban-agad-ang-baddie-sa-meet-up" class="card" aria-label="Napalaban Agad Ang Baddie Sa Meet Up">
                     <div class="card-img-wrapper">
-                        <span class="badge-duration">2:32</span><span class="badge-rating">⭐ 4.29</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908446/12_360.jpg" alt="Napalaban Agad Ang Baddie Sa Meet Up HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <span class="badge-duration">2:32</span><span class="badge-rating">⭐ 4.26</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908446/12_360.jpg" alt="Napalaban Agad Ang Baddie Sa Meet Up HD Video Thumbnail" width="360" height="202" fetchpriority="high" loading="eager" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-11-07</span>
-                            <span class="card-views">👁 262,376</span>
+                            <span class="card-views">👁 277,310</span>
                         </div>
                         <h3 class="card-title">Napalaban Agad Ang Baddie Sa Meet Up</h3>
+                    </div>
+                </a>
+                <a href="/v/1XLjgs7u6ee-petualangan-roni-minta-jatah-kerumah-mantannya" class="card" aria-label="Petualangan Roni Minta Jatah Kerumah Mantannya">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">4:51</span><span class="badge-rating">⭐ 4.56</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908610/12_360.jpg" alt="Petualangan Roni Minta Jatah Kerumah Mantannya HD Video Thumbnail" width="360" height="202" fetchpriority="high" loading="eager" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-11-08</span>
+                            <span class="card-views">👁 281,254</span>
+                        </div>
+                        <h3 class="card-title">Petualangan Roni Minta Jatah Kerumah Mantannya</h3>
+                    </div>
+                </a>
+                <a href="/v/GFJC6IIE9aF-caught-cheating-on-my-husband-s-cuckold-with-a-handsome-young-man-with-a-big-coc" class="card" aria-label="Caught Cheating On My Husband&#39;s Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">10:33</span><span class="badge-rating">⭐ 4.25</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18840414/11_360.jpg" alt="Caught Cheating On My Husband&#39;s Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-10-31</span>
+                            <span class="card-views">👁 295,945</span>
+                        </div>
+                        <h3 class="card-title">Caught Cheating On My Husband&#39;s Cuckold With A Handsome Young Man With A Big Cock - Sara Blonde</h3>
                     </div>
                 </a>
                 <a href="/v/roS9meK6gcx-indian-couple" class="card" aria-label="Indian Couple">
@@ -465,35 +494,35 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-11-02</span>
-                            <span class="card-views">👁 242,171</span>
+                            <span class="card-views">👁 250,257</span>
                         </div>
                         <h3 class="card-title">Indian Couple</h3>
                     </div>
                 </a>
+                <a href="/v/dNJ8jMki9hA-goyangan-cici" class="card" aria-label="Goyangan Cici">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">7:12</span><span class="badge-rating">⭐ 4.40</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18856861/10_360.jpg" alt="Goyangan Cici HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-11-02</span>
+                            <span class="card-views">👁 370,727</span>
+                        </div>
+                        <h3 class="card-title">Goyangan Cici</h3>
+                    </div>
+                </a>
                 <a href="/v/QoU864fbY8v-mukanya-judes-tapi-bodynya-kenceng" class="card" aria-label="Mukanya Judes Tapi Bodynya Kenceng">
                     <div class="card-img-wrapper">
-                        <span class="badge-duration">7:40</span><span class="badge-rating">⭐ 4.26</span>
+                        <span class="badge-duration">7:40</span><span class="badge-rating">⭐ 4.28</span>
                         <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18800128/14_360.jpg" alt="Mukanya Judes Tapi Bodynya Kenceng HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-28</span>
-                            <span class="card-views">👁 354,110</span>
+                            <span class="card-views">👁 363,725</span>
                         </div>
                         <h3 class="card-title">Mukanya Judes Tapi Bodynya Kenceng</h3>
-                    </div>
-                </a>
-                <a href="/v/63SMd9nXtWn-eng-sub-uncensored-i-ll-double-your-salary-if-you-let-me-grab-your-breasts-despi" class="card" aria-label="(ENG SUB UNCENSORED) I&#39;ll Double Your Salary If You Let Me Grab Your Breasts Despite The Owner&#39;s Outrageous Request, She Gave Herself To Him For The Sake Of Her Family&#39;s Finances">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">118:12</span><span class="badge-rating">⭐ 4.37</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18849923/6_360.jpg" alt="(ENG SUB UNCENSORED) I&#39;ll Double Your Salary If You Let Me Grab Your Breasts Despite The Owner&#39;s Outrageous Request, She Gave Herself To Him For The Sake Of Her Family&#39;s Finances HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-11-01</span>
-                            <span class="card-views">👁 266,946</span>
-                        </div>
-                        <h3 class="card-title">(ENG SUB UNCENSORED) I&#39;ll Double Your Salary If You Let Me Grab Your Breasts Despite The Owner&#39;s Outrageous Request, She Gave Herself To Him For The Sake Of Her Family&#39;s Finances</h3>
                     </div>
                 </a>
                 <a href="/v/cmKmbQJqL5Z-threesome-ni-jacky" class="card" aria-label="Threesome Ni Jacky">
@@ -504,7 +533,7 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-15</span>
-                            <span class="card-views">👁 1,134,839</span>
+                            <span class="card-views">👁 1,143,813</span>
                         </div>
                         <h3 class="card-title">Threesome Ni Jacky</h3>
                     </div>
@@ -517,22 +546,9 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-08-25</span>
-                            <span class="card-views">👁 3,259,805</span>
+                            <span class="card-views">👁 3,267,405</span>
                         </div>
                         <h3 class="card-title">(Chi Und) The Wife&#39;s Body Was Used As Financial Collateral...Ouka Rin</h3>
-                    </div>
-                </a>
-                <a href="/v/96MJmnjfyyh-ibu-ayah-depan-anak-anaknya-malah-ikutan" class="card" aria-label="Ibu Ayah Depan Anak, Anaknya Malah Ikutan">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">8:50</span><span class="badge-rating">⭐ 4.36</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/183/18345184/9_360.jpg" alt="Ibu Ayah Depan Anak, Anaknya Malah Ikutan HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-09-22</span>
-                            <span class="card-views">👁 994,942</span>
-                        </div>
-                        <h3 class="card-title">Ibu Ayah Depan Anak, Anaknya Malah Ikutan</h3>
                     </div>
                 </a>
                 <a href="/v/Ym5a1wu1YpY-muntik-mahuli-napa-tiktok-bigla" class="card" aria-label="Muntik Mahuli Napa Tiktok Bigla">
@@ -543,22 +559,48 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-08-04</span>
-                            <span class="card-views">👁 2,422,451</span>
+                            <span class="card-views">👁 2,431,486</span>
                         </div>
                         <h3 class="card-title">Muntik Mahuli Napa Tiktok Bigla</h3>
                     </div>
                 </a>
                 <a href="/v/ITP5083nv60-alfidini-dientot-keponakan-sendiri" class="card" aria-label="Alfidini Dientot Keponakan Sendiri">
                     <div class="card-img-wrapper">
-                        <span class="badge-duration">2:24</span><span class="badge-rating">⭐ 4.24</span>
+                        <span class="badge-duration">2:24</span><span class="badge-rating">⭐ 4.23</span>
                         <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18850374/3_360.jpg" alt="Alfidini Dientot Keponakan Sendiri HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-11-02</span>
-                            <span class="card-views">👁 246,270</span>
+                            <span class="card-views">👁 253,070</span>
                         </div>
                         <h3 class="card-title">Alfidini Dientot Keponakan Sendiri</h3>
+                    </div>
+                </a>
+                <a href="/v/96MJmnjfyyh-ibu-ayah-depan-anak-anaknya-malah-ikutan" class="card" aria-label="Ibu Ayah Depan Anak, Anaknya Malah Ikutan">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">8:50</span><span class="badge-rating">⭐ 4.37</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/183/18345184/9_360.jpg" alt="Ibu Ayah Depan Anak, Anaknya Malah Ikutan HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-09-22</span>
+                            <span class="card-views">👁 1,002,382</span>
+                        </div>
+                        <h3 class="card-title">Ibu Ayah Depan Anak, Anaknya Malah Ikutan</h3>
+                    </div>
+                </a>
+                <a href="/v/z88t31zyGfR-aunt-sara-indian-xxx-05" class="card" aria-label="AUNT SARA INDIAN XXX 05">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">14:57</span><span class="badge-rating">⭐ 4.39</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18783138/10_360.jpg" alt="AUNT SARA INDIAN XXX 05 HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-10-26</span>
+                            <span class="card-views">👁 322,212</span>
+                        </div>
+                        <h3 class="card-title">AUNT SARA INDIAN XXX 05</h3>
                     </div>
                 </a>
                 <a href="/v/ybWWicugBWT-naglalaway-ang-puki-ni-ganda-habang-kinantot" class="card" aria-label="Naglalaway Ang Puki Ni Ganda Habang Kinantot">
@@ -569,9 +611,22 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-18</span>
-                            <span class="card-views">👁 997,965</span>
+                            <span class="card-views">👁 1,004,563</span>
                         </div>
                         <h3 class="card-title">Naglalaway Ang Puki Ni Ganda Habang Kinantot</h3>
+                    </div>
+                </a>
+                <a href="/v/1FT7NTS1Mht-petualangan-roni-dan-ci-fani-di-kamar-mandi" class="card" aria-label="Petualangan Roni Dan Ci Fani Di Kamar Mandi">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">6:15</span><span class="badge-rating">⭐ 4.55</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18931309/10_360.jpg" alt="Petualangan Roni Dan Ci Fani Di Kamar Mandi HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-11-09</span>
+                            <span class="card-views">👁 168,645</span>
+                        </div>
+                        <h3 class="card-title">Petualangan Roni Dan Ci Fani Di Kamar Mandi</h3>
                     </div>
                 </a>
                 <a href="/v/XAKfOJHzf7J-indo-aihh" class="card" aria-label="Indo Aihh">
@@ -582,35 +637,61 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-31</span>
-                            <span class="card-views">👁 325,812</span>
+                            <span class="card-views">👁 331,171</span>
                         </div>
                         <h3 class="card-title">Indo Aihh</h3>
                     </div>
                 </a>
-                <a href="/v/z88t31zyGfR-aunt-sara-indian-xxx-05" class="card" aria-label="AUNT SARA INDIAN XXX 05">
+                <a href="/v/A9Q48PheUa5-ceweknya-bilang-lama-gak-dimasukin-2" class="card" aria-label="Ceweknya Bilang Lama Gak Dimasukin (2)">
                     <div class="card-img-wrapper">
-                        <span class="badge-duration">14:57</span><span class="badge-rating">⭐ 4.40</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18783138/10_360.jpg" alt="AUNT SARA INDIAN XXX 05 HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <span class="badge-duration">17:10</span><span class="badge-rating">⭐ 4.23</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18706571/13_360.jpg" alt="Ceweknya Bilang Lama Gak Dimasukin (2) HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
-                            <span class="card-date">📅 2026-10-26</span>
-                            <span class="card-views">👁 307,168</span>
+                            <span class="card-date">📅 2026-10-19</span>
+                            <span class="card-views">👁 621,011</span>
                         </div>
-                        <h3 class="card-title">AUNT SARA INDIAN XXX 05</h3>
+                        <h3 class="card-title">Ceweknya Bilang Lama Gak Dimasukin (2)</h3>
+                    </div>
+                </a>
+                <a href="/v/gFlZNFXwJeN-indo-aihh-2" class="card" aria-label="Indo Aihh 2">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">2:21</span><span class="badge-rating">⭐ 4.69</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18921783/8_360.jpg" alt="Indo Aihh 2 HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-11-08</span>
+                            <span class="card-views">👁 165,941</span>
+                        </div>
+                        <h3 class="card-title">Indo Aihh 2</h3>
                     </div>
                 </a>
                 <a href="/v/YFecUZAqiEQ-indian-hot-nri-girl-hardcore-fucked-by-boyfriend-mms-xxx" class="card" aria-label="Indian Hot NRI Girl Hardcore Fucked By Boyfriend Mms Xxx">
                     <div class="card-img-wrapper">
-                        <span class="badge-duration">2:30</span><span class="badge-rating">⭐ 4.37</span>
+                        <span class="badge-duration">2:30</span><span class="badge-rating">⭐ 4.38</span>
                         <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/185/18586743/8_360.jpg" alt="Indian Hot NRI Girl Hardcore Fucked By Boyfriend Mms Xxx HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-07</span>
-                            <span class="card-views">👁 645,972</span>
+                            <span class="card-views">👁 652,943</span>
                         </div>
                         <h3 class="card-title">Indian Hot NRI Girl Hardcore Fucked By Boyfriend Mms Xxx</h3>
+                    </div>
+                </a>
+                <a href="/v/tN4uJ2RtCxE-a384tid" class="card" aria-label="A384TID">
+                    <div class="card-img-wrapper">
+                        <span class="badge-duration">118:29</span><span class="badge-rating">⭐ 4.38</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/188/18890605/15_360.jpg" alt="A384TID HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-date-views">
+                            <span class="card-date">📅 2026-11-05</span>
+                            <span class="card-views">👁 168,706</span>
+                        </div>
+                        <h3 class="card-title">A384TID</h3>
                     </div>
                 </a>
                 <a href="/v/9LE33wfvyO6-desi-sexy-randi-fuck-video" class="card" aria-label="Desi Sexy Randi Fuck Video">
@@ -621,22 +702,22 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-13</span>
-                            <span class="card-views">👁 955,477</span>
+                            <span class="card-views">👁 961,658</span>
                         </div>
                         <h3 class="card-title">Desi Sexy Randi Fuck Video</h3>
                     </div>
                 </a>
-                <a href="/v/A9Q48PheUa5-ceweknya-bilang-lama-gak-dimasukin-2" class="card" aria-label="Ceweknya Bilang Lama Gak Dimasukin (2)">
+                <a href="/v/mqQoZgLXqGg-petualangan-roni-hasrat-membara-di-dalam-lift" class="card" aria-label="Petualangan Roni Hasrat Membara Di Dalam Lift">
                     <div class="card-img-wrapper">
-                        <span class="badge-duration">17:10</span><span class="badge-rating">⭐ 4.22</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18706571/13_360.jpg" alt="Ceweknya Bilang Lama Gak Dimasukin (2) HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <span class="badge-duration">9:01</span><span class="badge-rating">⭐ 4.55</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908761/10_360.jpg" alt="Petualangan Roni Hasrat Membara Di Dalam Lift HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
-                            <span class="card-date">📅 2026-10-19</span>
-                            <span class="card-views">👁 614,849</span>
+                            <span class="card-date">📅 2026-11-07</span>
+                            <span class="card-views">👁 191,273</span>
                         </div>
-                        <h3 class="card-title">Ceweknya Bilang Lama Gak Dimasukin (2)</h3>
+                        <h3 class="card-title">Petualangan Roni Hasrat Membara Di Dalam Lift</h3>
                     </div>
                 </a>
                 <a href="/v/UTgwKJbkxhg-bangvan-alluring-chubby-milf-whore-kathy-deep-horny-xxx-movie" class="card" aria-label="BANGVAN - Alluring Chubby MILF Whore Kathy Deep Horny Xxx Movie">
@@ -647,22 +728,22 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-20</span>
-                            <span class="card-views">👁 922,912</span>
+                            <span class="card-views">👁 930,011</span>
                         </div>
                         <h3 class="card-title">BANGVAN - Alluring Chubby MILF Whore Kathy Deep Horny Xxx Movie</h3>
                     </div>
                 </a>
-                <a href="/v/mqQoZgLXqGg-petualangan-roni-hasrat-membara-di-dalam-lift" class="card" aria-label="Petualangan Roni Hasrat Membara Di Dalam Lift">
+                <a href="/v/YvF0Ji6DLc8-a-sexy-young-woman-stayed-at-her-friend-s-house-and-would-often-flirt-with-her-f" class="card" aria-label="竹内瞳-A sexy young woman stayed at her friend&#39;s house and would often flirt with her friend&#39;s husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house.">
                     <div class="card-img-wrapper">
-                        <span class="badge-duration">9:01</span><span class="badge-rating">⭐ 4.56</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18908761/10_360.jpg" alt="Petualangan Roni Hasrat Membara Di Dalam Lift HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <span class="badge-duration">118:13</span><span class="badge-rating">⭐ 4.28</span>
+                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/17/176/17606949/1_360.jpg" alt="竹内瞳-A sexy young woman stayed at her friend&#39;s house and would often flirt with her friend&#39;s husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house. HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
-                            <span class="card-date">📅 2026-11-07</span>
-                            <span class="card-views">👁 186,897</span>
+                            <span class="card-date">📅 2026-07-08</span>
+                            <span class="card-views">👁 819,389</span>
                         </div>
-                        <h3 class="card-title">Petualangan Roni Hasrat Membara Di Dalam Lift</h3>
+                        <h3 class="card-title">竹内瞳-A sexy young woman stayed at her friend&#39;s house and would often flirt with her friend&#39;s husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house.</h3>
                     </div>
                 </a>
                 <a href="/v/YxggUzK8EKM-gadis-chubby-bergoyang-sambil-nyanyi" class="card" aria-label="Gadis Chubby Bergoyang Sambil Nyanyi">
@@ -673,48 +754,9 @@
                     <div class="card-meta">
                         <div class="card-date-views">
                             <span class="card-date">📅 2026-10-26</span>
-                            <span class="card-views">👁 346,997</span>
+                            <span class="card-views">👁 352,158</span>
                         </div>
                         <h3 class="card-title">Gadis Chubby Bergoyang Sambil Nyanyi</h3>
-                    </div>
-                </a>
-                <a href="/v/1FT7NTS1Mht-petualangan-roni-dan-ci-fani-di-kamar-mandi" class="card" aria-label="Petualangan Roni Dan Ci Fani Di Kamar Mandi">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">6:15</span><span class="badge-rating">⭐ 4.54</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/189/18931309/10_360.jpg" alt="Petualangan Roni Dan Ci Fani Di Kamar Mandi HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-11-09</span>
-                            <span class="card-views">👁 162,428</span>
-                        </div>
-                        <h3 class="card-title">Petualangan Roni Dan Ci Fani Di Kamar Mandi</h3>
-                    </div>
-                </a>
-                <a href="/v/AEjauwIhhBp-petualangan-roni-urgen-pengen-crot-ama-ibu-penjual-gorengan" class="card" aria-label="Petualangan Roni Urgen Pengen Crot Ama Ibu Penjual Gorengan">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">3:50</span><span class="badge-rating">⭐ 4.57</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/18/187/18743775/14_360.jpg" alt="Petualangan Roni Urgen Pengen Crot Ama Ibu Penjual Gorengan HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-10-22</span>
-                            <span class="card-views">👁 503,693</span>
-                        </div>
-                        <h3 class="card-title">Petualangan Roni Urgen Pengen Crot Ama Ibu Penjual Gorengan</h3>
-                    </div>
-                </a>
-                <a href="/v/YvF0Ji6DLc8-a-sexy-young-woman-stayed-at-her-friend-s-house-and-would-often-flirt-with-her-f" class="card" aria-label="竹内瞳-A sexy young woman stayed at her friend&#39;s house and would often flirt with her friend&#39;s husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house.">
-                    <div class="card-img-wrapper">
-                        <span class="badge-duration">118:13</span><span class="badge-rating">⭐ 4.29</span>
-                        <img src="https://static-ca-cdn.eporner.com/thumbs/static4/1/17/176/17606949/1_360.jpg" alt="竹内瞳-A sexy young woman stayed at her friend&#39;s house and would often flirt with her friend&#39;s husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house. HD Video Thumbnail" width="360" height="202" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
-                    </div>
-                    <div class="card-meta">
-                        <div class="card-date-views">
-                            <span class="card-date">📅 2026-07-08</span>
-                            <span class="card-views">👁 812,563</span>
-                        </div>
-                        <h3 class="card-title">竹内瞳-A sexy young woman stayed at her friend&#39;s house and would often flirt with her friend&#39;s husband by not wearing underwear, and the two would engage in passionate interactions in various parts of the house.</h3>
                     </div>
                 </a>
             </div>
@@ -724,12 +766,24 @@
                 <!-- Pagination dynamically injected by gallery.js -->
             </div>
 
-            <nav class="seo-crawl-hub" aria-label="Popular International Categories & Video Directory" style="margin: 28px 0 20px; padding: 20px; background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 14px;">
+            <nav class="seo-crawl-hub" aria-label="US &amp; European HD Video Categories" style="margin: 28px 0 20px; padding: 20px; background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 14px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
-                    <h2 style="font-size: 1rem; font-weight: 700; margin: 0; color: var(--text-primary);">Explore International HD Categories</h2>
-                    <a href="/directory" style="font-size: 0.85rem; font-weight: 700; color: var(--accent); text-decoration: none;">Browse Full Video Directory &amp; All 85 Categories &rarr;</a>
+                    <h2 style="font-size: 1rem; font-weight: 700; margin: 0; color: var(--text-primary);">Explore US, European &amp; International HD Categories</h2>
+                    <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                        <a href="/trending" style="font-size: 0.85rem; font-weight: 700; color: #ff6b9d; text-decoration: none;">🔥 Top 100 US &amp; EU Chart &rarr;</a>
+                        <a href="/directory" style="font-size: 0.85rem; font-weight: 700; color: var(--accent); text-decoration: none;">Browse All 95 Categories &rarr;</a>
+                    </div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <a href="/category/american" class="video-tag">American / USA</a>
+                    <a href="/category/european" class="video-tag">European</a>
+                    <a href="/category/british" class="video-tag">British / UK</a>
+                    <a href="/category/german" class="video-tag">German / Deutsch</a>
+                    <a href="/category/french" class="video-tag">French / Français</a>
+                    <a href="/category/spanish" class="video-tag">Spanish / Español</a>
+                    <a href="/category/italian" class="video-tag">Italian / Italiano</a>
+                    <a href="/category/czech" class="video-tag">Czech</a>
+                    <a href="/category/russian" class="video-tag">Russian</a>
                     <a href="/category/amateur" class="video-tag">Amateur</a>
                     <a href="/category/milf" class="video-tag">MILF</a>
                     <a href="/category/pov" class="video-tag">POV</a>
@@ -740,16 +794,11 @@
                     <a href="/category/latina" class="video-tag">Latina</a>
                     <a href="/category/ebony" class="video-tag">Ebony</a>
                     <a href="/category/asian" class="video-tag">Asian</a>
-                    <a href="/category/japanese" class="video-tag">Japanese</a>
-                    <a href="/category/babe" class="video-tag">Babes</a>
+                    <a href="/category/romantic" class="video-tag">Romantic</a>
                     <a href="/category/big-tits" class="video-tag">Big Tits</a>
                     <a href="/category/big-ass" class="video-tag">Big Ass</a>
                     <a href="/category/couple" class="video-tag">Couples</a>
                     <a href="/category/cosplay" class="video-tag">Cosplay</a>
-                    <a href="/category/creampie" class="video-tag">Creampie</a>
-                    <a href="/category/massage" class="video-tag">Massage</a>
-                    <a href="/category/lingerie" class="video-tag">Lingerie</a>
-                    <a href="/category/vr-porn" class="video-tag">VR Videos</a>
                 </div>
             </nav>
 

@@ -1,20 +1,24 @@
 # kumpulenak
 
-> kumpulenak is a high-speed, mobile-responsive adult video curation and streaming platform delivering HD 1080p content across 85 curated categories with real-time indexing, rich metadata, and zero mandatory registration.
+> kumpulenak is a high-speed, mobile-responsive US & European adult video streaming directory delivering 1080p Full HD 60FPS content across 95 curated categories with rich schema markup, regional European & American hubs, and zero mandatory registration.
 
 ## Core Content & Categories
 
-- [Home](https://www.kumpulenak.my.id/): Trending daily videos and search portal.
+- [Home](https://www.kumpulenak.my.id/): Trending daily US & EU HD videos and search portal.
+- [Top 100 US & EU Chart](https://www.kumpulenak.my.id/trending): Most-watched and highest-rated 1080p HD videos in the United States & Europe.
+- [Complete Directory (95 Hubs)](https://www.kumpulenak.my.id/directory): Full A–Z category index and direct video links.
+- [American / USA](https://www.kumpulenak.my.id/category/american): Blockbuster US studios and authentic American creators.
+- [European](https://www.kumpulenak.my.id/category/european): Pan-European 1080p HD performers and scenes.
+- [British / UK](https://www.kumpulenak.my.id/category/british): Popular UK stars and British amateur couples.
+- [German / Deutsch](https://www.kumpulenak.my.id/category/german): German performers and Deutsche Amateure HD clips.
+- [French / Français](https://www.kumpulenak.my.id/category/french): French adult cinema and Parisian amateur releases.
+- [Spanish / Español](https://www.kumpulenak.my.id/category/spanish): Spanish models and fiery European performances.
+- [Italian / Italiano](https://www.kumpulenak.my.id/category/italian): Italian performers and classic Mediterranean passion.
 - [Amateur](https://www.kumpulenak.my.id/category/amateur): Authentic home-recorded videos and real couples.
 - [MILF](https://www.kumpulenak.my.id/category/milf): Top mature and cougar HD scenes.
 - [POV](https://www.kumpulenak.my.id/category/pov): Point of View immersive experiences.
-- [Asian](https://www.kumpulenak.my.id/category/asian): High definition Asian video gallery.
-- [Ebony](https://www.kumpulenak.my.id/category/ebony): Curated ebony stars and hot scenes.
-- [Latina](https://www.kumpulenak.my.id/category/latina): Passionate adult videos from top Latina models.
 - [HD 1080p](https://www.kumpulenak.my.id/category/hd-porn-1080p): Full HD and high frame-rate collections.
-- [Cosplay](https://www.kumpulenak.my.id/category/cosplay): Anime, gaming, and costume adult roleplays.
-- [Creampie](https://www.kumpulenak.my.id/category/creampie): Premium compilations and authentic endings.
-- [Threesome](https://www.kumpulenak.my.id/category/threesome): Group dynamics, MFF and MFM video archives.
+- [Romantic](https://www.kumpulenak.my.id/category/romantic): Sensual and female-friendly intimate cinema.
 
 ## Information & Policies
 
