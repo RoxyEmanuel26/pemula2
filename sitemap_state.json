@@ -1,14 +1,19 @@
 {
-  "version": 1,
-  "lastSuccessfulAt": "2026-11-14T23:53:58.854Z",
+  "version": 2,
+  "lastSuccessfulAt": "2026-11-17T02:56:43.450Z",
   "mode": "daily",
   "requests": 100,
-  "candidates": 9999,
-  "added": 3726,
-  "duplicates": 6273,
+  "candidates": 7892,
+  "added": 6917,
+  "duplicates": 975,
+  "harmfulPurged": 0,
   "expiredShardsRemoved": 0,
-  "capacityShardsRemoved": 1,
-  "shardsCreated": 1,
+  "capacityShardsRemoved": 3,
+  "shardsCreated": 2,
   "activeShards": 13,
-  "activeVideoUrls": 45000
+  "activeVideoUrls": 45000,
+  "indexNow": {
+    "submitted": 510,
+    "status": 200
+  }
 }

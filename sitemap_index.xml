@@ -2,27 +2,15 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_pages.xml</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_kategori.xml</loc>
-    <lastmod>2026-11-15</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-04_2.xml</loc>
-    <lastmod>2026-11-16</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-05_1.xml</loc>
-    <lastmod>2026-11-16</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-06_1.xml</loc>
     <lastmod>2026-11-16</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-07_1.xml</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-07_2.xml</loc>
@@ -63,5 +51,13 @@
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-14_2.xml</loc>
     <lastmod>2026-11-16</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-17_1.xml</loc>
+    <lastmod>2026-11-17</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-17_2.xml</loc>
+    <lastmod>2026-11-17</lastmod>
   </sitemap>
 </sitemapindex>
