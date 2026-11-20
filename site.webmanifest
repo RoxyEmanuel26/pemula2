@@ -1,7 +1,7 @@
 {
-    "name": "kumpulenak — Premium 18+ Gallery",
+    "name": "kumpulenak — US & EU 1080p HD Video Hub",
     "short_name": "kumpulenak",
-    "description": "The largest premium 18+ adult gallery platform. Watch trending viral videos and exclusive content.",
+    "description": "Free Full HD 1080p 60FPS adult video streaming directory for the USA, UK, and Europe across 95+ categories.",
     "start_url": "/",
     "scope": "/",
     "id": "/",
@@ -10,10 +10,9 @@
     "display": "standalone",
     "orientation": "any",
     "theme_color": "#ff2a5f",
-    "background_color": "#080808",
+    "background_color": "#06070b",
     "categories": [
-        "entertainment",
-        "social"
+        "entertainment"
     ],
     "icons": [
         {
@@ -41,9 +40,9 @@
     ],
     "shortcuts": [
         {
-            "name": "Popular",
-            "short_name": "Popular",
-            "url": "/?tab=popular",
+            "name": "Top 100 US & EU",
+            "short_name": "Trending",
+            "url": "/trending",
             "icons": [
                 {
                     "src": "/assets/icons/favicon-32x32.png",
@@ -52,9 +51,9 @@
             ]
         },
         {
-            "name": "Viral",
-            "short_name": "Viral",
-            "url": "/?tab=viral",
+            "name": "95 Categories Directory",
+            "short_name": "Directory",
+            "url": "/directory",
             "icons": [
                 {
                     "src": "/assets/icons/favicon-32x32.png",

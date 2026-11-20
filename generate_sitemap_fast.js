@@ -6,8 +6,9 @@ const { execFileSync } = require('child_process');
 const {
     cleanVideoTitle,
     isHarmfulContent,
-    isInternationalFriendly
+    isUSEUFriendly
 } = require('./scripts/content-filter');
+const { EU_HUBS } = require('./scripts/schema-helper');
 
 const ROOT = __dirname;
 const SITEMAPS_DIR = path.join(ROOT, 'sitemaps');
@@ -267,19 +268,44 @@ function gitLastmod(relativePath) {
     }
 }
 
-function standardSitemap(nodes) {
+function standardSitemap(nodes, withXhtml = false) {
+    const ns = withXhtml
+        ? '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'
+        : '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
     return [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        ns,
         ...nodes,
         '</urlset>',
         ''
     ].join('\n');
 }
 
+function buildXhtmlHubAlternates() {
+    const links = [
+        `    <xhtml:link rel="alternate" hreflang="en" href="${BASE_URL}/" />`,
+        `    <xhtml:link rel="alternate" hreflang="en-US" href="${BASE_URL}/" />`,
+        `    <xhtml:link rel="alternate" hreflang="en-GB" href="${BASE_URL}/" />`,
+        `    <xhtml:link rel="alternate" hreflang="en-CA" href="${BASE_URL}/" />`,
+        `    <xhtml:link rel="alternate" hreflang="en-AU" href="${BASE_URL}/" />`,
+        `    <xhtml:link rel="alternate" hreflang="en-IE" href="${BASE_URL}/" />`
+    ];
+    for (const hub of EU_HUBS) {
+        for (const hl of hub.hreflangs) {
+            links.push(`    <xhtml:link rel="alternate" hreflang="${hl}" href="${BASE_URL}${hub.path}" />`);
+        }
+    }
+    links.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${BASE_URL}/" />`);
+    return links.join('\n');
+}
+
 function generateStaticSitemaps() {
+    const hubPaths = new Set(['/', ...EU_HUBS.map(h => h.path)]);
+    const xhtmlBlock = buildXhtmlHubAlternates();
+
     const pages = [
         ['/', 'index.html'],
+        ...EU_HUBS.map(h => [h.path, h.file]),
         ['/trending', 'trending.html'],
         ['/directory', 'directory.html'],
         ['/about', 'about.html'],
@@ -289,13 +315,25 @@ function generateStaticSitemaps() {
         ['/dmca', 'dmca.html'],
         ['/howto', 'howto.html']
     ];
-    const pageNodes = pages.map(([urlPath, source]) => [
+    const pageNodesPlain = pages.map(([urlPath, source]) => [
         '  <url>',
         `    <loc>${BASE_URL}${urlPath}</loc>`,
         `    <lastmod>${gitLastmod(source)}</lastmod>`,
         '  </url>'
     ].join('\n'));
-    writeAtomic(path.join(SITEMAPS_DIR, 'sitemap_pages.xml'), standardSitemap(pageNodes));
+    const pageNodesWithHreflang = pages.map(([urlPath, source]) => {
+        const baseLines = [
+            '  <url>',
+            `    <loc>${BASE_URL}${urlPath}</loc>`,
+            `    <lastmod>${gitLastmod(source)}</lastmod>`
+        ];
+        if (hubPaths.has(urlPath)) {
+            baseLines.push(xhtmlBlock);
+        }
+        baseLines.push('  </url>');
+        return baseLines.join('\n');
+    });
+    writeAtomic(path.join(SITEMAPS_DIR, 'sitemap_pages.xml'), standardSitemap(pageNodesWithHreflang, true));
 
     const categoryFiles = fs.readdirSync(path.join(ROOT, 'category'))
         .filter(name => name.endsWith('.html'))
@@ -311,7 +349,7 @@ function generateStaticSitemaps() {
     });
     writeAtomic(path.join(SITEMAPS_DIR, 'sitemap_kategori.xml'), standardSitemap(categoryNodes));
 
-    return { pageNodes, categoryNodes };
+    return { pageNodes: pageNodesPlain, categoryNodes };
 }
 
 function collectInternationalVideosForFeeds(activeShards, limit) {
@@ -329,7 +367,7 @@ function collectInternationalVideosForFeeds(activeShards, limit) {
             const descMatch = node.raw.match(/<video:description>([^<]+)<\/video:description>/);
             if (!locMatch || !titleMatch) continue;
             const title = decodeXml(titleMatch[1]);
-            if (!isInternationalFriendly({ title })) continue;
+            if (!isUSEUFriendly({ title })) continue;
             seenIds.add(node.id);
             picked.push({
                 id: node.id,
@@ -463,13 +501,13 @@ async function fetchJsonWithRetry(url, options = {}) {
     throw new Error(`API gagal setelah ${retries + 1} percobaan: ${lastError ? lastError.message : 'unknown error'}`);
 }
 
-function apiPageUrl(page) {
+function apiPageUrl(page, query = 'all', order = 'latest') {
     const params = new URLSearchParams({
-        query: 'all',
+        query,
         per_page: String(PER_PAGE),
         page: String(page),
-        thumbsize: 'small',
-        order: 'latest',
+        thumbsize: 'big',
+        order,
         gay: '0',
         lq: '1',
         format: 'json'
@@ -490,6 +528,28 @@ function validateApiPage(data, page) {
 async function fetchPages(pageLimit, stopAtUnique = Infinity) {
     const videos = new Map();
     let requests = 0;
+
+    // 1. Priority US & European high-CTR queries first (ensures rich US/EU discovery daily)
+    const priorityQueries = ['american', 'european', 'british', 'german', 'french', 'spanish', 'italian', 'hd porn 1080p'];
+    for (const q of priorityQueries) {
+        if (videos.size >= stopAtUnique) break;
+        try {
+            const data = await fetchJsonWithRetry(apiPageUrl(1, q, 'latest'));
+            requests++;
+            if (data && Array.isArray(data.videos)) {
+                for (const raw of data.videos) {
+                    const video = normalizeVideo(raw);
+                    if (video && isUSEUFriendly(video) && !videos.has(video.id)) {
+                        videos.set(video.id, video);
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn(`[FETCH] Priority query "${q}" warning: ${err.message}`);
+        }
+    }
+
+    // 2. Rolling latest stream
     for (let start = 1; start <= pageLimit && videos.size < stopAtUnique; start += CONCURRENCY) {
         const pages = Array.from({ length: Math.min(CONCURRENCY, pageLimit - start + 1) }, (_, index) => start + index);
         const results = await Promise.all(pages.map(async page => {
@@ -754,6 +814,7 @@ async function generate(mode) {
     // Ping IndexNow for instant indexing on Bing, Yandex, DuckDuckGo, Naver, Seznam
     const urlsToPing = [
         `${BASE_URL}/`,
+        ...EU_HUBS.map(h => `${BASE_URL}${h.path}`),
         `${BASE_URL}/trending`,
         `${BASE_URL}/directory`,
         `${BASE_URL}/category/european`,
@@ -763,7 +824,7 @@ async function generate(mode) {
         `${BASE_URL}/category/spanish`,
         `${BASE_URL}/category/italian`,
         `${BASE_URL}/category/american`,
-        ...capped.newVideos.slice(0, 500).map(v => `${BASE_URL}/v/${v.id}${v.slug ? '-' + v.slug : ''}`)
+        ...capped.newVideos.filter(v => isUSEUFriendly(v)).slice(0, 500).map(v => `${BASE_URL}/v/${v.id}${v.slug ? '-' + v.slug : ''}`)
     ];
     const indexNowResult = await pingIndexNow(urlsToPing);
 

@@ -3,17 +3,17 @@
 const fs = require('fs');
 const path = require('path');
 const {
+    BASE_URL,
+    RSS_LINK_TAG,
+    OG_LOCALES_EN,
+    buildHreflangBlock,
+    generateCollectionPageSchema,
     generateBreadcrumbSchema,
     generateItemListSchema,
-    buildHreflangBlock,
-    OG_ALTERNATE_LOCALES
+    generateFaqSchema
 } = require('./schema-helper');
-const { getCategoryEditorial } = require('./category-intros');
-const { cleanVideoTitle, isHarmfulContent, isInternationalFriendly } = require('./content-filter');
-
-// ============================================================================
-// CONFIGURATION & METADATA OVERRIDES
-// ============================================================================
+const { getCategoryEditorial, getCategoryFaq, getRelatedCategories } = require('./category-intros');
+const { cleanVideoTitle, isHarmfulContent, isUSEUFriendly } = require('./content-filter');
 
 const CUSTOM_METADATA = {
     'european': { title: 'European Full HD Adult Videos', desc: 'Watch the finest European adult videos featuring UK, German, French, Italian, and Czech performers in crisp 1080p HD on kumpulenak.' },
@@ -43,9 +43,11 @@ const CUSTOM_METADATA = {
     'mature': { title: 'Mature Women & Classic Elegance', desc: 'Premium adult videos featuring sophisticated mature women and older ladies in full HD on kumpulenak.' }
 };
 
+const NON_WESTERN_CATEGORY_SLUGS = new Set(['indonesia', 'indian', 'japanese', 'asian', 'pinay', 'hentai']);
+
 const API_BASE = 'https://www.eporner.com/api/v2/video/search/';
 const API_PARAMS = {
-    per_page: '40',
+    per_page: '50',
     page: '1',
     thumbsize: 'big',
     order: 'most-popular',
@@ -57,7 +59,6 @@ const API_PARAMS = {
 const TIMEOUT_MS = 10000;
 const MAX_RETRIES = 3;
 
-// Paths
 const ROOT_DIR = path.join(__dirname, '..');
 const CATEGORY_DIR = path.join(ROOT_DIR, 'category');
 const INDEX_HTML_PATH = path.join(ROOT_DIR, 'index.html');
@@ -149,11 +150,11 @@ async function fetchCategoryVideos(query, slug) {
     const data = await fetchWithRetry(url);
     if (!data) return [];
 
-    const safeVideos = data.videos.filter(v => !isHarmfulContent(v));
-    if (slug !== 'indonesia') {
-        const intl = safeVideos.filter(v => isInternationalFriendly(v));
-        if (intl.length >= 12) {
-            return intl.slice(0, 24);
+    const safeVideos = data.videos.filter(v => v && v.id && v.default_thumb && v.default_thumb.src && !isHarmfulContent(v));
+    if (!NON_WESTERN_CATEGORY_SLUGS.has(slug)) {
+        const useu = safeVideos.filter(v => isUSEUFriendly(v));
+        if (useu.length >= 12) {
+            return useu.slice(0, 24);
         }
     }
     return safeVideos.slice(0, 24);
@@ -183,7 +184,7 @@ function generateCardHTML(video, index) {
         '<a href="' + escapeHTML(videoUrl) + '" class="card" aria-label="' + safeTitle + '">\n' +
         '    <div class="card-img-wrapper">\n' +
         '        ' + badges + '\n' +
-        '        <img src="' + escapeHTML(thumbUrl) + '" alt="' + safeTitle + ' HD Video Thumbnail" ' + imgAttrs + ' onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\'); this.style.background=\'#333\';">\n' +
+        '        <img src="' + escapeHTML(thumbUrl) + '" alt="' + safeTitle + ' 1080p HD Video Thumbnail" ' + imgAttrs + ' class="loaded" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\'); this.style.background=\'#333\';">\n' +
         '    </div>\n' +
         '    <div class="card-meta">\n' +
         '        <div class="card-date-views">\n' +
@@ -198,8 +199,7 @@ function generateCardHTML(video, index) {
 
 function processTemplate(template, category, videos, allCategories) {
     let html = template;
-    const siteUrl = 'https://www.kumpulenak.my.id';
-    const categoryUrl = siteUrl + '/category/' + category.slug;
+    const categoryUrl = BASE_URL + '/category/' + category.slug;
 
     const seoTitle = buildCategorySeoTitle(category.title);
     const seoDesc = buildCategoryMetaDesc(category.title, category.desc);
@@ -211,26 +211,39 @@ function processTemplate(template, category, videos, allCategories) {
     html = html.replace(/<meta property="og:url" content=".*?">/s, '<meta property="og:url" content="' + categoryUrl + '">');
     html = html.replace(/<meta name="twitter:title" content=".*?">/s, '<meta name="twitter:title" content="' + escapeHTML(seoTitle) + '">');
     html = html.replace(/<meta name="twitter:description"[\s\S]*?>/s, '<meta name="twitter:description" content="' + escapeHTML(seoDesc) + '">');
-    html = html.replace(/<link rel="canonical"[^>]*href=".*?">/s, '<link rel="canonical" href="' + categoryUrl + '">');
+    html = html.replace(/<link rel="canonical"[^>]*href=".*?">/s, '<link rel="canonical" id="canonicalLink" href="' + categoryUrl + '">');
 
-    // Replace homepage hreflang tags with category-specific Tier-1 US & EU hreflang cluster
+    // Category-specific Tier-1 English hreflang + RSS autodiscovery
     html = html.replace(
-        /<!-- Hreflang[\s\S]*?-->\s*(<link rel="alternate"[\s\S]*?>\s*)+/g,
-        buildHreflangBlock(categoryUrl) + '\n\n    '
+        /[ \t]*<!-- Hreflang[\s\S]*?(?:<link rel="alternate"[^>]*>\s*)+/,
+        buildHreflangBlock(categoryUrl) + '\n' + RSS_LINK_TAG + '\n\n'
     );
     html = html.replace(/<meta property="og:locale:alternate"[^>]*>\s*/g, '');
     html = html.replace(
         /<meta property="og:locale" content="en_US">/,
-        `<meta property="og:locale" content="en_US">\n${OG_ALTERNATE_LOCALES}`
+        `<meta property="og:locale" content="en_US">\n${OG_LOCALES_EN}`
     );
 
-    // Remove any existing BreadcrumbList & ItemList from template
+    // LCP preload for #1 video thumbnail in this category
+    const lcpThumb = videos[0]?.default_thumb?.src || '';
+    html = html.replace(/[ \t]*<link rel="preload" as="image"[^>]*>\s*/g, '');
+    if (lcpThumb && isSafeUrl(lcpThumb)) {
+        html = html.replace(
+            '<!-- Preload Critical Resources -->',
+            `<!-- Preload Critical Resources -->\n    <link rel="preload" as="image" href="${escapeHTML(lcpThumb)}" fetchpriority="high">`
+        );
+    }
+
+    // Remove homepage-only WebSite & Organization schemas (keep CollectionPage + BreadcrumbList + ItemList + FAQPage)
+    html = html.replace(/\s*<!-- JSON-LD Structured Data: WebSite \+ SearchAction -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+    html = html.replace(/\s*<!-- JSON-LD Structured Data: Organization -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
     html = html.replace(/\s*<!-- JSON-LD BreadcrumbList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
     html = html.replace(/\s*<!-- JSON-LD ItemList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
 
+    const collectionSchema = generateCollectionPageSchema(seoTitle, seoDesc, categoryUrl, 'en');
     const breadcrumbSchema = generateBreadcrumbSchema([
-        { name: 'Home', url: siteUrl + '/' },
-        { name: 'Video Directory', url: siteUrl + '/directory' },
+        { name: 'Home', url: BASE_URL + '/' },
+        { name: 'Video Directory', url: BASE_URL + '/directory' },
         { name: category.title, url: categoryUrl }
     ]);
 
@@ -239,18 +252,26 @@ function processTemplate(template, category, videos, allCategories) {
         const slug = slugify(title);
         return {
             title: title,
-            url: siteUrl + '/v/' + v.id + (slug ? '-' + slug : ''),
+            url: BASE_URL + '/v/' + v.id + (slug ? '-' + slug : ''),
             image: (v.default_thumb && isSafeUrl(v.default_thumb.src)) ? v.default_thumb.src : ''
         };
     });
 
     const itemListSchema = generateItemListSchema(category.title, seoDesc, cardItems);
+    const categoryFaqs = getCategoryFaq(category.slug, category.title);
+    const faqSchema = generateFaqSchema(categoryFaqs);
 
-    let schemasHtml = '\n    <!-- JSON-LD BreadcrumbList -->\n';
+    let schemasHtml = '\n    <!-- JSON-LD CollectionPage -->\n';
+    schemasHtml += '    <script type="application/ld+json">\n' + JSON.stringify(collectionSchema, null, 2) + '\n    </script>\n';
+    schemasHtml += '\n    <!-- JSON-LD BreadcrumbList -->\n';
     schemasHtml += '    <script type="application/ld+json">\n' + JSON.stringify(breadcrumbSchema, null, 2) + '\n    </script>\n';
     if (itemListSchema && itemListSchema.itemListElement.length > 0) {
         schemasHtml += '\n    <!-- JSON-LD ItemList -->\n';
         schemasHtml += '    <script type="application/ld+json">\n' + JSON.stringify(itemListSchema, null, 2) + '\n    </script>\n';
+    }
+    if (faqSchema) {
+        schemasHtml += '\n    <!-- JSON-LD FAQPage -->\n';
+        schemasHtml += '    <script type="application/ld+json">\n' + JSON.stringify(faqSchema, null, 2) + '\n    </script>\n';
     }
 
     if (html.includes('<!-- Gallery Styles -->')) {
@@ -259,6 +280,14 @@ function processTemplate(template, category, videos, allCategories) {
         html = html.replace('</head>', schemasHtml + '\n</head>');
     }
     html = html.replace('<body>', '<body data-static-category="' + category.slug + '">');
+
+    // Highlight Categories tab in header nav
+    html = html.replace('<a href="/" class="nav-tab active" data-tab="popular">Popular</a>', '<a href="/" class="nav-tab" data-tab="popular">Popular</a>');
+    html = html.replace('<a href="/directory" class="nav-tab" data-tab="directory">Categories</a>', '<a href="/directory" class="nav-tab active" data-tab="directory">Categories</a>');
+
+    // Remove homepage-only language switcher bar from inner category page
+    html = html.replace(/\s*<!-- European & International Native Language Switcher -->\s*<nav class="eu-lang-bar"[\s\S]*?<\/nav>/g, '');
+
     const visualBreadcrumb =
         '            <nav class="breadcrumb-nav" aria-label="Breadcrumb">\n' +
         '                <a href="/">Home</a>\n' +
@@ -269,13 +298,22 @@ function processTemplate(template, category, videos, allCategories) {
         '            </nav>\n';
 
     html = html.replace(/<h1 class="main-seo-title">.*?<\/h1>/s, visualBreadcrumb + '            <h1 class="main-seo-title">' + escapeHTML(category.title) + '</h1>');
+
     const editorial = getCategoryEditorial(category.slug, category.title);
     const editorialParagraphs = editorial.paragraphs.map(p => '                <p>' + escapeHTML(p) + '</p>').join('\n');
+    const relatedSlugs = getRelatedCategories(category.slug).filter(s => s !== category.slug);
+    const relatedLinksHtml = relatedSlugs.map(slug => {
+        const found = allCategories.find(c => c.slug === slug);
+        const label = found ? found.label : slug.replace(/-/g, ' ');
+        return `<a href="/category/${slug}" class="video-tag">${escapeHTML(label)}</a>`;
+    }).join(' ');
+
     const editorialSection =
-        '\n            <!-- Category Editorial Hub Content (SEO Fase 5A) -->\n' +
+        '\n            <!-- Category Editorial Hub Content -->\n' +
         '            <section class="category-editorial" aria-label="About this collection">\n' +
         '                <h2>' + escapeHTML(editorial.heading) + '</h2>\n' +
         editorialParagraphs + '\n' +
+        '                <div class="video-tags" style="margin-top: 12px;">' + relatedLinksHtml + '</div>\n' +
         '            </section>\n';
 
     html = html.replace(/<p class="main-seo-desc" id="mainSeoDesc">.*?<\/p>/s, '<p class="main-seo-desc" id="mainSeoDesc">' + escapeHTML(seoDesc) + '</p>' + editorialSection);
@@ -293,7 +331,19 @@ function processTemplate(template, category, videos, allCategories) {
         '<div class="card-grid" id="cardGrid">\n                ' + cardsHtml + '\n            </div>\n\n            <!-- PAGINATION -->'
     );
 
-    // Replace dynamic /?q= links in the static pages with proper static routing to category pages
+    // Inject visible Category FAQ section matching FAQPage JSON-LD (before seo-crawl-hub & Adsterra Native Banner)
+    const faqHtml = [
+        '            <section class="category-faq" aria-label="Frequently Asked Questions">',
+        `                <h2>Frequently Asked Questions — ${escapeHTML(category.title)}</h2>`,
+        ...categoryFaqs.map(f => `                <div class="faq-item"><h3>${escapeHTML(f.question)}</h3><p>${escapeHTML(f.answer)}</p></div>`),
+        '            </section>'
+    ].join('\n');
+
+    html = html.replace(
+        '            <nav class="seo-crawl-hub"',
+        `${faqHtml}\n\n            <nav class="seo-crawl-hub"`
+    );
+
     const navLinksRegex = /<a href="\/\?q=([a-z-]+)">.*?<\/a>/g;
     html = html.replace(navLinksRegex, (match, query) => {
         const cat = allCategories.find(c => c.query === query || c.slug === query);
@@ -307,7 +357,7 @@ function processTemplate(template, category, videos, allCategories) {
 }
 
 async function main() {
-    console.log('🚀 Starting Static Category Pages Generation...');
+    console.log('🚀 Starting Static Category Pages Generation (95 US/EU Optimized Hubs)...');
 
     if (!fs.existsSync(INDEX_HTML_PATH)) {
         console.error('❌ Cannot find index.html at ' + INDEX_HTML_PATH);
@@ -338,11 +388,9 @@ async function main() {
     });
 
     console.log(`📋 Loaded ${allCategories.length} categories from gallery.js`);
-
     const indexTemplate = fs.readFileSync(INDEX_HTML_PATH, 'utf-8');
 
-    // Process in concurrent batches of 3 with brief cooldown to avoid API rate limiting across 95 hubs
-    const BATCH_SIZE = 3;
+    const BATCH_SIZE = 4;
     for (let i = 0; i < allCategories.length; i += BATCH_SIZE) {
         const batch = allCategories.slice(i, i + BATCH_SIZE);
         await Promise.all(batch.map(async (category) => {
@@ -353,11 +401,11 @@ async function main() {
             console.log(`✅ [${category.slug}] Saved (${videos.length} clean videos)`);
         }));
         if (i + BATCH_SIZE < allCategories.length) {
-            await new Promise(r => setTimeout(r, 250));
+            await new Promise(r => setTimeout(r, 200));
         }
     }
 
-    console.log('\n🎉 Generation complete! ' + allCategories.length + ' category pages created in /category/');
+    console.log('\n🎉 Generation complete! ' + allCategories.length + ' category pages updated in /category/');
 }
 
 main().catch(err => {

@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * Centralized Safety Filter, Title Cleaner & International Content Curator
- * Protects kumpulenak.my.id from Google SafeSearch / CSAM / Policy Demotion
- * and curates clean, high-CTR English/International titles.
+ * Centralized Safety Filter, Title Cleaner & US/European Content Curator
+ * Protects kumpulenak.my.id from Google SafeSearch / Policy Demotion
+ * and ensures 100% authentic US & European Western-Latin curation on primary hubs.
  */
 
 const HARMFUL_SUBSTRINGS = [
@@ -12,16 +12,24 @@ const HARMFUL_SUBSTRINGS = [
     'schoolgirl', 'school boy', 'school girl', 'child', 'minor',
     'teenager', 'loli', 'lolita', 'shota', 'pedophil',
     'esema', 'esemaa', 'bocil', 'pramuka', 'anak sd', 'anak smp', 'anak sma',
-    'pelajar', 'siswi', 'perkosa', 'pemerkosaan', 'dipaksa', 'kesakitan',
-    'menangis', 'nangis', 'sampe nangi', 'non-consensual', 'forced sex',
-    'raped', 'raping', 'sedarah', 'bestiality', 'zoophilia', 'animal sex',
-    'dead body', 'necro', 'snuff', 'torture', 'drugged', 'unconscious',
-    'sleeping pill', 'mabuk berat', 'pingsan'
+    'ibu ayah', 'orang tua', 'pelajar', 'siswi', 'perkosa', 'pemerkosaan',
+    'dipaksa', 'kesakitan', 'menangis', 'nangis', 'sampe nangi',
+    'non-consensual', 'forced sex', 'raped', 'raping', 'sedarah',
+    'bestiality', 'zoophilia', 'animal sex', 'dead body', 'necro',
+    'snuff', 'torture', 'drugged', 'unconscious', 'sleeping pill',
+    'mabuk berat', 'pingsan', 'onlyfans leak', 'leaked tape'
 ];
 
-const HARMFUL_WORD_REGEX = /\b(teen|teens|kid|kids|school|student|students|abg|sma|smp|smk|bocah|adek|adik|paksa|rape|incest|loli|shota|minor|minors|underage|child|children|preteen)\b/i;
+const HARMFUL_WORD_REGEX = /\b(teen|teens|kid|kids|school|student|students|abg|sma|smp|smk|bocah|bocil|anak|anaknya|keponakan|kandung|adek|adik|paksa|rape|incest|loli|shota|minor|minors|underage|child|children|preteen|perkosa|sedarah)\b/i;
 
-const LOCAL_NON_INTERNATIONAL_REGEX = /\b(bokep|ngewe|ngentot|memek|kontol|pepek|colmek|nyuci|piring|kesakitan|sampe|banget|nangi|nangis|cewek|cowok|selingkuh|kosan|kamar kos|indo viral)\b/i;
+// Non-Latin scripts (CJK, Hangul, Cyrillic, Arabic, Devanagari, Thai, etc.)
+const NON_LATIN_SCRIPT_REGEX = /[\u3040-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u0E00-\u0E7F]/;
+
+// Southeast Asian & South Asian local terms that conflict with US/EU GEO targeting on a .my.id ccTLD
+const LOCAL_NON_INTERNATIONAL_REGEX = /\b(bokep|ngewe|ngentot|dientot|entot|memek|kontol|pepek|colmek|nyuci|piring|kesakitan|sampe|banget|nangi|nangis|cewek|cowok|selingkuh|kosan|kamar|mandi|indo|indonesian|viral indo|yang|dengan|sama|dari|untuk|kerumah|mantan|mantannya|gadis|goyang|goyangan|bergoyang|nyanyi|sambil|petualangan|minta|jatah|mukanya|judes|bodynya|kenceng|cici|tetangga|hijab|jilbab|bini|suami|istri|janda|toge|tobrut|mbak|abang|di|dan|tapi|jadi|bisa|sudah|belum|lagi|ang|sa|ni|ng|habang|kinantot|kantot|puki|muntik|mahuli|napa|bigla|napalaban|agad|pinay|jakol|sarap|iyot|kantutan|libog|chupa|bhabhi|desi|randi|chudai|suhagrat|devar|aunty|nri|mms|chi und|jav)\b/i;
+
+// Opaque code-only titles (e.g., "A384TID", "SSIS-402") with poor US/EU SERP CTR
+const OPAQUE_CODE_ONLY_REGEX = /^[A-Z0-9_-]{3,14}$/i;
 
 function decodeHtmlEntities(value) {
     return String(value || '')
@@ -43,39 +51,27 @@ function repairMojibake(value) {
         if (score(repaired) >= score(text)) break;
         text = repaired;
     }
-    // Remove stray孤立 'Â' (\u00C2) left over from double-encoded NBSP
     return text.replace(/\u00C2+/g, ' ').replace(/\u00A0+/g, ' ');
 }
 
 /**
- * Cleans video titles while preserving valid Latin accents (e.g., Café, Grabación)
- * Removes Zalgo/combining spam, Mathematical Unicode fonts, scraped "1.8K11 Hours Ago" tails, and .mp4 suffixes.
+ * Cleans video titles while preserving valid European Latin accents (e.g., Café, Grabación, Mädchen, Français)
  */
 function cleanVideoTitle(rawTitle) {
     if (!rawTitle || typeof rawTitle !== 'string') return '';
     let text = repairMojibake(decodeHtmlEntities(rawTitle));
 
-    // Remove control characters
     text = text.replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ');
-
-    // Remove Mathematical Alphanumeric Symbols (fancy Unicode fonts)
     text = text.replace(/[\uD835][\uDC00-\uDFFF]/g, ' ');
 
-    // Remove Zalgo / overlay / underdot combining marks (U+0316 to U+036F, U+0483 to U+0489, etc.)
-    // while keeping normal composed accents (NFC) intact
     text = text.normalize('NFC')
         .replace(/[\u0316-\u036F\u0483-\u0489\u1DC0-\u1DFF\u20D0-\u20FF\uFE20-\uFE2F]+/g, '')
         .replace(/[\u0300-\u0315]{2,}/g, '');
 
-    // Strip scraped view count + relative time suffixes (e.g. "1.8K11 Hours Ago", "45K 2 Days Ago")
     text = text.replace(/\s*\d+(?:\.\d+)?[KMB]?\s*\d+\s*(?:sec(?:ond)?s?|min(?:ute)?s?|hours?|days?|weeks?|months?|years?)\s*ago\b.*$/i, '');
-
-    // Strip raw file extensions at end of title (.mp4, .mkv, .avi, .mov, .wmv)
     text = text.replace(/\.(?:mp4|mkv|avi|mov|wmv|flv|webm)\b/gi, '');
 
-    // Collapse whitespace
-    text = text.replace(/\s+/g, ' ').trim();
-    return text;
+    return text.replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -105,27 +101,43 @@ function isHarmfulContent(titleOrVideo, extraKeywords = '') {
 }
 
 /**
- * Checks whether a video is suitable for prominent International SEO placement
- * (Homepage & Category hubs: safe, clean Latin title, no local Indonesian slang)
+ * Strict US & European language/script curator for high-authority GEO US & EU surfaces
+ * (Homepage, /trending, /directory, /eu/*, sitemap.xml, rss.xml, US/EU category hubs)
  */
-function isInternationalFriendly(video) {
+function isUSEUFriendly(video) {
     if (!video || isHarmfulContent(video)) return false;
     const cleaned = cleanVideoTitle(video.title || video.name || '');
-    if (!cleaned || cleaned.length < 5) return false;
+    if (!cleaned || cleaned.length < 10) return false;
+    if (NON_LATIN_SCRIPT_REGEX.test(cleaned)) return false;
     if (LOCAL_NON_INTERNATIONAL_REGEX.test(cleaned)) return false;
-    // Must contain at least 4 ASCII Latin letters
-    const latinCount = (cleaned.match(/[A-Za-z]/g) || []).length;
-    if (latinCount < 4) return false;
+    if (OPAQUE_CODE_ONLY_REGEX.test(cleaned)) return false;
+
+    // Require at least 2 real words and predominantly Latin letters
+    const words = cleaned.split(/\s+/).filter(w => /[A-Za-zÀ-ÖØ-öø-ÿ]{2,}/.test(w));
+    if (words.length < 2) return false;
+
+    const latinCount = (cleaned.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length;
+    if (latinCount < 8) return false;
+
     return true;
+}
+
+/**
+ * Backward-compatible alias used across generators
+ */
+function isInternationalFriendly(video) {
+    return isUSEUFriendly(video);
 }
 
 module.exports = {
     HARMFUL_SUBSTRINGS,
     HARMFUL_WORD_REGEX,
+    NON_LATIN_SCRIPT_REGEX,
     LOCAL_NON_INTERNATIONAL_REGEX,
     decodeHtmlEntities,
     repairMojibake,
     cleanVideoTitle,
     isHarmfulContent,
+    isUSEUFriendly,
     isInternationalFriendly
 };

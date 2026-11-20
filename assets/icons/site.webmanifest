@@ -1,1 +1,41 @@
-{"name":"","short_name":"","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+    "name": "kumpulenak — US & EU 1080p HD Video Hub",
+    "short_name": "kumpulenak",
+    "description": "Free Full HD 1080p 60FPS adult video streaming directory for the USA, UK, and Europe across 95+ categories.",
+    "start_url": "/",
+    "scope": "/",
+    "id": "/",
+    "lang": "en",
+    "dir": "ltr",
+    "display": "standalone",
+    "orientation": "any",
+    "theme_color": "#ff2a5f",
+    "background_color": "#06070b",
+    "categories": [
+        "entertainment"
+    ],
+    "icons": [
+        {
+            "src": "/assets/icons/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/icons/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/icons/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/assets/icons/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

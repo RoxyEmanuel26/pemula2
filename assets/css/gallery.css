@@ -142,6 +142,8 @@ body {
 
 /* Logo with neon gradient text styling */
 .logo {
+    display: inline-block;
+    text-decoration: none;
     font-size: 25px;
     font-weight: 900;
     background: var(--accent-gradient);
@@ -207,6 +209,9 @@ body {
     position: relative;
     z-index: 1;
     text-transform: capitalize;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
 }
 
 .nav-tab:hover {
@@ -472,7 +477,7 @@ body {
     border-radius: 14px;
 }
 
-/* ===== HIGH-END CARDS ===== */
+/* ===== HIGH-END CARDS (Instant LCP First Paint — Zero Opacity Blocker) ===== */
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -484,11 +489,10 @@ body {
     display: flex;
     flex-direction: column;
     contain: content;
-    opacity: 0;
-    animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 0.4s ease,
-                box-shadow 0.4s ease;
+    opacity: 1;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
 }
 
 .card:hover {
@@ -557,8 +561,8 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
     z-index: 1;
 }
 
@@ -1777,4 +1781,73 @@ h2.section-label {
     font-size: 0.9rem;
     color: var(--text-secondary);
     margin: 0;
+}
+
+/* ===== EUROPEAN LANGUAGE HUB SWITCHER BAR ===== */
+.eu-lang-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 14px 0 6px;
+}
+
+.eu-lang-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.eu-lang-pill:hover,
+.eu-lang-pill.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: transparent;
+}
+
+.category-faq {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 24px 0 20px;
+}
+
+.category-faq h2 {
+    font-size: 1.05rem;
+    color: var(--text);
+    margin: 0 0 14px 0;
+    font-weight: 700;
+}
+
+.category-faq h3 {
+    font-size: 0.92rem;
+    color: var(--text);
+    margin: 0 0 4px 0;
+    font-weight: 600;
+}
+
+.category-faq p {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    margin: 0 0 12px 0;
+    line-height: 1.55;
+}
+
+.category-faq .faq-item:last-child p {
+    margin-bottom: 0;
+}
+
+.sort-bar {
+    min-height: 44px;
 }

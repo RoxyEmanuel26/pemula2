@@ -1,16 +1,229 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.kumpulenak.my.id/</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-ES" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-IT" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-CH" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-NL" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="pl-PL" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
+  </url>
+  <url>
+    <loc>https://www.kumpulenak.my.id/de</loc>
+    <lastmod>2026-11-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-ES" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-IT" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-CH" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-NL" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="pl-PL" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
+  </url>
+  <url>
+    <loc>https://www.kumpulenak.my.id/fr</loc>
+    <lastmod>2026-11-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-ES" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-IT" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-CH" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-NL" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="pl-PL" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
+  </url>
+  <url>
+    <loc>https://www.kumpulenak.my.id/es</loc>
+    <lastmod>2026-11-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-ES" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-IT" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-CH" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-NL" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="pl-PL" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
+  </url>
+  <url>
+    <loc>https://www.kumpulenak.my.id/it</loc>
+    <lastmod>2026-11-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-ES" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-IT" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-CH" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-NL" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="pl-PL" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
+  </url>
+  <url>
+    <loc>https://www.kumpulenak.my.id/nl</loc>
+    <lastmod>2026-11-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-ES" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-IT" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-CH" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-NL" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="pl-PL" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
+  </url>
+  <url>
+    <loc>https://www.kumpulenak.my.id/pl</loc>
+    <lastmod>2026-11-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-AU" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://www.kumpulenak.my.id/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://www.kumpulenak.my.id/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.kumpulenak.my.id/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-ES" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://www.kumpulenak.my.id/es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-IT" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="it-CH" href="https://www.kumpulenak.my.id/it" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-NL" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://www.kumpulenak.my.id/nl" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="pl-PL" href="https://www.kumpulenak.my.id/pl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.kumpulenak.my.id/" />
   </url>
   <url>
     <loc>https://www.kumpulenak.my.id/trending</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
   </url>
   <url>
     <loc>https://www.kumpulenak.my.id/directory</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
   </url>
   <url>
     <loc>https://www.kumpulenak.my.id/about</loc>

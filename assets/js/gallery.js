@@ -51,11 +51,12 @@ const TAB_CONFIG = {
 };
 
 // =====================================================
-//  INDO MULTI-QUERY — Keywords gabungan untuk button Indo
+//  US & EU MULTI-QUERY — Keywords gabungan untuk tombol US & EU Top
 //  API hanya support 1 query per request, jadi kita
 //  fetch semua keyword paralel lalu gabungkan hasilnya
 // =====================================================
-const INDO_QUERIES = ['amateur', 'babe', 'milf', 'pov', 'blonde', 'ebony'];
+const USEU_QUERIES = ['american', 'european', 'british', 'german', 'french', 'hd 1080p'];
+const INDO_QUERIES = USEU_QUERIES;
 
 // =====================================================
 //  VIRAL TAGS — Daftar tag/keyword untuk tab "viral"
@@ -193,12 +194,13 @@ const HARMFUL_KEYWORDS = [
     'onlyfans', 'leaked', 'leak', 'student', 'school',
     'college girl', 'high school', 'jailbait', 'barely legal',
     'abg', 'sma', 'esema', 'esemaa', 'smp', 'smk', 'bocil', 'bocah',
+    'anak sd', 'anak smp', 'anak sma', 'ibu ayah', 'orang tua',
     'pelajar', 'siswi', 'pramuka', 'perkosa', 'pemerkosaan', 'paksa',
     'dipaksa', 'kesakitan', 'sampe nangi', 'rape', 'raped', 'forced',
     'incest', 'sedarah', 'bestiality', 'zoophilia', 'drugged', 'unconscious'
 ];
 
-const HARMFUL_WORD_RE = /\b(teen|teens|kid|kids|school|student|students|abg|sma|smp|smk|bocah|adek|adik|paksa|rape|incest|loli|shota|minor|minors|underage|child|children|preteen)\b/i;
+const HARMFUL_WORD_RE = /\b(teen|teens|kid|kids|school|student|students|abg|sma|smp|smk|bocah|bocil|anak|anaknya|keponakan|kandung|adek|adik|paksa|rape|incest|loli|shota|minor|minors|underage|child|children|preteen|perkosa|sedarah)\b/i;
 
 function isHarmfulVideo(video) {
     const title = (video.title || video.name || '').toLowerCase();
@@ -1111,17 +1113,17 @@ async function loadAndRender() {
             }
 
             var queryToUse = isSearchActive && currentQuery ? currentQuery : config.query;
-            // 'indo' is not a valid API order order — already handled via config.order
-            var orderToUse = (currentSortOrder === 'indo') ? 'most-popular' : (currentSortOrder || config.order);
+            // 'useu' / 'indo' is handled via curated US & EU multi-query
+            var orderToUse = (currentSortOrder === 'useu' || currentSortOrder === 'indo') ? 'most-popular' : (currentSortOrder || config.order);
 
             // Reset override after use
             window._tempTabOverride = null;
 
             var apiResponse;
 
-            // If sort is 'indo' and not searching, use multi-query
-            if (currentSortOrder === 'indo' && currentTab === 'popular' && !isSearchActive) {
-                apiResponse = await fetchMultiQuery(INDO_QUERIES, currentPage, orderToUse);
+            // If sort is 'useu' and not searching, use US & EU multi-query
+            if ((currentSortOrder === 'useu' || currentSortOrder === 'indo') && currentTab === 'popular' && !isSearchActive) {
+                apiResponse = await fetchMultiQuery(USEU_QUERIES, currentPage, orderToUse);
             } else {
                 apiResponse = await fetchFromAPI(queryToUse, currentPage, orderToUse);
             }
@@ -1216,6 +1218,18 @@ function loadLocalData() {
 //  PAGINATION — Navigasi halaman
 // =====================================================
 
+function getPageHref(pageNum) {
+    var base = window.location.pathname;
+    var sp = new URLSearchParams(window.location.search);
+    if (pageNum > 1) {
+        sp.set('page', pageNum);
+    } else {
+        sp.delete('page');
+    }
+    var qs = sp.toString();
+    return base + (qs ? '?' + qs : '');
+}
+
 /**
  * Render tombol pagination berdasarkan total halaman
  * @param {number} totalPages - Total jumlah halaman
@@ -1238,23 +1252,12 @@ function renderPagination(totalPages) {
     
     var frag = document.createDocumentFragment();
 
-    function getPageHref(pageNum) {
-        var base = window.location.pathname;
-        var sp = new URLSearchParams(window.location.search);
-        if (pageNum > 1) {
-            sp.set('page', pageNum);
-        } else {
-            sp.delete('page');
-        }
-        var qs = sp.toString();
-        return base + (qs ? '?' + qs : '');
-    }
-
     function createBtn(text, pageNum, className) {
         var a = document.createElement('a');
         a.className = className || 'page-btn';
         a.textContent = text;
         a.href = getPageHref(pageNum);
+        a.rel = 'nofollow';
         a.setAttribute('aria-label', 'Page ' + pageNum);
         a.addEventListener('click', function(e) {
             if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
@@ -1333,10 +1336,26 @@ function goToPage(page) {
  */
 function initTabSwitching() {
     var navTabs = document.getElementById('navTabs');
+    if (!navTabs) return;
 
     navTabs.addEventListener('click', function (e) {
         var tab = e.target.closest('.nav-tab');
         if (!tab) return;
+
+        // If the tab is a crawlable link to a dedicated static hub (/trending, /directory, /eu/*), allow native navigation
+        if (tab.tagName === 'A' && tab.getAttribute('href') && !tab.dataset.tab) {
+            return;
+        }
+        if (tab.tagName === 'A' && tab.getAttribute('href') && (tab.getAttribute('href') === '/trending' || tab.getAttribute('href') === '/directory')) {
+            return;
+        }
+        if (tab.tagName === 'A') {
+            var targetHref = tab.getAttribute('href');
+            if (targetHref === '/' && window.location.pathname !== '/') {
+                return;
+            }
+            e.preventDefault();
+        }
 
         // Jika kita di URL /category/ tapi klik tab utama, ubah URL jadi /
         if (window.location.pathname.startsWith('/category/')) {
@@ -1912,7 +1931,7 @@ function renderSortBar() {
     }
 
     var sortOptions = [
-        { label: 'ID Indo', order: 'indo', query: 'amateur' },
+        { label: 'US & EU Top', order: 'useu', query: 'american' },
         { label: 'Popular', order: 'most-popular', query: 'all' },
         { label: 'Latest', order: 'latest', query: 'all' },
         { label: 'Top Rated', order: 'top-rated', query: 'all' },
@@ -1922,13 +1941,20 @@ function renderSortBar() {
         { label: 'Shortest', order: 'shortest', query: 'all' }
     ];
 
-    if (existingBar) {
-        existingBar.remove();
+    var sortBar = existingBar;
+    if (sortBar) {
+        sortBar.innerHTML = '';
+    } else {
+        sortBar = document.createElement('div');
+        sortBar.id = 'sortBar';
+        sortBar.className = 'sort-bar';
+        var sectionLabel = document.getElementById('sectionLabel');
+        if (sectionLabel && sectionLabel.nextSibling) {
+            contentWrapper.insertBefore(sortBar, sectionLabel.nextSibling);
+        } else {
+            contentWrapper.appendChild(sortBar);
+        }
     }
-
-    var sortBar = document.createElement('div');
-    sortBar.id = 'sortBar';
-    sortBar.className = 'sort-bar';
 
     // [SECURITY FIX] Gunakan DOM Element
     sortOptions.forEach(function (opt) {
@@ -1939,14 +1965,6 @@ function renderSortBar() {
         btn.addEventListener('click', function() { changeSortOrder(opt.order); });
         sortBar.appendChild(btn);
     });
-
-    // Sisipkan setelah sectionLabel
-    var sectionLabel = document.getElementById('sectionLabel');
-    if (sectionLabel && sectionLabel.nextSibling) {
-        contentWrapper.insertBefore(sortBar, sectionLabel.nextSibling);
-    } else {
-        contentWrapper.appendChild(sortBar);
-    }
 }
 
 /**
@@ -1958,10 +1976,8 @@ function changeSortOrder(order) {
     currentSortOrder = order;
     currentPage = 1;
 
-    // Tentukan query berdasarkan sort option yang dipilih
-    // 'indo' menggunakan query 'indo', sisanya 'all'
     var sortQueryMap = {
-        'indo': 'amateur',
+        'useu': 'american',
         'most-popular': 'all',
         'latest': 'all',
         'top-rated': 'all',
@@ -1973,8 +1989,7 @@ function changeSortOrder(order) {
 
     // Update config tab aktif
     if (TAB_CONFIG[currentTab]) {
-        // Untuk 'indo', gunakan order 'most-popular' (API tidak punya order 'indo')
-        TAB_CONFIG[currentTab].order = (order === 'indo') ? 'most-popular' : order;
+        TAB_CONFIG[currentTab].order = (order === 'useu') ? 'most-popular' : order;
 
         if (currentTab === 'popular' && !isSearchActive) {
             TAB_CONFIG[currentTab].query = sortQueryMap[order] || 'all';
@@ -2229,17 +2244,18 @@ function injectVideoSchema() {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=5.3.0';
+    scriptLoader.src = '/assets/js/loader.js?v=5.5.0';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();
 
 // =====================================================
-//  MISSAV PROMO BUTTON INJECTION
+//  PROMO BUTTON INJECTION (Placed below grid for 0.00 CLS & clean SEO)
 // =====================================================
 function injectMissavPromo() {
-    var sectionLabel = document.getElementById('sectionLabel');
-    if (!sectionLabel) return;
+    var pagination = document.getElementById('pagination');
+    var anchorTarget = pagination || document.getElementById('cardGrid');
+    if (!anchorTarget || !anchorTarget.parentNode) return;
 
     if (document.getElementById('missavPromo')) return;
 
@@ -2249,19 +2265,23 @@ function injectMissavPromo() {
 
     var text = document.createElement('div');
     text.className = 'missav-promo-text';
-    text.textContent = 'Instant 18+ NSFW Streaming & Daily Viral Video Leaks';
+    text.textContent = 'Instant 18+ 1080p HD Streaming & Daily International Releases';
 
     var button = document.createElement('a');
     button.className = 'missav-promo-btn';
     button.href = 'https://www.missav-j.web.id/en/';
     button.target = '_blank';
-    button.rel = 'noopener noreferrer';
+    button.rel = 'noopener noreferrer nofollow sponsored';
     button.textContent = '🔥 Watch Full JAV on MissAV (English)';
 
     container.appendChild(text);
     container.appendChild(button);
 
-    sectionLabel.parentNode.insertBefore(container, sectionLabel);
+    if (anchorTarget.nextSibling) {
+        anchorTarget.parentNode.insertBefore(container, anchorTarget.nextSibling);
+    } else {
+        anchorTarget.parentNode.appendChild(container);
+    }
 }
 
 // =====================================================
@@ -2270,7 +2290,7 @@ function injectMissavPromo() {
 (function init() {
     kLog('Initializing kumpulenak gallery...');
 
-    // Inject MissAV Promo Button
+    // Inject Promo Button below grid (zero above-the-fold CLS)
     injectMissavPromo();
 
     // Setup event delegation for card grid
@@ -2289,7 +2309,7 @@ function injectMissavPromo() {
     // Setup thumbnail hover preview
     initThumbnailPreview();
 
-    // Render sort bar
+    // Render sort bar (preserve existing DOM slot if present to prevent CLS)
     renderSortBar();
 
     // Override openPlayerModal with enhanced version
@@ -2305,6 +2325,17 @@ function injectMissavPromo() {
 
     var staticCategory = document.body.getAttribute('data-static-category');
     var hasPrerenderedCards = document.querySelectorAll('#cardGrid .card').length > 0;
+
+    // Map special static hubs (trending, EU native language hubs) to clean API queries for page 2+
+    var STATIC_HUB_QUERY_MAP = {
+        'trending': { query: 'all', order: 'top-weekly', isSearch: false },
+        'eu-de': { query: 'german', order: 'most-popular', isSearch: true },
+        'eu-fr': { query: 'french', order: 'most-popular', isSearch: true },
+        'eu-es': { query: 'spanish', order: 'most-popular', isSearch: true },
+        'eu-it': { query: 'italian', order: 'most-popular', isSearch: true },
+        'eu-nl': { query: 'european', order: 'most-popular', isSearch: true },
+        'eu-pl': { query: 'european', order: 'most-popular', isSearch: true }
+    };
 
     // If redirected from /?q=<cat> to /category/<cat>?q=<cat>, strip redundant ?q= and preserve SSR cards
     if (staticCategory && qParam && qParam.toLowerCase() === staticCategory.toLowerCase()) {
@@ -2324,8 +2355,15 @@ function injectMissavPromo() {
     } else if (hasPrerenderedCards && currentPage === 1) {
         if (staticCategory) {
             kLog('Static category page detected: ' + staticCategory);
-            currentQuery = staticCategory;
-            isSearchActive = true;
+            var mappedHub = STATIC_HUB_QUERY_MAP[staticCategory];
+            if (mappedHub) {
+                currentQuery = mappedHub.isSearch ? mappedHub.query : '';
+                isSearchActive = mappedHub.isSearch;
+                currentSortOrder = mappedHub.order;
+            } else {
+                currentQuery = staticCategory;
+                isSearchActive = true;
+            }
         } else {
             kLog('Pre-rendered homepage cards detected; preserving SSR DOM for instant LCP & SEO.');
         }
@@ -2340,8 +2378,15 @@ function injectMissavPromo() {
         });
     } else {
         if (staticCategory) {
-            currentQuery = staticCategory;
-            isSearchActive = true;
+            var mappedPageHub = STATIC_HUB_QUERY_MAP[staticCategory];
+            if (mappedPageHub) {
+                currentQuery = mappedPageHub.isSearch ? mappedPageHub.query : '';
+                isSearchActive = mappedPageHub.isSearch;
+                currentSortOrder = mappedPageHub.order;
+            } else {
+                currentQuery = staticCategory;
+                isSearchActive = true;
+            }
         }
         // Load and render data when on page > 1 or when no pre-rendered cards exist
         loadAndRender();

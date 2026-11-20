@@ -1,10 +1,16 @@
 # ==============================================
 # robots.txt — kumpulenak.my.id
-# Optimized for maximum SEO crawl coverage & WRS rendering
+# Optimized for maximum US & EU SEO crawl coverage & WRS rendering
 # ==============================================
 
 User-agent: *
 Allow: /
+Allow: /de
+Allow: /fr
+Allow: /es
+Allow: /it
+Allow: /nl
+Allow: /pl
 Allow: /trending
 Allow: /directory
 Allow: /v/

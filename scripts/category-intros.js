@@ -170,7 +170,7 @@ const EDITORIAL_INTROS = {
         ]
     },
     'american': {
-        heading: 'American / USA Pornstars, College Party & 1080p HD Clips',
+        heading: 'American / USA Stars, Viral Studios & 1080p HD Clips',
         paragraphs: [
             'Stream top-tier US adult entertainment in our American HD hub, uniting Hollywood-grade studios, famous US pornstars, and authentic American amateur creators from Los Angeles, Miami, Las Vegas, and New York.',
             'Every American video supports instant HTML5 playback up to 1080p Full HD and 60 FPS, served via low-latency North American and European edge networks.',
@@ -225,7 +225,52 @@ function getCategoryEditorial(slug, title) {
     };
 }
 
+/**
+ * Generate contextual FAQ items for Category Hub Rich Results & Long-Tail US/EU Queries
+ * @param {string} slug
+ * @param {string} title
+ */
+function getCategoryFaq(slug, title) {
+    const cleanTitle = title || slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return [
+        {
+            question: `Are ${cleanTitle} free to stream in 1080p Full HD in the USA and Europe?`,
+            answer: `Yes. Every release in our ${cleanTitle} hub streams 100% free in adaptive Full HD (up to 1080p 60FPS) across the United States, United Kingdom, Germany, France, Spain, Italy, and worldwide with zero registration.`
+        },
+        {
+            question: `How often is the ${cleanTitle} collection updated?`,
+            answer: `Our ${cleanTitle} hub is refreshed automatically every day with trending international releases, viewer-rated favorites, and verified high-definition uploads.`
+        },
+        {
+            question: `Can I watch ${cleanTitle} on iPhone, Android, or Smart TV without an app?`,
+            answer: `Yes. All streams use native HTML5 video playback optimized for Safari on iOS, Chrome on Android, desktop browsers, and tablets with low-latency US and European CDN delivery.`
+        }
+    ];
+}
+
+const RELATED_CATEGORY_CLUSTERS = {
+    'american': ['european', 'british', 'amateur', 'milf', 'blonde', 'pov', 'hd-porn-1080p'],
+    'european': ['british', 'german', 'french', 'spanish', 'italian', 'czech', 'american'],
+    'british': ['european', 'american', 'amateur', 'milf', 'blonde', 'redhead', 'pov'],
+    'german': ['european', 'czech', 'french', 'italian', 'amateur', 'milf', 'hd-porn-1080p'],
+    'french': ['european', 'italian', 'spanish', 'romantic', 'amateur', 'lingerie', 'hd-porn-1080p'],
+    'spanish': ['european', 'latina', 'italian', 'french', 'amateur', 'couple', 'hd-porn-1080p'],
+    'italian': ['european', 'french', 'spanish', 'romantic', 'milf', 'brunette', 'hd-porn-1080p'],
+    'czech': ['european', 'german', 'russian', 'casting', 'amateur', 'public', 'hd-porn-1080p'],
+    'amateur': ['homemade', 'couple', 'american', 'european', 'pov', 'milf', 'hd-porn-1080p'],
+    'milf': ['mature', 'hotwife', 'housewives', 'american', 'european', 'blonde', 'big-tits'],
+    'pov': ['amateur', 'american', 'european', 'babe', 'blonde', 'latina', '60-fps'],
+    'hd-porn-1080p': ['60-fps', 'hq-porn', 'american', 'european', 'amateur', 'milf', 'pov'],
+    '60-fps': ['hd-porn-1080p', 'hq-porn', 'american', 'european', 'pov', 'babe', 'vr-porn']
+};
+
+function getRelatedCategories(slug) {
+    return RELATED_CATEGORY_CLUSTERS[slug] || ['american', 'european', 'british', 'german', 'french', 'amateur', 'milf', 'pov', 'hd-porn-1080p'];
+}
+
 module.exports = {
     EDITORIAL_INTROS,
-    getCategoryEditorial
+    getCategoryEditorial,
+    getCategoryFaq,
+    getRelatedCategories
 };

@@ -4,13 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const {
     BASE_URL,
-    OG_ALTERNATE_LOCALES,
-    buildHreflangBlock,
+    RSS_LINK_TAG,
+    buildOgAlternateLocalesForHub,
+    buildHomeHreflangCluster,
     generateWebSiteSchema,
     generateOrganizationSchema,
     generateItemListSchema
 } = require('./schema-helper');
-const { cleanVideoTitle, isInternationalFriendly } = require('./content-filter');
+const { cleanVideoTitle, isUSEUFriendly } = require('./content-filter');
 
 const ROOT_DIR = path.join(__dirname, '..');
 const INDEX_HTML_PATH = path.join(ROOT_DIR, 'index.html');
@@ -59,7 +60,7 @@ function generateCardHTML(video, index) {
     return `                <a href="${escapeHTML(videoUrl)}" class="card" aria-label="${safeTitle}">
                     <div class="card-img-wrapper">
                         ${badges}
-                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} HD Video Thumbnail" ${imgAttrs} onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} 1080p HD Video Thumbnail" ${imgAttrs} class="loaded" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
@@ -98,70 +99,109 @@ const SEO_CRAWL_HUB_HTML = `            <nav class="seo-crawl-hub" aria-label="U
                     <a href="/category/brunette" class="video-tag">Brunette</a>
                     <a href="/category/latina" class="video-tag">Latina</a>
                     <a href="/category/ebony" class="video-tag">Ebony</a>
-                    <a href="/category/asian" class="video-tag">Asian</a>
                     <a href="/category/romantic" class="video-tag">Romantic</a>
                     <a href="/category/big-tits" class="video-tag">Big Tits</a>
                     <a href="/category/big-ass" class="video-tag">Big Ass</a>
                     <a href="/category/couple" class="video-tag">Couples</a>
-                    <a href="/category/cosplay" class="video-tag">Cosplay</a>
+                    <a href="/de" class="video-tag" hreflang="de">🇩🇪 Deutsch Hub</a>
+                    <a href="/fr" class="video-tag" hreflang="fr">🇫🇷 Français Hub</a>
+                    <a href="/es" class="video-tag" hreflang="es">🇪🇸 Español Hub</a>
+                    <a href="/it" class="video-tag" hreflang="it">🇮🇹 Italiano Hub</a>
+                    <a href="/nl" class="video-tag" hreflang="nl">🇳🇱 Nederlands Hub</a>
+                    <a href="/pl" class="video-tag" hreflang="pl">🇵🇱 Polski Hub</a>
                 </div>
             </nav>`;
 
-async function fetchCleanInternationalVideos(targetCount = 24) {
-    const endpoints = [
-        'https://www.eporner.com/api/v2/video/search/?per_page=50&page=1&thumbsize=big&order=top-weekly&gay=0&lq=1&format=json',
-        'https://www.eporner.com/api/v2/video/search/?per_page=50&page=1&thumbsize=big&order=most-popular&gay=0&lq=1&format=json',
-        'https://www.eporner.com/api/v2/video/search/?per_page=50&page=2&thumbsize=big&order=most-popular&gay=0&lq=1&format=json'
+/**
+ * Fetches 100% genuine US & European Western-Latin videos in round-robin diversity
+ * across top US & European search topics so index.html sends an unambiguous US/EU signal.
+ */
+async function fetchCleanUSEUVideos(targetCount = 24) {
+    const queries = [
+        { q: 'american', order: 'most-popular' },
+        { q: 'european', order: 'most-popular' },
+        { q: 'british', order: 'most-popular' },
+        { q: 'hd porn 1080p', order: 'top-weekly' },
+        { q: 'blonde', order: 'most-popular' },
+        { q: 'milf', order: 'top-weekly' },
+        { q: 'german', order: 'most-popular' },
+        { q: 'french', order: 'most-popular' },
+        { q: 'pov', order: 'most-popular' },
+        { q: 'amateur', order: 'top-weekly' },
+        { q: 'spanish', order: 'most-popular' },
+        { q: 'italian', order: 'most-popular' }
     ];
 
-    const seen = new Set();
-    const collected = [];
-
-    for (const url of endpoints) {
-        if (collected.length >= targetCount) break;
+    const buckets = [];
+    for (const item of queries) {
+        const url = `https://www.eporner.com/api/v2/video/search/?query=${encodeURIComponent(item.q)}&per_page=16&page=1&thumbsize=big&order=${item.order}&gay=0&lq=1&format=json`;
         try {
             const res = await fetch(url);
             if (!res.ok) continue;
             const data = await res.json();
             if (!data || !Array.isArray(data.videos)) continue;
-
-            for (const v of data.videos) {
-                if (!v || !v.id || seen.has(v.id)) continue;
-                if (!isInternationalFriendly(v)) continue;
-                v.title = cleanVideoTitle(v.title);
-                seen.add(v.id);
-                collected.push(v);
-                if (collected.length >= targetCount) break;
-            }
+            const clean = data.videos
+                .filter(v => v && v.id && v.default_thumb && v.default_thumb.src && isUSEUFriendly(v))
+                .map(v => ({ ...v, title: cleanVideoTitle(v.title) }));
+            if (clean.length > 0) buckets.push(clean);
         } catch (err) {
-            console.warn('Warning fetching endpoint:', err.message);
+            console.warn(`Warning fetching US/EU query "${item.q}":`, err.message);
         }
     }
+
+    // Round-robin pick across buckets for maximum US + EU topical diversity
+    const seen = new Set();
+    const collected = [];
+    let round = 0;
+    while (collected.length < targetCount && round < 16) {
+        let addedInRound = false;
+        for (const bucket of buckets) {
+            if (collected.length >= targetCount) break;
+            const v = bucket[round];
+            if (!v || seen.has(v.id)) continue;
+            seen.add(v.id);
+            collected.push(v);
+            addedInRound = true;
+        }
+        if (!addedInRound) break;
+        round++;
+    }
+
     return collected;
 }
 
 async function prerenderHome() {
-    console.log('Pre-rendering US & European international videos for index.html...');
-    const cleanVideos = await fetchCleanInternationalVideos(24);
-    if (cleanVideos.length === 0) throw new Error('No clean international videos returned');
+    console.log('Pre-rendering 100% US & European HD videos for index.html...');
+    const cleanVideos = await fetchCleanUSEUVideos(24);
+    if (cleanVideos.length < 12) throw new Error(`Expected >= 12 clean US/EU videos, got ${cleanVideos.length}`);
 
     const cardsHtml = cleanVideos.map((v, i) => generateCardHTML(v, i)).join('\n');
     let indexHtml = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
 
-    // Update geo meta & Hreflang Tier-1 US & EU cluster
+    // Update geo meta & reciprocal Hreflang cluster (clean, zero whitespace drift)
     indexHtml = indexHtml.replace(
         /<meta name="geo\.region"[^>]*>\s*<meta name="geo\.placename"[^>]*>/,
-        `<meta name="geo.region" content="US">\n    <meta name="geo.placename" content="United States, Europe, Global">`
+        `<meta name="geo.region" content="US">\n    <meta name="geo.placename" content="United States, United Kingdom, Europe">`
     );
     indexHtml = indexHtml.replace(/<meta property="og:locale:alternate"[^>]*>\s*/g, '');
     indexHtml = indexHtml.replace(
         /<meta property="og:locale" content="en_US">/,
-        `<meta property="og:locale" content="en_US">\n${OG_ALTERNATE_LOCALES}`
+        `<meta property="og:locale" content="en_US">\n${buildOgAlternateLocalesForHub('en_US')}`
     );
     indexHtml = indexHtml.replace(
-        /<!-- Hreflang[\s\S]*?(?:<link rel="alternate"[^>]*>\s*)+/,
-        `${buildHreflangBlock('https://www.kumpulenak.my.id/')}\n    <link rel="alternate" type="application/rss+xml" title="kumpulenak US &amp; EU HD Video Feed" href="https://www.kumpulenak.my.id/rss.xml">\n\n    `
+        /[ \t]*<!-- Hreflang[\s\S]*?(?:<link rel="alternate"[^>]*>\s*)+/,
+        `${buildHomeHreflangCluster()}\n${RSS_LINK_TAG}\n\n`
     );
+
+    // Inject LCP preload for the #1 video thumbnail
+    const lcpThumb = cleanVideos[0]?.default_thumb?.src || '';
+    indexHtml = indexHtml.replace(/[ \t]*<link rel="preload" as="image"[^>]*>\s*/g, '');
+    if (lcpThumb) {
+        indexHtml = indexHtml.replace(
+            '<!-- Preload Critical Resources -->',
+            `<!-- Preload Critical Resources -->\n    <link rel="preload" as="image" href="${escapeHTML(lcpThumb)}" fetchpriority="high">`
+        );
+    }
 
     // Update WebSite and Organization JSON-LD schemas for US/EU reach
     const wsSchema = generateWebSiteSchema();
@@ -191,20 +231,6 @@ async function prerenderHome() {
         `$1\n\n${SEO_CRAWL_HUB_HTML}`
     );
 
-    // Ensure /trending and /directory links exist in footer
-    if (!indexHtml.includes('href="/trending"')) {
-        indexHtml = indexHtml.replace(
-            '<a href="/">Home</a>',
-            '<a href="/">Home</a>\n            <a href="/trending">Top 100 US &amp; EU</a>'
-        );
-    }
-    if (!indexHtml.includes('href="/directory"')) {
-        indexHtml = indexHtml.replace(
-            '<a href="/trending">Top 100 US &amp; EU</a>',
-            '<a href="/trending">Top 100 US &amp; EU</a>\n            <a href="/directory">Video Directory</a>'
-        );
-    }
-
     // Build ItemList JSON-LD
     const cardItems = cleanVideos.map(v => {
         const title = cleanVideoTitle(v.title || 'Untitled');
@@ -215,17 +241,18 @@ async function prerenderHome() {
             image: (v.default_thumb && v.default_thumb.src) ? v.default_thumb.src : ''
         };
     });
-    const itemListSchema = generateItemListSchema('Trending US & European HD Videos', 'Watch trending viral full HD 1080p videos and exclusive adult clips across US & Europe on kumpulenak.', cardItems);
+    const itemListSchema = generateItemListSchema(
+        'Trending US & European 1080p HD Videos',
+        'Stream trending 1080p Full HD 60FPS adult videos across the USA, UK & Europe on kumpulenak.',
+        cardItems
+    );
 
-    // Remove old ItemList if present
     indexHtml = indexHtml.replace(/\s*<!-- JSON-LD ItemList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
-
-    // Insert ItemList right before <!-- Gallery Styles -->
     const itemListHtml = `\n    <!-- JSON-LD ItemList -->\n    <script type="application/ld+json">\n${JSON.stringify(itemListSchema, null, 2)}\n    </script>`;
     indexHtml = indexHtml.replace('<!-- Gallery Styles -->', `${itemListHtml}\n\n    <!-- Gallery Styles -->`);
 
     fs.writeFileSync(INDEX_HTML_PATH, indexHtml, 'utf8');
-    console.log(`✅ Pre-rendered ${cleanVideos.length} US/EU international cards and updated ItemList/Hreflang schemas in index.html`);
+    console.log(`✅ Pre-rendered ${cleanVideos.length} 100% US/EU cards, LCP preload, reciprocal EU/US hreflang & ItemList in index.html`);
 }
 
 prerenderHome().catch(err => {

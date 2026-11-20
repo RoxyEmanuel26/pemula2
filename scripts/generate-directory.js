@@ -2,14 +2,21 @@
 
 const fs = require('fs');
 const path = require('path');
-const { buildHreflangBlock, OG_ALTERNATE_LOCALES } = require('./schema-helper');
-const { cleanVideoTitle, isHarmfulContent, isInternationalFriendly } = require('./content-filter');
+const {
+    BASE_URL,
+    ASSET_VERSION,
+    EU_HUBS,
+    RSS_LINK_TAG,
+    OG_LOCALES_EN,
+    buildHreflangBlock
+} = require('./schema-helper');
+const { cleanVideoTitle, isHarmfulContent, isUSEUFriendly } = require('./content-filter');
 
 const ROOT_DIR = path.join(__dirname, '..');
 const SITEMAPS_DIR = path.join(ROOT_DIR, 'sitemaps');
+const CATEGORY_DIR = path.join(ROOT_DIR, 'category');
 const GALLERY_JS_PATH = path.join(ROOT_DIR, 'assets', 'js', 'gallery.js');
 const OUTPUT_PATH = path.join(ROOT_DIR, 'directory.html');
-const BASE_URL = 'https://www.kumpulenak.my.id';
 
 function escapeHTML(str) {
     if (!str) return '';
@@ -53,7 +60,7 @@ function extractCleanVideosFromShards(maxCount = 160) {
     const shardFiles = fs.readdirSync(SITEMAPS_DIR)
         .filter(f => /^sitemap_video_\d{4}-\d{2}-\d{2}_\d+\.xml$/.test(f))
         .sort()
-        .reverse(); // Newest shards first
+        .reverse();
 
     const collected = [];
     const seenIds = new Set();
@@ -81,7 +88,7 @@ function extractCleanVideosFromShards(maxCount = 160) {
             const rawTitle = decodeXml(titleMatch[1]);
             if (isHarmfulContent(rawTitle)) continue;
             const cleanedTitle = cleanVideoTitle(rawTitle);
-            if (!isInternationalFriendly({ title: cleanedTitle })) continue;
+            if (!isUSEUFriendly({ title: cleanedTitle })) continue;
 
             const sec = durMatch ? Number(durMatch[1]) : 0;
             const durationStr = sec > 0 ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}` : 'HD';
@@ -101,23 +108,90 @@ function extractCleanVideosFromShards(maxCount = 160) {
     return collected;
 }
 
+/**
+ * Extracts category-matched US & EU cards from pre-rendered category/*.html files
+ * so api/video.js can serve topically relevant Related Videos with 0 external HTTP calls!
+ */
+function buildCategoryAwareRelatedPool(fallbackVideos) {
+    const priorityCategories = [
+        'american', 'european', 'british', 'german', 'french', 'spanish', 'italian', 'czech',
+        'amateur', 'milf', 'pov', 'hd-porn-1080p', '60-fps', 'blonde', 'brunette', 'latina',
+        'ebony', 'babe', 'big-tits', 'big-ass', 'couple', 'romantic', 'mature', 'homemade'
+    ];
+
+    const categoriesMap = {};
+    const allSeen = new Set();
+    const allPool = [];
+
+    for (const slug of priorityCategories) {
+        const catPath = path.join(CATEGORY_DIR, `${slug}.html`);
+        if (!fs.existsSync(catPath)) continue;
+        const html = fs.readFileSync(catPath, 'utf8');
+        const cardRegex = /<a href="(\/v\/([A-Za-z0-9]{6,32})[^"]*)" class="card"[^>]*>[\s\S]*?<img src="([^"]+)"[\s\S]*?<span class="card-date">📅 ([^<]+)<\/span>\s*<span class="card-views">👁 ([^<]+)<\/span>[\s\S]*?<h3 class="card-title">([^<]+)<\/h3>/g;
+        const list = [];
+        let m;
+        while ((m = cardRegex.exec(html)) !== null && list.length < 14) {
+            const id = m[2];
+            const thumb = decodeXml(m[3]);
+            const added = m[4].trim();
+            const views = parseInt(m[5].replace(/,/g, ''), 10) || 12500;
+            const title = cleanVideoTitle(decodeXml(m[6]));
+            if (!isUSEUFriendly({ title })) continue;
+
+            const durMatch = m[0].match(/<span class="badge-duration">([^<]+)<\/span>/);
+            const rateMatch = m[0].match(/<span class="badge-rating">⭐ ([^<]+)<\/span>/);
+
+            const entry = {
+                id,
+                title,
+                added,
+                length_min: durMatch ? durMatch[1] : 'HD',
+                rate: rateMatch ? rateMatch[1] : '4.6',
+                views,
+                default_thumb: { src: thumb }
+            };
+            list.push(entry);
+            if (!allSeen.has(id) && allPool.length < 72) {
+                allSeen.add(id);
+                allPool.push(entry);
+            }
+        }
+        if (list.length > 0) {
+            categoriesMap[slug] = list;
+        }
+    }
+
+    // Backfill allPool from clean shard videos if needed
+    for (const v of fallbackVideos) {
+        if (allPool.length >= 72) break;
+        if (allSeen.has(v.id)) continue;
+        allSeen.add(v.id);
+        allPool.push({
+            id: v.id,
+            title: v.title,
+            added: v.date,
+            length_min: v.duration,
+            rate: '4.6',
+            views: 15000,
+            default_thumb: { src: v.thumb }
+        });
+    }
+
+    return { categories: categoriesMap, all: allPool };
+}
+
 function generateDirectoryPage() {
-    console.log('📂 Generating /directory.html (HTML Sitemap & International Video Directory)...');
+    console.log('📂 Generating /directory.html (HTML Sitemap, 95 Categories & Category-Keyed Related Pool)...');
     const categories = loadCategories();
     const videos = extractCleanVideosFromShards(160);
 
-    // Save static related videos pool so api/video.js needs ZERO extra external API calls on Vercel Free Tier
+    // Save category-keyed US/EU related videos pool (0 external API calls in api/video.js on Vercel Free Tier)
     const relatedPoolPath = path.join(ROOT_DIR, 'data', 'related-pool.json');
-    const relatedPool = videos.slice(0, 48).map(v => ({
-        id: v.id,
-        title: v.title,
-        added: v.date,
-        length_min: v.duration,
-        rate: '4.6',
-        views: 12500,
-        default_thumb: { src: v.thumb }
-    }));
-    fs.writeFileSync(relatedPoolPath, JSON.stringify(relatedPool, null, 2), 'utf8');
+    const relatedPoolData = buildCategoryAwareRelatedPool(videos);
+    fs.writeFileSync(relatedPoolPath, JSON.stringify(relatedPoolData, null, 2), 'utf8');
+
+    const pageTitle = `US & EU HD Video Directory — ${categories.length} Categories | kumpulenak`;
+    const pageDesc = `Explore all ${categories.length} curated 1080p Full HD adult video categories, 6 European language hubs, and daily trending US & EU releases free on kumpulenak.`;
 
     const schema = {
         '@context': 'https://schema.org',
@@ -141,13 +215,25 @@ function generateDirectoryPage() {
             },
             {
                 '@type': 'CollectionPage',
-                'name': 'Full HD Adult Video Directory & 85+ International Categories | kumpulenak',
-                'description': 'Browse the complete A-Z index of 85+ international HD video categories and latest trending viral releases on kumpulenak.',
+                'name': pageTitle,
+                'description': pageDesc,
                 'url': `${BASE_URL}/directory`,
-                'inLanguage': 'en'
+                'inLanguage': 'en',
+                'isPartOf': {
+                    '@type': 'WebSite',
+                    'name': 'kumpulenak',
+                    'url': BASE_URL
+                }
             }
         ]
     };
+
+    const euHubsHtml = EU_HUBS.map(hub =>
+        `                <a href="${hub.path}" class="dir-cat-card" hreflang="${hub.code}">
+                    <span class="dir-cat-name">${escapeHTML(hub.label)} (${hub.shortLabel})</span>
+                    <span class="dir-cat-badge">EU HD</span>
+                </a>`
+    ).join('\n');
 
     const categoriesHtml = categories.map(cat =>
         `                <a href="/category/${escapeHTML(cat.slug)}" class="dir-cat-card">
@@ -169,30 +255,45 @@ function generateDirectoryPage() {
     <meta charset="UTF-8">
     <meta name="referrer" content="no-referrer-when-downgrade">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete US &amp; European HD Video Directory &amp; ${categories.length} Categories | kumpulenak</title>
-    <meta name="description" content="Explore the complete A-Z directory of ${categories.length} full HD 1080p adult video categories and trending US &amp; European video archives on kumpulenak.">
+    <title>${escapeHTML(pageTitle)}</title>
+    <meta name="description" content="${escapeHTML(pageDesc)}">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="rating" content="adult">
     <meta name="language" content="English">
 
-    <link rel="canonical" href="https://www.kumpulenak.my.id/directory">
-${buildHreflangBlock('https://www.kumpulenak.my.id/directory')}
+    <link rel="canonical" href="${BASE_URL}/directory">
+${buildHreflangBlock(`${BASE_URL}/directory`)}
+${RSS_LINK_TAG}
 
     <meta property="og:locale" content="en_US">
-${OG_ALTERNATE_LOCALES}
+${OG_LOCALES_EN}
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="kumpulenak">
-    <meta property="og:title" content="Complete US &amp; European HD Video Directory &amp; ${categories.length} Categories | kumpulenak">
-    <meta property="og:description" content="Explore the complete A-Z directory of ${categories.length} full HD 1080p adult video categories and trending US &amp; European video archives on kumpulenak.">
-    <meta property="og:url" content="https://www.kumpulenak.my.id/directory">
-    <meta property="og:image" content="https://www.kumpulenak.my.id/assets/icons/og-image.png">
+    <meta property="og:title" content="${escapeHTML(pageTitle)}">
+    <meta property="og:description" content="${escapeHTML(pageDesc)}">
+    <meta property="og:url" content="${BASE_URL}/directory">
+    <meta property="og:image" content="${BASE_URL}/assets/icons/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="kumpulenak US &amp; EU HD Video Directory">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@kumpulenak">
+    <meta name="twitter:title" content="${escapeHTML(pageTitle)}">
+    <meta name="twitter:description" content="${escapeHTML(pageDesc)}">
+    <meta name="twitter:image" content="${BASE_URL}/assets/icons/og-image.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"></noscript>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
-    <link rel="manifest" href="/assets/icons/site.webmanifest">
+    <link rel="manifest" href="/site.webmanifest">
 
-    <link rel="stylesheet" href="/assets/css/gallery.css?v=5.4.0">
+    <link rel="stylesheet" href="/assets/css/gallery.css?v=${ASSET_VERSION}">
     <script type="application/ld+json">
 ${JSON.stringify(schema, null, 2)}
     </script>
@@ -215,12 +316,12 @@ ${JSON.stringify(schema, null, 2)}
 <body>
     <header class="header">
         <div class="header-inner">
-            <div class="logo" onclick="window.location='/'">kumpul<span>enak</span></div>
-            <nav class="nav-tabs">
-                <a href="/" class="nav-tab" style="text-decoration:none;">Popular</a>
-                <a href="/trending" class="nav-tab" style="text-decoration:none;">Top 100 US &amp; EU</a>
-                <a href="/directory" class="nav-tab active" style="text-decoration:none;">Directory</a>
-                <a href="/category/hd-porn-1080p" class="nav-tab" style="text-decoration:none;">1080p HD</a>
+            <a href="/" class="logo" aria-label="kumpulenak Home">kumpul<span>enak</span></a>
+            <nav class="nav-tabs" aria-label="Primary Navigation">
+                <a href="/" class="nav-tab">Popular</a>
+                <a href="/trending" class="nav-tab">Top 100 US &amp; EU</a>
+                <a href="/directory" class="nav-tab active">Directory</a>
+                <a href="/category/hd-porn-1080p" class="nav-tab">1080p HD</a>
             </nav>
         </div>
     </header>
@@ -239,8 +340,19 @@ ${JSON.stringify(schema, null, 2)}
             <span class="current" aria-current="page">Complete HD Video Directory</span>
         </nav>
 
-        <h1 class="main-seo-title">Complete HD Video Directory &amp; International Categories</h1>
-        <p class="main-seo-desc">Browse all ${categories.length} curated full HD 1080p categories and explore our latest indexed international video releases below. Every stream is optimized for instant mobile and desktop playback.</p>
+        <h1 class="main-seo-title">Complete US &amp; European HD Video Directory</h1>
+        <p class="main-seo-desc">Browse all ${categories.length} curated 1080p Full HD categories, 6 European native-language hubs, and our latest indexed US &amp; EU releases below. Every stream is optimized for instant HTML5 mobile and desktop playback.</p>
+
+        <section class="dir-section" aria-label="European Native Language Hubs">
+            <h2>European Native-Language Editions</h2>
+            <div class="dir-cat-grid">
+                <a href="/" class="dir-cat-card" hreflang="en">
+                    <span class="dir-cat-name">English (US / UK)</span>
+                    <span class="dir-cat-badge">US/UK</span>
+                </a>
+${euHubsHtml}
+            </div>
+        </section>
 
         <section class="dir-section" aria-label="All Video Categories A-Z">
             <h2>All ${categories.length} International Categories (A–Z)</h2>
@@ -253,7 +365,7 @@ ${categoriesHtml}
 <div id="container-0dae6421659ccec66a169a9192f11484"></div>
 
         <section class="dir-section" aria-label="Latest Trending Videos Archive" style="margin-top: 24px;">
-            <h2>Latest Featured International HD Videos (${videos.length} Direct Streams)</h2>
+            <h2>Latest Featured US &amp; European HD Videos (${videos.length} Direct Streams)</h2>
             <ul class="dir-video-list">
 ${videosHtml}
             </ul>
@@ -267,23 +379,29 @@ ${videosHtml}
             <a href="/">Home</a>
             <a href="/trending">Top 100 US &amp; EU</a>
             <a href="/directory">Video Directory</a>
+            <a href="/de">Deutsch</a>
+            <a href="/fr">Français</a>
+            <a href="/es">Español</a>
+            <a href="/it">Italiano</a>
+            <a href="/nl">Nederlands</a>
+            <a href="/pl">Polski</a>
             <a href="/about">About Us</a>
-            <a href="/howto">How to Download</a>
+            <a href="/howto">Streaming Guide</a>
             <a href="/contact">Contact</a>
-            <a href="/dmca">DMCA</a>
+            <a href="/dmca">DMCA &amp; 2257</a>
             <a href="/privacy">Privacy Policy</a>
             <a href="/terms">Terms of Service</a>
         </div>
         <p>All resources are shared by their respective owners. &copy; 2026 kumpulenak</p>
     </footer>
 
-    <script src="/assets/js/loader.js?v=5.4.0" defer></script>
+    <script src="/assets/js/loader.js?v=${ASSET_VERSION}" defer></script>
 </body>
 </html>
 `;
 
     fs.writeFileSync(OUTPUT_PATH, html, 'utf8');
-    console.log(`✅ Generated /directory.html with ${categories.length} categories and ${videos.length} direct video links.`);
+    console.log(`✅ Generated /directory.html (${categories.length} categories, ${videos.length} US/EU videos) & category-keyed related-pool.json (${Object.keys(relatedPoolData.categories).length} categories).`);
 }
 
 if (require.main === module) {

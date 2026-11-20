@@ -4,12 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const {
     BASE_URL,
-    OG_ALTERNATE_LOCALES,
+    RSS_LINK_TAG,
+    OG_LOCALES_EN,
     buildHreflangBlock,
+    generateCollectionPageSchema,
     generateBreadcrumbSchema,
     generateItemListSchema
 } = require('./schema-helper');
-const { cleanVideoTitle, isInternationalFriendly } = require('./content-filter');
+const { cleanVideoTitle, isUSEUFriendly } = require('./content-filter');
 
 const ROOT_DIR = path.join(__dirname, '..');
 const INDEX_HTML_PATH = path.join(ROOT_DIR, 'index.html');
@@ -37,37 +39,55 @@ function slugify(title) {
 }
 
 async function fetchTop100USEUVideos() {
-    const endpoints = [
-        'https://www.eporner.com/api/v2/video/search/?per_page=60&page=1&thumbsize=big&order=top-weekly&gay=0&lq=1&format=json',
-        'https://www.eporner.com/api/v2/video/search/?per_page=60&page=1&thumbsize=big&order=top-monthly&gay=0&lq=1&format=json',
-        'https://www.eporner.com/api/v2/video/search/?per_page=60&page=1&thumbsize=big&order=most-popular&gay=0&lq=1&format=json',
-        'https://www.eporner.com/api/v2/video/search/?per_page=60&page=1&thumbsize=big&order=top-rated&gay=0&lq=1&format=json'
+    const queries = [
+        { q: 'american', order: 'most-popular' },
+        { q: 'european', order: 'most-popular' },
+        { q: 'british', order: 'most-popular' },
+        { q: 'german', order: 'most-popular' },
+        { q: 'french', order: 'most-popular' },
+        { q: 'spanish', order: 'most-popular' },
+        { q: 'italian', order: 'most-popular' },
+        { q: 'hd porn 1080p', order: 'top-weekly' },
+        { q: '60 fps', order: 'most-popular' },
+        { q: 'blonde', order: 'most-popular' },
+        { q: 'milf', order: 'most-popular' },
+        { q: 'pov', order: 'most-popular' },
+        { q: 'amateur', order: 'most-popular' },
+        { q: 'brunette', order: 'most-popular' },
+        { q: 'babe', order: 'top-rated' }
     ];
 
     const seen = new Set();
     const collected = [];
 
-    for (const url of endpoints) {
+    for (const item of queries) {
         if (collected.length >= 100) break;
+        const url = `https://www.eporner.com/api/v2/video/search/?query=${encodeURIComponent(item.q)}&per_page=20&page=1&thumbsize=big&order=${item.order}&gay=0&lq=1&format=json`;
         try {
             const res = await fetch(url);
             if (!res.ok) continue;
             const data = await res.json();
             if (!data || !Array.isArray(data.videos)) continue;
+            let addedFromQuery = 0;
             for (const v of data.videos) {
                 if (!v || !v.id || seen.has(v.id)) continue;
-                if (!isInternationalFriendly(v)) continue;
+                if (!v.default_thumb || !v.default_thumb.src) continue;
+                if (!isUSEUFriendly(v)) continue;
                 v.title = cleanVideoTitle(v.title);
                 seen.add(v.id);
                 collected.push(v);
-                if (collected.length >= 100) break;
+                addedFromQuery++;
+                if (collected.length >= 100 || addedFromQuery >= 8) break;
             }
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 120));
         } catch (err) {
-            console.warn('Warning fetching trending endpoint:', err.message);
+            console.warn(`Warning fetching trending query "${item.q}":`, err.message);
         }
     }
-    return collected;
+
+    // Sort by views descending so the Top 100 chart genuinely reflects highest-watched US/EU hits
+    collected.sort((a, b) => (Number(b.views) || 0) - (Number(a.views) || 0));
+    return collected.slice(0, 100);
 }
 
 function generateCardHTML(video, index) {
@@ -92,7 +112,7 @@ function generateCardHTML(video, index) {
     return `                <a href="${escapeHTML(videoUrl)}" class="card" aria-label="#${index + 1} ${safeTitle}">
                     <div class="card-img-wrapper">
                         ${badges}
-                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} Full HD Thumbnail" ${imgAttrs} onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
+                        <img src="${escapeHTML(thumbUrl)}" alt="${safeTitle} 1080p Full HD Thumbnail" ${imgAttrs} class="loaded" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded'); this.style.background='#333';">
                     </div>
                     <div class="card-meta">
                         <div class="card-date-views">
@@ -105,10 +125,10 @@ function generateCardHTML(video, index) {
 }
 
 async function generateTrendingPage() {
-    console.log('🔥 Generating /trending.html (Top 100 US & European HD Videos Chart)...');
+    console.log('🔥 Generating /trending.html (Top 100 100% US & European HD Chart)...');
     const videos = await fetchTop100USEUVideos();
     if (videos.length < 24) {
-        throw new Error(`Expected >= 24 clean videos for /trending.html, got ${videos.length}`);
+        throw new Error(`Expected >= 24 clean US/EU videos for /trending.html, got ${videos.length}`);
     }
 
     const template = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
@@ -127,15 +147,32 @@ async function generateTrendingPage() {
     html = html.replace(/<link rel="canonical"[^>]*href=".*?">/s, `<link rel="canonical" id="canonicalLink" href="${pageUrl}">`);
 
     html = html.replace(
-        /<!-- Hreflang[\s\S]*?(?:<link rel="alternate"[^>]*>\s*)+/,
-        `${buildHreflangBlock(pageUrl)}\n\n    `
+        /[ \t]*<!-- Hreflang[\s\S]*?(?:<link rel="alternate"[^>]*>\s*)+/,
+        `${buildHreflangBlock(pageUrl)}\n${RSS_LINK_TAG}\n\n`
     );
     html = html.replace(/<meta property="og:locale:alternate"[^>]*>\s*/g, '');
     html = html.replace(
         /<meta property="og:locale" content="en_US">/,
-        `<meta property="og:locale" content="en_US">\n${OG_ALTERNATE_LOCALES}`
+        `<meta property="og:locale" content="en_US">\n${OG_LOCALES_EN}`
     );
 
+    // Update LCP preload to trending #1 video thumb
+    const lcpThumb = videos[0]?.default_thumb?.src || '';
+    html = html.replace(/[ \t]*<link rel="preload" as="image"[^>]*>\s*/g, '');
+    if (lcpThumb) {
+        html = html.replace(
+            '<!-- Preload Critical Resources -->',
+            `<!-- Preload Critical Resources -->\n    <link rel="preload" as="image" href="${escapeHTML(lcpThumb)}" fetchpriority="high">`
+        );
+    }
+
+    // Remove homepage-only WebSite & Organization schemas (keep CollectionPage + BreadcrumbList + ItemList)
+    html = html.replace(/\s*<!-- JSON-LD Structured Data: WebSite \+ SearchAction -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+    html = html.replace(/\s*<!-- JSON-LD Structured Data: Organization -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+    html = html.replace(/\s*<!-- JSON-LD BreadcrumbList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+    html = html.replace(/\s*<!-- JSON-LD ItemList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+
+    const collectionSchema = generateCollectionPageSchema(seoTitle, seoDesc, pageUrl, 'en');
     const breadcrumbSchema = generateBreadcrumbSchema([
         { name: 'Home', url: `${BASE_URL}/` },
         { name: 'Top 100 US & EU Trending', url: pageUrl }
@@ -152,10 +189,9 @@ async function generateTrendingPage() {
     });
     const itemListSchema = generateItemListSchema('Top 100 US & European HD Videos', seoDesc, cardItems);
 
-    html = html.replace(/\s*<!-- JSON-LD BreadcrumbList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
-    html = html.replace(/\s*<!-- JSON-LD ItemList -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
-
     const schemasHtml = [
+        '\n    <!-- JSON-LD CollectionPage -->',
+        `    <script type="application/ld+json">\n${JSON.stringify(collectionSchema, null, 2)}\n    </script>`,
         '\n    <!-- JSON-LD BreadcrumbList -->',
         `    <script type="application/ld+json">\n${JSON.stringify(breadcrumbSchema, null, 2)}\n    </script>`,
         '\n    <!-- JSON-LD ItemList -->',
@@ -164,6 +200,10 @@ async function generateTrendingPage() {
 
     html = html.replace('<!-- Gallery Styles -->', `${schemasHtml}\n\n    <!-- Gallery Styles -->`);
     html = html.replace('<body>', '<body data-static-category="trending">');
+
+    // Highlight Top 100 tab in header nav
+    html = html.replace('<a href="/" class="nav-tab active" data-tab="popular">Popular</a>', '<a href="/" class="nav-tab" data-tab="popular">Popular</a>');
+    html = html.replace('<a href="/trending" class="nav-tab" data-tab="trending">Top 100</a>', '<a href="/trending" class="nav-tab active" data-tab="trending">Top 100</a>');
 
     const visualBreadcrumb =
         '            <nav class="breadcrumb-nav" aria-label="Breadcrumb">\n' +
@@ -176,11 +216,14 @@ async function generateTrendingPage() {
 
     html = html.replace(/<h1 class="main-seo-title">.*?<\/h1>/s, visualBreadcrumb + '            <h1 class="main-seo-title">Top 100 US &amp; European Trending HD Videos</h1>');
 
+    // Remove homepage-only language switcher bar from inner chart page
+    html = html.replace(/\s*<!-- European & International Native Language Switcher -->\s*<nav class="eu-lang-bar"[\s\S]*?<\/nav>/g, '');
+
     const trendingIntro =
         '\n            <section class="category-editorial" aria-label="About Top 100 Chart">\n' +
         '                <h2>Most Watched 1080p HD Releases in the USA, UK &amp; Europe</h2>\n' +
-        '                <p>Explore the definitive weekly Top 100 chart ranked by international popularity, viewer ratings, and high-definition streaming performance across the United States, United Kingdom, Germany, France, Spain, and Italy.</p>\n' +
-        '                <p>All 100 featured clips deliver instant HTML5 mobile and desktop playback with zero account registration. Browse regional hubs like <a href="/category/american" style="color:var(--accent);">American</a>, <a href="/category/european" style="color:var(--accent);">European</a>, <a href="/category/british" style="color:var(--accent);">British</a>, <a href="/category/german" style="color:var(--accent);">German</a>, <a href="/category/french" style="color:var(--accent);">French</a>, and <a href="/category/spanish" style="color:var(--accent);">Spanish</a>.</p>\n' +
+        '                <p>Explore the definitive weekly Top 100 chart ranked by international popularity, viewer ratings, and high-definition streaming performance across the United States, United Kingdom, Germany, France, Spain, Italy, Netherlands, and Poland.</p>\n' +
+        '                <p>All 100 featured clips deliver instant HTML5 mobile and desktop playback with zero account registration. Browse regional hubs like <a href="/category/american" style="color:var(--accent);">American</a>, <a href="/category/european" style="color:var(--accent);">European</a>, <a href="/category/british" style="color:var(--accent);">British</a>, <a href="/category/german" style="color:var(--accent);">German</a>, <a href="/category/french" style="color:var(--accent);">French</a>, and <a href="/category/spanish" style="color:var(--accent);">Spanish</a>, or switch to native European editions (<a href="/de" style="color:var(--accent);">Deutsch</a>, <a href="/fr" style="color:var(--accent);">Français</a>, <a href="/es" style="color:var(--accent);">Español</a>, <a href="/it" style="color:var(--accent);">Italiano</a>, <a href="/nl" style="color:var(--accent);">Nederlands</a>, <a href="/pl" style="color:var(--accent);">Polski</a>).</p>\n' +
         '            </section>\n';
 
     html = html.replace(
@@ -199,7 +242,7 @@ async function generateTrendingPage() {
     );
 
     fs.writeFileSync(OUTPUT_PATH, html, 'utf8');
-    console.log(`✅ Generated /trending.html with ${videos.length} US/EU top videos.`);
+    console.log(`✅ Generated /trending.html with ${videos.length} 100% US/EU top videos.`);
 }
 
 if (require.main === module) {

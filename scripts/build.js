@@ -14,7 +14,7 @@ function run(scriptName) {
 }
 
 try {
-    console.log('🚀 Starting SEO Build Pipeline for kumpulenak...');
+    console.log('🚀 Starting SEO Build Pipeline for kumpulenak (US & Europe Edition)...');
 
     // 1. Run unit tests
     run('scripts/test-sitemap.js');
@@ -22,15 +22,16 @@ try {
     run('scripts/test-video-handler.js');
     run('scripts/test-enrichment.js');
 
-    // 2. Pre-render home cards, trending chart & directory hub
+    // 2. Pre-render home cards, 6 native EU language hubs, trending chart & directory hub
     run('scripts/prerender-home.js');
+    run('scripts/generate-eu-hubs.js');
     run('scripts/generate-trending.js');
     run('scripts/generate-directory.js');
 
-    // 3. Comprehensive SEO verification
+    // 3. Comprehensive SEO & Adsterra verification
     run('scripts/verify-seo-output.js');
 
-    console.log('\n✨ Build completed successfully! All checks passed.');
+    console.log('\n✨ Build completed successfully! All US & EU SEO checks passed.');
 } catch (err) {
     console.error('\n❌ Build failed:', err.message);
     process.exit(1);

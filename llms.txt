@@ -1,16 +1,25 @@
 # kumpulenak
 
-> kumpulenak is a high-speed, mobile-responsive US & European adult video streaming directory delivering 1080p Full HD 60FPS content across 95 curated categories with rich schema markup, regional European & American hubs, and zero mandatory registration.
+> kumpulenak is a high-speed, mobile-responsive US & European adult video streaming directory delivering 1080p Full HD 60FPS content across 95 curated categories, 6 native European language editions (DE, FR, ES, IT, NL, PL), rich schema markup, and zero mandatory registration.
+
+## Regional Editions (US & Europe)
+
+- [English — USA, UK, CA, AU, IE](https://www.kumpulenak.my.id/): Primary international US & UK 1080p Full HD video portal.
+- [Deutsch — Germany, Austria, Switzerland](https://www.kumpulenak.my.id/de): Native German-language 1080p HD hub (DE/AT/CH).
+- [Français — France, Belgium, Switzerland](https://www.kumpulenak.my.id/fr): Native French-language 1080p HD hub (FR/BE/CH/CA).
+- [Español — Spain & US Hispanic](https://www.kumpulenak.my.id/es): Native Spanish-language 1080p HD hub (ES/US).
+- [Italiano — Italy & Switzerland](https://www.kumpulenak.my.id/it): Native Italian-language 1080p HD hub (IT/CH).
+- [Nederlands — Netherlands & Belgium](https://www.kumpulenak.my.id/nl): Native Dutch-language 1080p HD hub (NL/BE).
+- [Polski — Poland & Central Europe](https://www.kumpulenak.my.id/pl): Native Polish-language 1080p HD hub (PL).
 
 ## Core Content & Categories
 
-- [Home](https://www.kumpulenak.my.id/): Trending daily US & EU HD videos and search portal.
 - [Top 100 US & EU Chart](https://www.kumpulenak.my.id/trending): Most-watched and highest-rated 1080p HD videos in the United States & Europe.
 - [Complete Directory (95 Hubs)](https://www.kumpulenak.my.id/directory): Full A–Z category index and direct video links.
-- [American / USA](https://www.kumpulenak.my.id/category/american): Blockbuster US studios and authentic American creators.
+- [American / USA](https://www.kumpulenak.my.id/category/american): US studios and authentic American creators.
 - [European](https://www.kumpulenak.my.id/category/european): Pan-European 1080p HD performers and scenes.
 - [British / UK](https://www.kumpulenak.my.id/category/british): Popular UK stars and British amateur couples.
-- [German / Deutsch](https://www.kumpulenak.my.id/category/german): German performers and Deutsche Amateure HD clips.
+- [German / Deutsch](https://www.kumpulenak.my.id/category/german): German performers and Deutsche HD clips.
 - [French / Français](https://www.kumpulenak.my.id/category/french): French adult cinema and Parisian amateur releases.
 - [Spanish / Español](https://www.kumpulenak.my.id/category/spanish): Spanish models and fiery European performances.
 - [Italian / Italiano](https://www.kumpulenak.my.id/category/italian): Italian performers and classic Mediterranean passion.
@@ -23,16 +32,18 @@
 ## Information & Policies
 
 - [About Us](https://www.kumpulenak.my.id/about): Platform mission, technical architecture, and editorial standards.
-- [How to Download / Watch](https://www.kumpulenak.my.id/howto): Step-by-step playback optimization and resolution guide.
-- [DMCA & Content Removal](https://www.kumpulenak.my.id/dmca): Copyright infringement notices, 18 U.S.C. 2257 compliance, and content takedown process.
-- [Privacy Policy](https://www.kumpulenak.my.id/privacy): Data protection, cookie policies, and anonymity standards.
-- [Terms of Service](https://www.kumpulenak.my.id/terms): Platform usage terms and age-gate restrictions (18+ only).
+- [HD Streaming Guide](https://www.kumpulenak.my.id/howto): Step-by-step 1080p HTML5 playback optimization guide.
+- [DMCA & 18 U.S.C. 2257 Compliance](https://www.kumpulenak.my.id/dmca): Copyright infringement notices, 2257 exemption statement, and takedown process.
+- [Privacy Policy (GDPR & CCPA)](https://www.kumpulenak.my.id/privacy): EU GDPR & California CCPA data protection, cookie policies, and anonymity standards.
+- [Terms of Service](https://www.kumpulenak.my.id/terms): Platform usage terms and strict 18+ age-gate restrictions.
 - [Contact Support](https://www.kumpulenak.my.id/contact): Webmaster and inquiries.
 
 ## Technical Details
 
+- **Priority Sitemap**: https://www.kumpulenak.my.id/sitemap.xml
 - **Sitemap Index**: https://www.kumpulenak.my.id/sitemap_index.xml
+- **RSS Feed**: https://www.kumpulenak.my.id/rss.xml
 - **Primary Domain**: https://www.kumpulenak.my.id
-- **Target Audience**: Adults aged 18 and older.
+- **Target Audience**: Adults aged 18 and older (USA, UK & Europe).
 - **Video URL Scheme**: `/v/{id}-{slug}`
-- **Structured Data**: Schema.org VideoObject, BreadcrumbList, FAQPage.
+- **Structured Data**: Schema.org VideoObject, CollectionPage, ItemList, BreadcrumbList, FAQPage.

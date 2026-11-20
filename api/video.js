@@ -25,14 +25,15 @@ const HARMFUL_SUBSTRINGS = [
     'schoolgirl', 'school boy', 'school girl', 'child', 'minor',
     'teenager', 'loli', 'lolita', 'shota', 'pedophil',
     'esema', 'esemaa', 'bocil', 'pramuka', 'anak sd', 'anak smp', 'anak sma',
-    'pelajar', 'siswi', 'perkosa', 'pemerkosaan', 'dipaksa', 'kesakitan',
-    'menangis', 'nangis', 'sampe nangi', 'non-consensual', 'forced sex',
-    'raped', 'raping', 'sedarah', 'bestiality', 'zoophilia', 'animal sex',
-    'dead body', 'necro', 'snuff', 'torture', 'drugged', 'unconscious',
-    'sleeping pill', 'mabuk berat', 'pingsan'
+    'ibu ayah', 'orang tua', 'pelajar', 'siswi', 'perkosa', 'pemerkosaan',
+    'dipaksa', 'kesakitan', 'menangis', 'nangis', 'sampe nangi',
+    'non-consensual', 'forced sex', 'raped', 'raping', 'sedarah',
+    'bestiality', 'zoophilia', 'animal sex', 'dead body', 'necro',
+    'snuff', 'torture', 'drugged', 'unconscious', 'sleeping pill',
+    'mabuk berat', 'pingsan', 'onlyfans leak', 'leaked tape'
 ];
 
-const HARMFUL_WORD_REGEX = /\b(teen|teens|kid|kids|school|student|students|abg|sma|smp|smk|bocah|adek|adik|paksa|rape|incest|loli|shota|minor|minors|underage|child|children|preteen)\b/i;
+const HARMFUL_WORD_REGEX = /\b(teen|teens|kid|kids|school|student|students|abg|sma|smp|smk|bocah|bocil|anak|anaknya|keponakan|kandung|adek|adik|paksa|rape|incest|loli|shota|minor|minors|underage|child|children|preteen|perkosa|sedarah)\b/i;
 
 function escapeHtml(str) {
     if (!str) return '';
@@ -196,7 +197,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour cache
 const NEGATIVE_CACHE_TTL_MS = 10 * 60 * 1000; // 10 min negative cache for 404s
 const MAX_CACHE_ENTRIES = 500;
 
-// Static Related Pool (Zero-network-cost on Vercel Free Tier)
+// Static Related Pool (Zero-network-cost on Vercel Free Tier — category-matched US & EU videos)
 let staticRelatedPool = null;
 function getStaticRelatedPool() {
     if (staticRelatedPool === null) {
@@ -205,10 +206,10 @@ function getStaticRelatedPool() {
             if (fs.existsSync(p)) {
                 staticRelatedPool = JSON.parse(fs.readFileSync(p, 'utf8'));
             } else {
-                staticRelatedPool = [];
+                staticRelatedPool = { categories: {}, all: [] };
             }
         } catch {
-            staticRelatedPool = [];
+            staticRelatedPool = { categories: {}, all: [] };
         }
     }
     return staticRelatedPool;
@@ -220,16 +221,35 @@ const RELATED_CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
 const MAX_RELATED_ENTRIES = 200;
 
 async function getRelatedVideos(categorySlug, currentId) {
-    // 1. Use bundled static pool first (0ms latency, 0 external API calls, ultra-frugal for Vercel Free Tier)
-    const pool = getStaticRelatedPool().filter(v => v && v.id !== currentId && !isHarmfulVideo(v));
-    if (pool.length >= 12) {
+    // 1. Use bundled category-keyed static pool first (0ms latency, 0 external API calls, ultra-frugal for Vercel Free Tier)
+    const rawPool = getStaticRelatedPool();
+    const isStructured = rawPool && !Array.isArray(rawPool) && Array.isArray(rawPool.all);
+    const catList = (isStructured && rawPool.categories && Array.isArray(rawPool.categories[categorySlug]))
+        ? rawPool.categories[categorySlug].filter(v => v && v.id !== currentId && !isHarmfulVideo(v))
+        : [];
+    const allList = (isStructured ? rawPool.all : (Array.isArray(rawPool) ? rawPool : []))
+        .filter(v => v && v.id !== currentId && !isHarmfulVideo(v));
+
+    if (catList.length >= 12) {
+        return catList.slice(0, 12);
+    }
+    if (catList.length > 0 || allList.length >= 12) {
+        const picked = [...catList];
+        const seen = new Set(picked.map(v => v.id));
         let hash = 0;
         const seed = String(currentId || categorySlug || 'default');
         for (let i = 0; i < seed.length; i++) {
             hash = ((hash << 5) - hash + seed.charCodeAt(i)) | 0;
         }
-        const offset = Math.abs(hash) % Math.max(1, pool.length - 12);
-        return pool.slice(offset, offset + 12);
+        const start = allList.length > 0 ? Math.abs(hash) % allList.length : 0;
+        for (let i = 0; i < allList.length && picked.length < 12; i++) {
+            const candidate = allList[(start + i) % allList.length];
+            if (!seen.has(candidate.id)) {
+                seen.add(candidate.id);
+                picked.push(candidate);
+            }
+        }
+        if (picked.length >= 8) return picked.slice(0, 12);
     }
 
     // 2. Fallback to cached API only if static pool is empty
@@ -488,9 +508,19 @@ module.exports = async function handler(req, res) {
                     "genre": primaryCatName,
                     "keywords": cleanTagList.slice(0, 12).join(', '),
                     "contentRating": "18+",
-                    "regionsAllowed": ["US", "GB", "CA", "AU", "IE", "DE", "FR", "ES", "IT", "NL", "SE", "PL", "EU"],
                     "isFamilyFriendly": false,
                     "inLanguage": "en",
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "kumpulenak",
+                        "url": siteUrl,
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": `${siteUrl}/assets/icons/android-chrome-512x512.png`,
+                            "width": 512,
+                            "height": 512
+                        }
+                    },
                     "interactionStatistic": {
                         "@type": "InteractionCounter",
                         "interactionType": { "@type": "WatchAction" },
@@ -642,15 +672,18 @@ module.exports = async function handler(req, res) {
         // Replace Open Graph
         html = html.replace(
             /<meta id="ogTitle" property="og:title" content=".*?">/s,
-            `<meta property="og:locale" content="en_US">\n    <meta property="og:locale:alternate" content="en_GB">\n    <meta property="og:locale:alternate" content="de_DE">\n    <meta property="og:locale:alternate" content="fr_FR">\n    <meta property="og:locale:alternate" content="es_ES">\n    <meta id="ogTitle" property="og:title" content="${safeSeoTitle}">`
+            `<meta property="og:locale" content="en_US">\n    <meta property="og:locale:alternate" content="en_GB">\n    <meta property="og:locale:alternate" content="en_CA">\n    <meta property="og:locale:alternate" content="en_AU">\n    <meta property="og:locale:alternate" content="en_IE">\n    <meta id="ogTitle" property="og:title" content="${safeSeoTitle}">`
         );
         html = html.replace(/<meta id="ogDesc" property="og:description" content=".*?">/s, `<meta id="ogDesc" property="og:description" content="${safeDesc}">`);
         html = html.replace(/<meta id="ogImage" property="og:image" content=".*?">/s, `<meta id="ogImage" property="og:image" content="${escapeHtml(thumbUrl)}">`);
+        html = html.replace(/<meta id="ogImageAlt" property="og:image:alt" content=".*?">/s, `<meta id="ogImageAlt" property="og:image:alt" content="${safeTitle} 1080p HD Video Thumbnail">`);
         html = html.replace(/<meta id="ogUrl" property="og:url" content=".*?">/s, `<meta id="ogUrl" property="og:url" content="${canonicalUrl}">`);
+        html = html.replace(/<meta id="ogVideo" property="og:video" content=".*?">/s, `<meta id="ogVideo" property="og:video" content="${escapeHtml(embedUrl)}">`);
 
         // Replace Twitter
         html = html.replace(/<meta name="twitter:title" content=".*?">/s, `<meta name="twitter:title" content="${safeSeoTitle}">`);
         html = html.replace(/<meta name="twitter:description" content=".*?">/s, `<meta name="twitter:description" content="${safeDesc}">`);
+        html = html.replace(/<meta id="twitterImage" name="twitter:image" content=".*?">/s, `<meta id="twitterImage" name="twitter:image" content="${escapeHtml(thumbUrl)}">`);
 
         // Replace JSON-LD
         html = html.replace(

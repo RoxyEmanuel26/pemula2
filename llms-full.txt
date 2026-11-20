@@ -4,10 +4,11 @@ kumpulenak (https://www.kumpulenak.my.id) is an online media gallery and search 
 
 ## Platform Characteristics
 - **Content Rating**: Adult (Strictly 18+).
-- **Target Regions**: United States (en-US), United Kingdom (en-GB), Canada (en-CA), Australia (en-AU), Germany, France, Spain, Italy, and European Union.
+- **Target Regions**: United States (en-US), United Kingdom (en-GB), Canada (en-CA), Australia (en-AU), Ireland (en-IE), Germany/Austria/Switzerland (de), France/Belgium/Switzerland (fr), Spain/US Hispanic (es), Italy/Switzerland (it), Netherlands/Belgium (nl), Poland (pl), and broader Europe.
+- **Native Language Editions**: `/` (English US/UK), `/de` (Deutsch), `/fr` (Français), `/es` (Español), `/it` (Italiano), `/nl` (Nederlands), `/pl` (Polski).
 - **Video Delivery**: Embedded HTML5 video players delivering adaptive bitrate streaming up to 1080p 60fps.
-- **Rendering Architecture**: Serverless Server-Side Rendering (SSR) via Vercel Edge with comprehensive OpenGraph, Twitter Card, Tier-1 multi-region hreflang, and Schema.org VideoObject / FAQPage JSON-LD.
-- **Indexing Coverage**: Over 43,000+ curated titles organized across 95 distinct category hubs, Top 100 Chart (`/trending`), and Directory Hub (`/directory`).
+- **Rendering Architecture**: Serverless Server-Side Rendering (SSR) via Vercel Edge with comprehensive OpenGraph, Twitter Card, reciprocal multi-language EU/US hreflang, and Schema.org VideoObject / CollectionPage / ItemList / FAQPage JSON-LD.
+- **Indexing Coverage**: Over 45,000+ curated titles organized across 95 distinct category hubs, 6 native EU language hubs, Top 100 US & EU Chart (`/trending`), and Directory Hub (`/directory`).
 
 ## Complete Category Directory (95 Hubs)
 - american: https://www.kumpulenak.my.id/category/american
