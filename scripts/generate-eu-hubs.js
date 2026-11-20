@@ -16,7 +16,7 @@ const { cleanVideoTitle, isUSEUFriendly } = require('./content-filter');
 
 const ROOT_DIR = path.join(__dirname, '..');
 const INDEX_HTML_PATH = path.join(ROOT_DIR, 'index.html');
-const EU_DIR = path.join(ROOT_DIR, 'eu');
+const EU_DIR = ROOT_DIR;
 
 function escapeHTML(str) {
     if (!str) return '';

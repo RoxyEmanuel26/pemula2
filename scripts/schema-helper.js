@@ -14,7 +14,7 @@ const EU_HUBS = [
     {
         code: 'de',
         path: '/de',
-        file: 'eu/de.html',
+        file: 'de.html',
         ogLocale: 'de_DE',
         hreflangs: ['de', 'de-DE', 'de-AT', 'de-CH'],
         label: 'Deutsch',
@@ -23,7 +23,7 @@ const EU_HUBS = [
     {
         code: 'fr',
         path: '/fr',
-        file: 'eu/fr.html',
+        file: 'fr.html',
         ogLocale: 'fr_FR',
         hreflangs: ['fr', 'fr-FR', 'fr-BE', 'fr-CH', 'fr-CA'],
         label: 'Français',
@@ -32,7 +32,7 @@ const EU_HUBS = [
     {
         code: 'es',
         path: '/es',
-        file: 'eu/es.html',
+        file: 'es.html',
         ogLocale: 'es_ES',
         hreflangs: ['es', 'es-ES', 'es-US'],
         label: 'Español',
@@ -41,7 +41,7 @@ const EU_HUBS = [
     {
         code: 'it',
         path: '/it',
-        file: 'eu/it.html',
+        file: 'it.html',
         ogLocale: 'it_IT',
         hreflangs: ['it', 'it-IT', 'it-CH'],
         label: 'Italiano',
@@ -50,7 +50,7 @@ const EU_HUBS = [
     {
         code: 'nl',
         path: '/nl',
-        file: 'eu/nl.html',
+        file: 'nl.html',
         ogLocale: 'nl_NL',
         hreflangs: ['nl', 'nl-NL', 'nl-BE'],
         label: 'Nederlands',
@@ -59,7 +59,7 @@ const EU_HUBS = [
     {
         code: 'pl',
         path: '/pl',
-        file: 'eu/pl.html',
+        file: 'pl.html',
         ogLocale: 'pl_PL',
         hreflangs: ['pl', 'pl-PL'],
         label: 'Polski',

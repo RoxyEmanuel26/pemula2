@@ -34,27 +34,27 @@
     },
     {
       "source": "/de",
-      "destination": "/eu/de.html"
+      "destination": "/de.html"
     },
     {
       "source": "/fr",
-      "destination": "/eu/fr.html"
+      "destination": "/fr.html"
     },
     {
       "source": "/es",
-      "destination": "/eu/es.html"
+      "destination": "/es.html"
     },
     {
       "source": "/it",
-      "destination": "/eu/it.html"
+      "destination": "/it.html"
     },
     {
       "source": "/nl",
-      "destination": "/eu/nl.html"
+      "destination": "/nl.html"
     },
     {
       "source": "/pl",
-      "destination": "/eu/pl.html"
+      "destination": "/pl.html"
     },
     {
       "source": "/trending",
