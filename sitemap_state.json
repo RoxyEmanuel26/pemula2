@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "lastSuccessfulAt": "2026-11-20T01:46:22.988Z",
+  "lastSuccessfulAt": "2026-11-21T01:29:17.893Z",
   "mode": "daily",
-  "requests": 100,
-  "candidates": 8037,
-  "added": 4558,
-  "duplicates": 3479,
+  "requests": 108,
+  "candidates": 8575,
+  "added": 4085,
+  "duplicates": 4490,
   "harmfulPurged": 0,
   "expiredShardsRemoved": 0,
   "capacityShardsRemoved": 1,
@@ -13,7 +13,7 @@
   "activeShards": 13,
   "activeVideoUrls": 45000,
   "indexNow": {
-    "submitted": 510,
+    "submitted": 516,
     "status": 200
   }
 }
