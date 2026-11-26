@@ -289,6 +289,30 @@
       ]
     },
     {
+      "source": "/v/:path*",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(Bytespider|Baiduspider|PetalBot|Yandex|GPTBot|ChatGPT-User|OAI-SearchBot|ClaudeBot|anthropic-ai|PerplexityBot|CCBot|AhrefsBot|SemrushBot|MJ12bot|DotBot|Amazonbot|Meta-ExternalAgent|DataForSeoBot|Sogou|BLEXBot|Scrapy).*"
+        }
+      ],
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, no-cache, max-age=0"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
       "source": "/assets/js/(.*)",
       "headers": [
         {

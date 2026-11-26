@@ -194,6 +194,8 @@ async function verifyAll() {
     const botRewriteIdx = (vercelConfig.rewrites || []).findIndex(r => r.source === '/v/:path*' && r.destination === '/404.html');
     const apiRewriteIdx = (vercelConfig.rewrites || []).findIndex(r => r.source === '/v/:path*' && r.destination === '/api/video?slug=:path*');
     assert(botRewriteIdx >= 0 && botRewriteIdx < apiRewriteIdx, 'vercel.json must block scraper bots before /api/video rewrite');
+    const botNoCacheHeader = (vercelConfig.headers || []).find(h => h.source === '/v/:path*' && h.has && h.has.some(c => c.key === 'user-agent') && (h.headers || []).some(hdr => hdr.key === 'Cache-Control' && hdr.value.includes('no-store')));
+    assert(botNoCacheHeader, 'vercel.json must set Cache-Control: private, no-store on bot-blocked /v/ responses to prevent CDN cache poisoning');
     assert(vercelConfig.headers.some(h => h.source === '/'), 'vercel.json must have explicit "/" header rule');
     assert(vercelConfig.headers.some(h => h.has && h.has.some(q => q.key === 'page')), 'vercel.json must send noindex on ?page= parameter');
     for (const hBlock of vercelConfig.headers || []) {
