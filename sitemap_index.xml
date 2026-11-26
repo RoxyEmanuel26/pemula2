@@ -2,7 +2,7 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_pages.xml</loc>
-    <lastmod>2026-11-24</lastmod>
+    <lastmod>2026-11-25</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_kategori.xml</loc>
@@ -10,7 +10,7 @@
   </sitemap>
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-14_1.xml</loc>
-    <lastmod>2026-11-25</lastmod>
+    <lastmod>2026-11-26</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-14_2.xml</loc>
@@ -55,5 +55,9 @@
   <sitemap>
     <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-25_1.xml</loc>
     <lastmod>2026-11-25</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.kumpulenak.my.id/sitemaps/sitemap_video_2026-11-26_1.xml</loc>
+    <lastmod>2026-11-26</lastmod>
   </sitemap>
 </sitemapindex>
