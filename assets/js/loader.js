@@ -114,15 +114,8 @@
         }
     ];
 
-    // Custom banner (image-based)
-    var _customBanners = [
-        {
-            containerId: 'adBannerCustom',
-            imageUrl: 'https://i.ibb.co/PvhvpsJM/ezgif-com-animated-gif-maker.gif',
-            linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
-            alt: 'MissAV'
-        }
-    ];
+    // Custom banner (disabled/removed)
+    var _customBanners = [];
 
     // Popunder script URLs (obfuscated)
     var _popunderUrls = [
@@ -164,26 +157,14 @@
         adBannerHeader: [
             {
                 image: 'https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png',
-                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
                 alt: 'Premium Content'
-            },
-            {
-                image: 'https://i.ibb.co/PvhvpsJM/ezgif-com-animated-gif-maker.gif',
-                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
-                alt: 'Exclusive Download'
             }
         ],
         // Banner content (medium rectangle 300x250)
         adBannerContent: [
             {
                 image: 'https://i.ibb.co/SXRRGnz6/Your-paragraph-text.png',
-                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
                 alt: 'Premium Content'
-            },
-            {
-                image: 'https://i.ibb.co/PvhvpsJM/ezgif-com-animated-gif-maker.gif',
-                linkUrl: _d('aHR0cHM6Ly93d3cudGVyYWJveHBhZ2UuY29tL215a25vdy9rdW1wdWxlbmFrMQ=='),
-                alt: 'Exclusive Download'
             }
         ]
     };

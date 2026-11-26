@@ -8,7 +8,7 @@
  */
 
 const BASE_URL = 'https://www.kumpulenak.my.id';
-const ASSET_VERSION = '5.5.0';
+const ASSET_VERSION = '5.5.1';
 
 const EU_HUBS = [
     {

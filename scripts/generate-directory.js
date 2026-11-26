@@ -329,9 +329,6 @@ ${JSON.stringify(schema, null, 2)}
     <div class="banner">
         <div class="banner-img ad-space" id="adBannerHeader" style="border: none;"></div>
     </div>
-    <div class="banner" style="padding-top: 0;">
-        <div class="banner-custom" id="adBannerCustom"></div>
-    </div>
 
     <main class="dir-container">
         <nav class="breadcrumb-nav" aria-label="Breadcrumb">
