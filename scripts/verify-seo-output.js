@@ -152,8 +152,10 @@ async function verifyAll() {
         }
     };
     await handler({ url: '/v/8XAT108xJ1o-putinha-engolindo-tudo', query: { slug: '8XAT108xJ1o-putinha-engolindo-tudo' } }, resMock);
+    const videoBytes = Buffer.byteLength(videoHtml, 'utf8');
+    assert(videoBytes < 22000, `Video SSR payload too large (${videoBytes} bytes); keep < 22KB to protect Vercel Fast Origin Transfer`);
     assert(videoHtml.includes('<h1 class="video-title">'), 'Video H1 missing');
-    assert(videoHtml.includes('"@type": "VideoObject"'), 'Video VideoObject schema missing');
+    assert(/"@type"\s*:\s*"VideoObject"/.test(videoHtml), 'Video VideoObject schema missing');
     assert(!videoHtml.includes('"regionsAllowed"'), 'VideoObject must NOT restrict rich results with regionsAllowed');
     assert(videoHtml.includes('"publisher"'), 'VideoObject missing publisher Organization');
     assert(videoHtml.includes('name="twitter:image"'), 'Video page missing twitter:image');
@@ -161,7 +163,7 @@ async function verifyAll() {
     assert(videoHtml.includes('id="videoPlayer"'), 'Video player iframe missing');
     assert(!videoHtml.includes('<a href="/?q='), 'Video SSR output must not contain crawlable <a href="/?q=..."> links');
     assert(videoHtml.includes(ADSTERRA_NATIVE_SCRIPT), 'Video SSR output missing Adsterra Native Banner');
-    console.log('   ✅ SSR Video Handler passed all checks.\n');
+    console.log(`   ✅ SSR Video Handler passed all checks (lean ${videoBytes} bytes).\n`);
 
     // 6. True 404 & Absolute CSS Verification
     console.log('6. Verifying True 404 Response & 404.html Absolute Asset Paths...');
@@ -188,6 +190,10 @@ async function verifyAll() {
 
     const vercelConfig = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
     assert.strictEqual(vercelConfig.trailingSlash, false, 'vercel.json must enforce trailingSlash: false');
+    assert(vercelConfig.functions && vercelConfig.functions['api/video.js'] && vercelConfig.functions['api/video.js'].maxDuration <= 10, 'vercel.json must cap api/video.js maxDuration <= 10s');
+    const botRewriteIdx = (vercelConfig.rewrites || []).findIndex(r => r.source === '/v/:path*' && r.destination === '/404.html');
+    const apiRewriteIdx = (vercelConfig.rewrites || []).findIndex(r => r.source === '/v/:path*' && r.destination === '/api/video?slug=:path*');
+    assert(botRewriteIdx >= 0 && botRewriteIdx < apiRewriteIdx, 'vercel.json must block scraper bots before /api/video rewrite');
     assert(vercelConfig.headers.some(h => h.source === '/'), 'vercel.json must have explicit "/" header rule');
     assert(vercelConfig.headers.some(h => h.has && h.has.some(q => q.key === 'page')), 'vercel.json must send noindex on ?page= parameter');
     for (const hBlock of vercelConfig.headers || []) {

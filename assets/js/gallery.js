@@ -1687,20 +1687,47 @@ function initCardGridDelegation() {
         var cardEl = e.target.closest('.card');
         if (!cardEl) return;
 
-        var idx = parseInt(cardEl.dataset.index);
-        if (isNaN(idx) || !currentDisplayCards[idx]) return;
-        var card = currentDisplayCards[idx];
+        // Allow native new-tab / modifier-key clicks to open canonical /v/ page
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
 
-        // Punya embedUrl → buka player modal
-        if (card.embedUrl) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            openPlayerModal(card);
+        var modalEl = document.getElementById('playerModal');
+        var idx = parseInt(cardEl.dataset.index, 10);
+        if (!isNaN(idx) && currentDisplayCards[idx]) {
+            var card = currentDisplayCards[idx];
+            if (card.embedUrl && modalEl) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                (window.openPlayerModal || openPlayerModal)(card);
+            }
             return;
         }
 
-        // Tidak punya embedUrl → biarkan <a> href bekerja normal
+        // Pre-rendered SSR card (<a href="/v/VIDEO_ID-slug" class="card">):
+        // Play instantly in zero-serverless modal (saves Vercel Function Invocations & Origin Transfer)
+        // while keeping crawlable <a href="/v/..."> intact for Googlebot & new-tab clicks.
+        var href = cardEl.getAttribute('href') || '';
+        var match = href.match(/\/v\/([A-Za-z0-9]{6,32})(?:-|$)/);
+        if (match && modalEl) {
+            var vid = match[1];
+            var titleEl = cardEl.querySelector('.card-title');
+            var durEl = cardEl.querySelector('.badge-duration');
+            var viewsEl = cardEl.querySelector('.card-views');
+            var dateEl = cardEl.querySelector('.card-date');
+            var ssrCard = {
+                videoId: vid,
+                name: titleEl ? titleEl.textContent.trim() : 'HD Video',
+                length: durEl ? durEl.textContent.trim() : '--:--',
+                views: viewsEl ? viewsEl.textContent.replace(/[^\d.,KMBkmb]/g, '').trim() : '0',
+                date: dateEl ? dateEl.textContent.replace(/[^\d-]/g, '').trim() : '----',
+                embedUrl: 'https://www.eporner.com/embed/' + vid + '/',
+                keywords: []
+            };
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            (window.openPlayerModal || openPlayerModal)(ssrCard);
+        }
     });
 
     // Tambahkan style cursor pointer untuk card div
@@ -2244,7 +2271,7 @@ function injectVideoSchema() {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=5.5.1';
+    scriptLoader.src = '/assets/js/loader.js?v=5.5.2';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();

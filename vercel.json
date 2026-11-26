@@ -2,6 +2,11 @@
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/video.js": {
+      "maxDuration": 5
+    }
+  },
   "redirects": [
     {
       "source": "/:path*",
@@ -28,6 +33,17 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/v/:path*",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(Bytespider|Baiduspider|PetalBot|Yandex|GPTBot|ChatGPT-User|OAI-SearchBot|ClaudeBot|anthropic-ai|PerplexityBot|CCBot|AhrefsBot|SemrushBot|MJ12bot|DotBot|Amazonbot|Meta-ExternalAgent|DataForSeoBot|Sogou|BLEXBot|Scrapy).*"
+        }
+      ],
+      "destination": "/404.html"
+    },
     {
       "source": "/v/:path*",
       "destination": "/api/video?slug=:path*"
@@ -95,7 +111,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=604800"
+          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
         },
         {
           "key": "X-Content-Type-Options",
@@ -124,7 +140,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=604800"
+          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
         },
         {
           "key": "X-Content-Type-Options",
@@ -342,7 +358,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+          "value": "public, max-age=3600, s-maxage=604800, stale-while-revalidate=604800"
         }
       ]
     },
@@ -355,7 +371,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+          "value": "public, max-age=3600, s-maxage=604800, stale-while-revalidate=604800"
         }
       ]
     },
@@ -368,7 +384,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+          "value": "public, max-age=3600, s-maxage=604800, stale-while-revalidate=604800"
         }
       ]
     },
@@ -381,7 +397,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+          "value": "public, max-age=3600, s-maxage=604800, stale-while-revalidate=604800"
         }
       ]
     },

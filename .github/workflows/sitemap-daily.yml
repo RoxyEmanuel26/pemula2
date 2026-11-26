@@ -1,9 +1,9 @@
-name: Daily rolling video sitemap & SEO refresh
+name: Weekly rolling video sitemap & SEO refresh
 
 on:
   schedule:
-    # Berjalan setiap hari pukul 03:17 WIB (UTC+7 -> 20:17 UTC)
-    - cron: '17 20 * * *'
+    # Berjalan 1x seminggu (Minggu pukul 03:17 WIB / 20:17 UTC) agar Vercel Edge Cache tetap hangat 7 hari penuh & hemat kuota Free Tier
+    - cron: '17 20 * * 0'
   workflow_dispatch:
 
 permissions:

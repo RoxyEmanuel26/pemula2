@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const {
+    MAX_ACTIVE_URLS,
     escapeXml,
     slugify,
     publicationDate,
@@ -82,11 +83,11 @@ async function run() {
     assert.throws(() => validateApiPage({ videos: [] }, 1), /kosong/);
     assert.throws(() => validateApiPage({ error: true }, 1), /tidak valid/);
 
-    const oversized = Array.from({ length: 45001 }, (_, index) => ({ id: String(index) }));
+    const oversized = Array.from({ length: MAX_ACTIVE_URLS + 1 }, (_, index) => ({ id: String(index) }));
     const capped = applyActiveCap([], oversized);
-    assert.strictEqual(capped.newVideos.length, 45000);
+    assert.strictEqual(capped.newVideos.length, MAX_ACTIVE_URLS);
     assert.strictEqual(capped.newVideos[0].id, '0');
-    assert.strictEqual(capped.newVideos.at(-1).id, '44999');
+    assert.strictEqual(capped.newVideos.at(-1).id, String(MAX_ACTIVE_URLS - 1));
 
     console.log('Sitemap unit tests passed.');
 }

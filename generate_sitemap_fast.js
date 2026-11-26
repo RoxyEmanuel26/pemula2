@@ -21,15 +21,15 @@ const BASE_URL = 'https://www.kumpulenak.my.id';
 const API_URL = 'https://www.eporner.com/api/v2/video/search/';
 const INDEXNOW_KEY = 'e8f4a2b9c1d64e70a5f3b8c2d9e1f0a4';
 
-const MAX_ACTIVE_URLS = Number(process.env.SITEMAP_MAX_URLS || 45000);
+const MAX_ACTIVE_URLS = Number(process.env.SITEMAP_MAX_URLS || 5000);
 const MAX_FILE_URLS = Number(process.env.SITEMAP_SHARD_URLS || 5000);
-const MAX_FLAT_VIDEO_URLS = 500;
-const MAX_TXT_VIDEO_URLS = 1000;
-const MAX_RSS_VIDEO_URLS = 100;
+const MAX_FLAT_VIDEO_URLS = 250;
+const MAX_TXT_VIDEO_URLS = 500;
+const MAX_RSS_VIDEO_URLS = 50;
 const MAX_FILE_BYTES = 45 * 1024 * 1024;
-const RETENTION_DAYS = Number(process.env.SITEMAP_RETENTION_DAYS || 90);
-const DAILY_PAGES = Number(process.env.SITEMAP_DAILY_PAGES || 100);
-const BOOTSTRAP_MAX_PAGES = Number(process.env.SITEMAP_BOOTSTRAP_PAGES || 600);
+const RETENTION_DAYS = Number(process.env.SITEMAP_RETENTION_DAYS || 60);
+const DAILY_PAGES = Number(process.env.SITEMAP_DAILY_PAGES || 15);
+const BOOTSTRAP_MAX_PAGES = Number(process.env.SITEMAP_BOOTSTRAP_PAGES || 80);
 const PER_PAGE = 100;
 const CONCURRENCY = Number(process.env.SITEMAP_CONCURRENCY || 4);
 const REQUEST_TIMEOUT_MS = Number(process.env.SITEMAP_TIMEOUT_MS || 15000);
@@ -193,7 +193,7 @@ function sanitizeVideoNodeRaw(raw) {
     }
 
     const cleanedTitle = cleanVideoTitle(rawTitle);
-    if (!cleanedTitle) return null;
+    if (!cleanedTitle || !isUSEUFriendly({ title: cleanedTitle })) return null;
     const cappedTitle = cleanedTitle.slice(0, 100).trim();
 
     let updated = normalized;
@@ -811,7 +811,7 @@ async function generate(mode) {
     writeAtomic(RSS_FILE, rssContent);
     const validation = validateSitemaps({ allowEmpty: false });
 
-    // Ping IndexNow for instant indexing on Bing, Yandex, DuckDuckGo, Naver, Seznam
+    // Ping IndexNow conservatively (static hubs + max 50 top US/EU videos to prevent bot crawl spikes)
     const urlsToPing = [
         `${BASE_URL}/`,
         ...EU_HUBS.map(h => `${BASE_URL}${h.path}`),
@@ -824,7 +824,7 @@ async function generate(mode) {
         `${BASE_URL}/category/spanish`,
         `${BASE_URL}/category/italian`,
         `${BASE_URL}/category/american`,
-        ...capped.newVideos.filter(v => isUSEUFriendly(v)).slice(0, 500).map(v => `${BASE_URL}/v/${v.id}${v.slug ? '-' + v.slug : ''}`)
+        ...capped.newVideos.filter(v => isUSEUFriendly(v)).slice(0, 50).map(v => `${BASE_URL}/v/${v.id}${v.slug ? '-' + v.slug : ''}`)
     ];
     const indexNowResult = await pingIndexNow(urlsToPing);
 
@@ -866,6 +866,7 @@ async function main() {
 }
 
 module.exports = {
+    MAX_ACTIVE_URLS,
     escapeXml,
     slugify,
     publicationDate,

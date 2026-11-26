@@ -130,7 +130,7 @@ function buildCategoryAwareRelatedPool(fallbackVideos) {
         const cardRegex = /<a href="(\/v\/([A-Za-z0-9]{6,32})[^"]*)" class="card"[^>]*>[\s\S]*?<img src="([^"]+)"[\s\S]*?<span class="card-date">📅 ([^<]+)<\/span>\s*<span class="card-views">👁 ([^<]+)<\/span>[\s\S]*?<h3 class="card-title">([^<]+)<\/h3>/g;
         const list = [];
         let m;
-        while ((m = cardRegex.exec(html)) !== null && list.length < 14) {
+        while ((m = cardRegex.exec(html)) !== null && list.length < 6) {
             const id = m[2];
             const thumb = decodeXml(m[3]);
             const added = m[4].trim();
@@ -151,7 +151,7 @@ function buildCategoryAwareRelatedPool(fallbackVideos) {
                 default_thumb: { src: thumb }
             };
             list.push(entry);
-            if (!allSeen.has(id) && allPool.length < 72) {
+            if (!allSeen.has(id) && allPool.length < 36) {
                 allSeen.add(id);
                 allPool.push(entry);
             }
@@ -163,7 +163,7 @@ function buildCategoryAwareRelatedPool(fallbackVideos) {
 
     // Backfill allPool from clean shard videos if needed
     for (const v of fallbackVideos) {
-        if (allPool.length >= 72) break;
+        if (allPool.length >= 36) break;
         if (allSeen.has(v.id)) continue;
         allSeen.add(v.id);
         allPool.push({
@@ -185,10 +185,10 @@ function generateDirectoryPage() {
     const categories = loadCategories();
     const videos = extractCleanVideosFromShards(160);
 
-    // Save category-keyed US/EU related videos pool (0 external API calls in api/video.js on Vercel Free Tier)
+    // Save compact minified category-keyed US/EU related videos pool (0 external API calls & minimal cold-start I/O)
     const relatedPoolPath = path.join(ROOT_DIR, 'data', 'related-pool.json');
     const relatedPoolData = buildCategoryAwareRelatedPool(videos);
-    fs.writeFileSync(relatedPoolPath, JSON.stringify(relatedPoolData, null, 2), 'utf8');
+    fs.writeFileSync(relatedPoolPath, JSON.stringify(relatedPoolData), 'utf8');
 
     const pageTitle = `US & EU HD Video Directory — ${categories.length} Categories | kumpulenak`;
     const pageDesc = `Explore all ${categories.length} curated 1080p Full HD adult video categories, 6 European language hubs, and daily trending US & EU releases free on kumpulenak.`;
