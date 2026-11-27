@@ -426,45 +426,18 @@ function cleanFancyText(text) {
 
 
 // =====================================================
-//  DARK/LIGHT MODE — Toggle tema gelap dan terang
+//  PURE DARK MODE — Lock site strictly to dark theme
 // =====================================================
-
-/**
- * Inisialisasi tema berdasarkan cookie yang tersimpan
- * Default: dark mode
- */
 function initTheme() {
-    const savedTheme = getCookie('kumpulenak_theme');
-    const theme = savedTheme || 'dark';
-    document.documentElement.setAttribute('data-theme', theme);
-    updateThemeIcon(theme);
-    kLog('Tema diinisialisasi:', theme);
+    document.documentElement.setAttribute('data-theme', 'dark');
+    // Clear any legacy theme cookie from returning visitors
+    try {
+        document.cookie = 'kumpulenak_theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+    } catch (e) {}
+    kLog('Pure Dark Mode initialized');
 }
 
-/**
- * Toggle tema antara dark dan light
- */
-function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    setCookie('kumpulenak_theme', next, 30);
-    updateThemeIcon(next);
-    kLog('Tema diganti ke:', next);
-}
-
-/**
- * Update ikon tombol tema sesuai tema aktif
- * @param {string} theme - Tema yang aktif ("dark" atau "light")
- */
-function updateThemeIcon(theme) {
-    const btn = document.getElementById('themeToggle');
-    if (btn) {
-        btn.textContent = theme === 'dark' ? '🌙' : '☀️';
-    }
-}
-
-// Jalankan inisialisasi tema saat halaman dimuat
+// Enforce dark mode on page load
 initTheme();
 
 // =====================================================
@@ -2271,7 +2244,7 @@ function injectVideoSchema() {
 (function () {
     // Load loader.js — anti-adblock + obfuscated ad injection
     var scriptLoader = document.createElement('script');
-    scriptLoader.src = '/assets/js/loader.js?v=5.5.2';
+    scriptLoader.src = '/assets/js/loader.js?v=5.5.3';
     scriptLoader.defer = true;
     document.body.appendChild(scriptLoader);
 })();

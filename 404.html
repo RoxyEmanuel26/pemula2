@@ -21,11 +21,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#ff2a5f">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#08090d">
 
     <!-- Absolute Styles (prevents broken CSS & serverless hits on nested /v/* 404 paths) -->
-    <link rel="stylesheet" href="/assets/css/gallery.css?v=5.5.2">
-    <link rel="stylesheet" href="/assets/css/pages.css?v=5.5.2">
+    <link rel="stylesheet" href="/assets/css/gallery.css?v=5.5.3">
+    <link rel="stylesheet" href="/assets/css/pages.css?v=5.5.3">
 
     <!-- JSON-LD BreadcrumbList -->
     <script type="application/ld+json">
@@ -49,21 +50,22 @@
     </script>
 
     <style>
-        .error-container { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; }
-        .error-code { font-size: clamp(80px, 20vw, 160px); font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 8px; }
-        .error-title { font-size: 1.6rem; font-weight: 800; color: var(--text); margin-bottom: 12px; letter-spacing: -0.5px; }
-        .error-desc { font-size: 0.95rem; color: var(--text-secondary); max-width: 480px; line-height: 1.65; margin-bottom: 32px; }
-        .error-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
-        .error-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 26px; border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        .error-btn-primary { background: var(--accent-gradient); color: #ffffff; box-shadow: 0 4px 15px var(--accent-glow); }
-        .error-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 42, 95, 0.4); }
-        .error-btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text); border: 1px solid var(--border); }
+        .error-container { min-height: 62dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 36px 20px; }
+        .error-code { font-size: clamp(72px, 18vw, 148px); font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 10px; letter-spacing: -0.04em; }
+        .error-title { font-size: clamp(1.3rem, 3vw, 1.65rem); font-weight: 800; color: var(--text); margin-bottom: 10px; letter-spacing: -0.02em; }
+        .error-desc { font-size: 0.94rem; color: var(--text-secondary); max-width: 48ch; line-height: 1.65; margin-bottom: 28px; }
+        .error-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 36px; width: 100%; max-width: 520px; }
+        .error-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 22px; border-radius: 12px; font-weight: 700; font-size: 13.5px; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
+        .error-btn-primary { background: var(--accent-gradient); color: #ffffff; box-shadow: 0 4px 14px var(--accent-glow); }
+        .error-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(255, 42, 95, 0.42); }
+        .error-btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text); border: 1px solid var(--border); box-shadow: none; }
         .error-btn-secondary:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
-        .error-categories { max-width: 640px; }
-        .error-categories h3 { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+        .error-categories { max-width: 640px; width: 100%; }
+        .error-categories h3 { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 14px; }
         .error-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-        .error-tags a { display: inline-block; padding: 7px 15px; background: rgba(255, 42, 95, 0.06); color: var(--accent); border-radius: 99px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.25s ease; border: 1px solid rgba(255, 42, 95, 0.15); }
-        .error-tags a:hover { background: var(--accent); color: #ffffff; border-color: transparent; transform: translateY(-2px); }
+        .error-tags a { display: inline-block; padding: 6px 14px; background: var(--accent-soft); color: #ff6b93; border-radius: 999px; text-decoration: none; font-size: 12px; font-weight: 600; transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease; border: 1px solid rgba(255, 42, 95, 0.2); }
+        .error-tags a:hover { background: var(--accent); color: #ffffff; border-color: transparent; transform: translateY(-1px); }
+        @media (max-width: 480px) { .error-actions { flex-direction: column; } .error-btn { width: 100%; } }
     </style>
 </head>
 
@@ -71,7 +73,7 @@
     <header class="header">
         <div class="header-inner">
             <a href="/" class="logo" aria-label="kumpulenak Home">kumpul<span>enak</span></a>
-            <nav class="page-nav" aria-label="Primary Navigation" style="display:flex;gap:12px;align-items:center;">
+            <nav class="page-nav" aria-label="Primary Navigation">
                 <a href="/" class="nav-back">Home</a>
                 <a href="/trending" class="nav-back">Top 100</a>
                 <a href="/directory" class="nav-back">Categories</a>

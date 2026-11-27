@@ -9,8 +9,8 @@
     "dir": "ltr",
     "display": "standalone",
     "orientation": "any",
-    "theme_color": "#ff2a5f",
-    "background_color": "#06070b",
+    "theme_color": "#08090d",
+    "background_color": "#08090d",
     "categories": [
         "entertainment"
     ],

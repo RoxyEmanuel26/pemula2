@@ -255,6 +255,8 @@ function generateDirectoryPage() {
     <meta charset="UTF-8">
     <meta name="referrer" content="no-referrer-when-downgrade">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#08090d">
     <title>${escapeHTML(pageTitle)}</title>
     <meta name="description" content="${escapeHTML(pageDesc)}">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -297,21 +299,6 @@ ${OG_LOCALES_EN}
     <script type="application/ld+json">
 ${JSON.stringify(schema, null, 2)}
     </script>
-    <style>
-        .dir-container { max-width: 1200px; margin: 32px auto; padding: 0 24px; }
-        .dir-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 32px; }
-        .dir-section h2 { font-size: 1.35rem; font-weight: 800; margin-top: 0; margin-bottom: 16px; color: #fff; }
-        .dir-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 12px; }
-        .dir-cat-card { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s ease; }
-        .dir-cat-card:hover { background: var(--accent); color: #fff; border-color: transparent; transform: translateY(-2px); }
-        .dir-cat-badge { font-size: 0.7rem; padding: 2px 7px; border-radius: 99px; background: rgba(255,42,95,0.18); color: var(--accent); font-weight: 700; }
-        .dir-cat-card:hover .dir-cat-badge { background: rgba(255,255,255,0.25); color: #fff; }
-        .dir-video-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
-        .dir-video-item { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; }
-        .dir-video-link { color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; line-height: 1.35; }
-        .dir-video-link:hover { color: var(--accent); }
-        .dir-video-meta { font-size: 0.78rem; color: var(--text-secondary); }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -319,9 +306,8 @@ ${JSON.stringify(schema, null, 2)}
             <a href="/" class="logo" aria-label="kumpulenak Home">kumpul<span>enak</span></a>
             <nav class="nav-tabs" aria-label="Primary Navigation">
                 <a href="/" class="nav-tab">Popular</a>
-                <a href="/trending" class="nav-tab">Top 100 US &amp; EU</a>
-                <a href="/directory" class="nav-tab active">Directory</a>
-                <a href="/category/hd-porn-1080p" class="nav-tab">1080p HD</a>
+                <a href="/trending" class="nav-tab">Top 100</a>
+                <a href="/directory" class="nav-tab active">Categories</a>
             </nav>
         </div>
     </header>

@@ -72,15 +72,15 @@ function generateCardHTML(video, index) {
                 </a>`;
 }
 
-const SEO_CRAWL_HUB_HTML = `            <nav class="seo-crawl-hub" aria-label="US &amp; European HD Video Categories" style="margin: 28px 0 20px; padding: 20px; background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 14px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
-                    <h2 style="font-size: 1rem; font-weight: 700; margin: 0; color: var(--text-primary);">Explore US, European &amp; International HD Categories</h2>
-                    <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-                        <a href="/trending" style="font-size: 0.85rem; font-weight: 700; color: #ff6b9d; text-decoration: none;">🔥 Top 100 US &amp; EU Chart &rarr;</a>
-                        <a href="/directory" style="font-size: 0.85rem; font-weight: 700; color: var(--accent); text-decoration: none;">Browse All 95 Categories &rarr;</a>
+const SEO_CRAWL_HUB_HTML = `            <nav class="seo-crawl-hub" aria-label="US &amp; European HD Video Categories">
+                <div class="seo-crawl-header">
+                    <h2>Explore US, European &amp; International HD Categories</h2>
+                    <div class="seo-crawl-actions">
+                        <a href="/trending" class="seo-crawl-link-hot">🔥 Top 100 US &amp; EU Chart &rarr;</a>
+                        <a href="/directory" class="seo-crawl-link-all">Browse All 95 Categories &rarr;</a>
                     </div>
                 </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <div class="seo-crawl-tags">
                     <a href="/category/american" class="video-tag">American / USA</a>
                     <a href="/category/european" class="video-tag">European</a>
                     <a href="/category/british" class="video-tag">British / UK</a>

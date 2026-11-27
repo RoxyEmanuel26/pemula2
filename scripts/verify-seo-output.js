@@ -45,7 +45,14 @@ async function verifyAll() {
 
     // 1. Homepage & Gallery JS Verification
     console.log('1. Verifying Homepage (index.html), CSS & Gallery JS...');
+    const galleryCss = fs.readFileSync(path.join(ROOT, 'assets', 'css', 'gallery.css'), 'utf8');
+    const pagesCss = fs.readFileSync(path.join(ROOT, 'assets', 'css', 'pages.css'), 'utf8');
+    assert(!galleryCss.includes('[data-theme="light"]'), 'gallery.css MUST NOT contain light mode rules');
+    assert(!pagesCss.includes('[data-theme="light"]'), 'pages.css MUST NOT contain light mode rules');
+    assert(galleryCss.includes('color-scheme: dark'), 'gallery.css must lock color-scheme: dark');
+
     const galleryJs = fs.readFileSync(path.join(ROOT, 'assets', 'js', 'gallery.js'), 'utf8');
+    assert(!galleryJs.includes('function toggleTheme'), 'gallery.js MUST NOT contain toggleTheme (dark mode only)');
     assert(!galleryJs.includes("'contentUrl': 'https://www.kumpulenak.my.id/'"), 'gallery.js MUST NOT inject VideoObject with homepage contentUrl');
     assert(!galleryJs.includes("label: 'ID Indo'"), 'gallery.js MUST NOT show "ID Indo" sort button on US/EU site');
     assert(!galleryJs.includes('Video Leaks'), 'gallery.js MUST NOT inject policy-risk word "Leaks"');
@@ -53,6 +60,10 @@ async function verifyAll() {
 
     const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
     checkBalancedDivs(indexHtml, 'index.html');
+    assert(!indexHtml.includes('id="themeToggle"'), 'index.html MUST NOT have theme toggle button (dark mode only)');
+    const inlineStylePos = indexHtml.indexOf('<!-- Critical inline CSS');
+    const galleryCssPos = indexHtml.indexOf('<link rel="stylesheet" href="/assets/css/gallery.css');
+    assert(inlineStylePos > 0 && galleryCssPos > inlineStylePos, 'index.html critical inline <style> MUST appear before gallery.css stylesheet so responsive media queries win');
     assert(!indexHtml.includes('"@type": "VideoObject"'), 'index.html MUST NOT declare VideoObject on non-watch gallery page');
     assert(indexHtml.includes('<title>'), 'index.html missing <title>');
     assert(indexHtml.includes('<meta name="description"'), 'index.html missing meta description');
@@ -84,6 +95,7 @@ async function verifyAll() {
         assert(fs.existsSync(hubPath), `Missing EU hub file: ${hub.file}`);
         const html = fs.readFileSync(hubPath, 'utf8');
         checkBalancedDivs(html, hub.file);
+        assert(!html.includes('id="themeToggle"'), `${hub.file} MUST NOT have theme toggle button`);
         assert(html.includes(`<html lang="${hub.code}"`), `${hub.file} wrong html lang`);
         assert(html.includes(`<link rel="canonical" id="canonicalLink" href="https://www.kumpulenak.my.id${hub.path}"`), `${hub.file} invalid canonical`);
         assert(html.includes('hreflang="en-US"') && html.includes(`hreflang="${hub.code}"`) && html.includes('hreflang="x-default"'), `${hub.file} missing reciprocal hreflang`);
@@ -129,6 +141,10 @@ async function verifyAll() {
     for (const slug of ['amateur', 'european', 'british', 'german', 'french', 'american']) {
         const catHtml = fs.readFileSync(path.join(ROOT, 'category', `${slug}.html`), 'utf8');
         checkBalancedDivs(catHtml, `category/${slug}.html`);
+        assert(!catHtml.includes('id="themeToggle"'), `${slug} MUST NOT have theme toggle button`);
+        const catInlinePos = catHtml.indexOf('<!-- Critical inline CSS');
+        const catCssPos = catHtml.indexOf('<link rel="stylesheet" href="/assets/css/gallery.css');
+        assert(catInlinePos > 0 && catCssPos > catInlinePos, `category/${slug}.html critical inline <style> MUST appear before gallery.css stylesheet`);
         assert(catHtml.includes(`<link rel="canonical" id="canonicalLink" href="https://www.kumpulenak.my.id/category/${slug}"`), `${slug} canonical invalid`);
         assert(catHtml.includes('hreflang="en-US"'), `${slug} missing hreflang="en-US"`);
         assert(catHtml.includes('application/rss+xml'), `${slug} missing RSS link`);
